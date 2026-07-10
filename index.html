@@ -5,9 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gerenciador • Retentores, Rolamentos, Redutores</title>
     <style>
-        /* ===== ESTILOS (idênticos ao anterior) ===== */
-        /* Mantenha o mesmo CSS que você já tem – não vou repetir para não estourar */
+        /* ===== TODOS OS ESTILOS (idênticos ao seu) ===== */
+        /* Mantenha exatamente o mesmo CSS que você já tem – não vou repetir para não estourar */
         /* Use o CSS da versão anterior (com variáveis, layout, etc.) */
+        /* Apenas adicionei um pequeno estilo para o botão de sincronização manual */
+        .btn-sync {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-sync:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        .btn-sync:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        /* O restante do CSS permanece idêntico ao seu */
+        /* Inclua aqui todo o CSS que você já tem */
         :root {
             --bg: #f1f5f9; --card-bg: #ffffff; --sidebar-bg: #1e293b;
             --text: #1e293b; --text-secondary: #64748b; --text-light: #94a3b8;
@@ -134,6 +162,32 @@
         .status-dot.online { background:var(--status-online); }
         .status-dot.offline { background:var(--status-offline); }
         #syncStatus { font-size:.75rem; color:var(--text-light); }
+        .btn-sync {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            height: 32px;
+        }
+        .btn-sync:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        .btn-sync:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
         .app-body { display:flex; flex:1; overflow:hidden; }
         /* Sidebar */
         .sidebar {
@@ -238,11 +292,13 @@
             .dashboard-grid { grid-template-columns:1fr 1fr; }
             .items-grid { grid-template-columns:1fr; }
             .top-bar .left .app-title { display:none; }
+            .top-bar .right .btn-sync { font-size:0.7rem; padding:4px 10px; }
         }
         @media (max-width:480px) {
             .dashboard-grid { grid-template-columns:1fr; }
             .page-header { flex-direction:column; align-items:stretch; }
             .page-header .search-box input { width:100%; }
+            .top-bar .right .user-info { display:none; }
         }
     </style>
 </head>
@@ -283,6 +339,8 @@
                 <span id="statusText">Verificando...</span>
             </div>
             <span id="syncStatus">🔄 Sincronizado</span>
+            <!-- BOTÃO DE SINCRONIZAÇÃO MANUAL -->
+            <button class="btn-sync" id="btnManualSync" title="Sincronizar com a planilha agora">🔄 Sync</button>
             <button class="theme-toggle" id="themeToggle">🌙</button>
             <button class="btn-logout" id="btnLogout">Sair</button>
         </div>
@@ -299,7 +357,7 @@
                 <a data-page="carrinho"><span class="icon">🛒</span> Carrinho</a>
                 <a data-page="admin" id="sidebarAdmin"><span class="icon">👥</span> Administração</a>
             </div>
-            <div class="sidebar-footer">v2.1 • Auto-sync ativo</div>
+            <div class="sidebar-footer">v2.2 • Auto-sync ativo</div>
         </div>
         <!-- Conteúdo -->
         <div class="content" id="contentArea">
@@ -315,6 +373,7 @@
                 <div style="background:var(--card-bg); border-radius:16px; padding:20px; border:1px solid var(--border);">
                     <p style="color:var(--text-secondary);">✅ Sistema conectado ao Google Sheets. Todos os dados são sincronizados automaticamente.</p>
                     <p style="margin-top:8px; font-size:.9rem;">🔹 Use o menu lateral para navegar entre as categorias.</p>
+                    <p style="margin-top:8px; font-size:.9rem;">🔄 Clique em <strong>"Sync"</strong> na barra superior para forçar uma sincronização manual.</p>
                 </div>
             </div>
             <!-- RETENTORES -->
@@ -410,6 +469,7 @@
     let retainers = [], bearings = [], reducers = [], cart = [];
     let nextRetainerId = 1, nextBearingId = 1, nextReducerId = 1;
     let currentUser = null, currentVersion = 0, pollingEnabled = true;
+    let isSyncing = false; // flag para evitar múltiplas sincronizações simultâneas
 
     // ============================================================
     // USUÁRIOS
@@ -502,19 +562,43 @@
         } catch (e) { console.warn('Polling error:', e); }
     }
 
+    // ============================================================
+    // REFRESH / SYNC MANUAL
+    // ============================================================
     async function refreshData() {
-        const data = await loadDataFromSheet();
-        if (data) {
-            retainers = data.retainers || [];
-            bearings = data.bearings || [];
-            reducers = data.reducers || [];
-            cart = data.cart || [];
-            nextRetainerId = data.nextRetainerId || 1;
-            nextBearingId = data.nextBearingId || 1;
-            nextReducerId = data.nextReducerId || 1;
-            renderAllLists();
-            renderAllCarts();
-            updateDashboard();
+        if (isSyncing) return;
+        isSyncing = true;
+        const syncBtn = document.getElementById('btnManualSync');
+        const syncStatus = document.getElementById('syncStatus');
+        if (syncBtn) syncBtn.disabled = true;
+        if (syncStatus) syncStatus.textContent = '⏳ Sincronizando...';
+
+        try {
+            const data = await loadDataFromSheet();
+            if (data) {
+                retainers = data.retainers || [];
+                bearings = data.bearings || [];
+                reducers = data.reducers || [];
+                cart = data.cart || [];
+                nextRetainerId = data.nextRetainerId || 1;
+                nextBearingId = data.nextBearingId || 1;
+                nextReducerId = data.nextReducerId || 1;
+                renderAllLists();
+                renderAllCarts();
+                updateDashboard();
+                if (syncStatus) syncStatus.textContent = '✅ Sincronizado';
+                setTimeout(() => { if (syncStatus) syncStatus.textContent = '🔄 Sincronizado'; }, 2000);
+            } else {
+                if (syncStatus) syncStatus.textContent = '❌ Falha ao sincronizar';
+                setTimeout(() => { if (syncStatus) syncStatus.textContent = '🔄 Sincronizado'; }, 3000);
+            }
+        } catch (e) {
+            console.error('Erro na sincronização manual:', e);
+            if (syncStatus) syncStatus.textContent = '❌ Erro';
+            setTimeout(() => { if (syncStatus) syncStatus.textContent = '🔄 Sincronizado'; }, 3000);
+        } finally {
+            isSyncing = false;
+            if (syncBtn) syncBtn.disabled = false;
         }
     }
 
@@ -1146,6 +1230,23 @@
         if (loginUser) loginUser.addEventListener('keydown', e => { if (e.key === 'Enter') { const pass = document.getElementById('loginPass'); if (pass) pass.focus(); } });
         const btnLogout = document.getElementById('btnLogout');
         if (btnLogout) btnLogout.addEventListener('click', doLogout);
+
+        // BOTÃO DE SINCRONIZAÇÃO MANUAL
+        const syncBtn = document.getElementById('btnManualSync');
+        if (syncBtn) {
+            syncBtn.addEventListener('click', function() {
+                if (!currentUser) {
+                    alert('Faça login primeiro.');
+                    return;
+                }
+                this.disabled = true;
+                this.textContent = '⏳ Sync';
+                refreshData().finally(() => {
+                    this.disabled = false;
+                    this.textContent = '🔄 Sync';
+                });
+            });
+        }
 
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
