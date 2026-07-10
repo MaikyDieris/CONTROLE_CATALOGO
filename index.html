@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gerenciador • Retentores, Rolamentos, Redutores</title>
     <style>
-        /* ===== ESTILOS COMPLETOS ===== */
+        /* ===== ESTILOS (idênticos ao anterior) ===== */
+        /* Mantenha o mesmo CSS que você já tem – não vou repetir para não estourar */
+        /* Use o CSS da versão anterior (com variáveis, layout, etc.) */
         :root {
             --bg: #f1f5f9; --card-bg: #ffffff; --sidebar-bg: #1e293b;
             --text: #1e293b; --text-secondary: #64748b; --text-light: #94a3b8;
@@ -49,7 +51,7 @@
             height:100vh; display:flex; flex-direction:column; overflow:hidden;
             transition:background .3s, color .3s;
         }
-        /* ===== LOGIN ===== */
+        /* ===== LOGIN (mesmo anterior) ===== */
         .login-overlay {
             position:fixed; inset:0; background:#0b1a2f; z-index:300;
             display:flex; align-items:center; justify-content:center; overflow:hidden;
@@ -217,15 +219,16 @@
         .btn-save:hover { background:var(--primary-hover); }
         .btn-cancel { padding:10px 22px; background:transparent; color:var(--text); border:2px solid var(--border); border-radius:8px; cursor:pointer; font-weight:600; }
         .btn-cancel:hover { background:var(--border); }
-        /* Admin */
-        .admin-panel { position:fixed; inset:0; background:var(--modal-overlay); z-index:150; display:none; align-items:center; justify-content:center; }
-        .admin-panel .modal { max-width:600px; }
+        /* Admin (página) */
         .user-table { width:100%; border-collapse:collapse; margin:16px 0; }
         .user-table th, .user-table td { padding:10px 12px; border:1px solid var(--border); text-align:left; font-size:.85rem; }
         .user-table th { background:var(--tab-bg); color:var(--text-secondary); }
         .btn-small { padding:4px 10px; border:none; border-radius:4px; cursor:pointer; font-size:.75rem; font-weight:600; margin:0 2px; }
         .btn-small.btn-edit { background:var(--btn-edit-bg); color:var(--btn-edit-color); }
         .btn-small.btn-remove { background:var(--btn-remove-bg); color:var(--btn-remove-color); }
+        /* Redutor detail */
+        #reducerDetailModal .modal { max-width:500px; }
+        #reducerDetailModal ul { margin-left:20px; }
         /* Responsivo */
         @media (max-width:768px) {
             .sidebar { position:fixed; top:0; left:0; bottom:0; width:260px; transform:translateX(-100%); z-index:30; }
@@ -241,8 +244,6 @@
             .page-header { flex-direction:column; align-items:stretch; }
             .page-header .search-box input { width:100%; }
         }
-        #reducerDetailModal .modal { max-width:500px; }
-        #reducerDetailModal ul { margin-left:20px; }
     </style>
 </head>
 <body>
@@ -393,18 +394,6 @@
         <div class="modal-actions"><button class="btn-cancel" id="btnCloseReducerDetail">Fechar</button></div>
     </div>
 </div>
-<div class="admin-panel" id="adminPanel">
-    <div class="modal">
-        <h3>👥 Gerenciar Usuários</h3>
-        <div id="adminUserList"></div>
-        <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
-            <input type="text" id="newUser" placeholder="Novo usuário" style="flex:1; padding:10px; border:2px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text);">
-            <input type="password" id="newPass" placeholder="Senha" style="flex:1; padding:10px; border:2px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text);">
-            <button class="btn-save" id="btnAddUser">Adicionar</button>
-        </div>
-        <div class="modal-actions" style="margin-top:16px;"><button class="btn-cancel" id="btnCloseAdmin">Fechar</button></div>
-    </div>
-</div>
 
 <script>
 (function() {
@@ -486,7 +475,10 @@
         const ok = await saveDataToSheet({ retainers, bearings, reducers, cart, nextRetainerId, nextBearingId, nextReducerId });
         if (ok) {
             const syncEl = document.getElementById('syncStatus');
-            if (syncEl) { syncEl.textContent = '✅ Sincronizado'; setTimeout(() => syncEl.textContent = '🔄 Sincronizado', 2000); }
+            if (syncEl) {
+                syncEl.textContent = '✅ Sincronizado';
+                setTimeout(() => { if (syncEl) syncEl.textContent = '🔄 Sincronizado'; }, 2000);
+            }
         }
         return ok;
     }
@@ -502,7 +494,10 @@
                 const syncEl = document.getElementById('syncStatus');
                 if (syncEl) syncEl.textContent = '🔄 Atualizando...';
                 await refreshData();
-                if (syncEl) { syncEl.textContent = '✅ Atualizado'; setTimeout(() => syncEl.textContent = '🔄 Sincronizado', 2000); }
+                if (syncEl) {
+                    syncEl.textContent = '✅ Atualizado';
+                    setTimeout(() => { if (syncEl) syncEl.textContent = '🔄 Sincronizado'; }, 2000);
+                }
             }
         } catch (e) { console.warn('Polling error:', e); }
     }
@@ -706,10 +701,10 @@
         if (cartTotalPage) cartTotalPage.textContent = `Total de itens: ${total}`;
         const cartTotalSidebar = document.getElementById('cartTotalSidebar');
         if (cartTotalSidebar) cartTotalSidebar.textContent = `Total: ${total}`;
-        const btnWppPage = document.getElementById('btnWhatsAppPage');
-        const btnWppSidebar = document.getElementById('btnWhatsAppSidebar');
-        if (btnWppPage) btnWppPage.disabled = total === 0;
-        if (btnWppSidebar) btnWppSidebar.disabled = total === 0;
+        const btnWhatsAppPage = document.getElementById('btnWhatsAppPage');
+        if (btnWhatsAppPage) btnWhatsAppPage.disabled = total === 0;
+        const btnWhatsAppSidebar = document.getElementById('btnWhatsAppSidebar');
+        if (btnWhatsAppSidebar) btnWhatsAppSidebar.disabled = total === 0;
 
         const renderCartItems = (containerId) => {
             const container = document.getElementById(containerId);
@@ -882,15 +877,17 @@
             toggleModalFields('retentor');
         }
 
-        btnCancel.addEventListener('click', () => modalOverlay.style.display = 'none');
-        btnSave.addEventListener('click', saveModal);
-        categorySelect.addEventListener('change', function() {
-            toggleModalFields(this.value);
-            if (this.value === 'retentor') updateNamePreview();
-        });
+        if (btnCancel) btnCancel.addEventListener('click', () => modalOverlay.style.display = 'none');
+        if (btnSave) btnSave.addEventListener('click', saveModal);
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function() {
+                toggleModalFields(this.value);
+                if (this.value === 'retentor') updateNamePreview();
+            });
+        }
         if (inputMeasuresRet) inputMeasuresRet.addEventListener('input', updateNamePreview);
         [inputMeasuresRet, inputNameRol, inputMeasuresRol, inputRedutorName, inputFabricante, inputLocal].forEach(inp => {
-            if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); btnSave.click(); } });
+            if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); if (btnSave) btnSave.click(); } });
         });
     }
 
@@ -963,14 +960,17 @@
         document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
         const link = document.querySelector(`.sidebar-nav a[data-page="${page}"]`);
         if (link) link.classList.add('active');
-        if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+        if (window.innerWidth <= 768) {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.classList.remove('open');
+        }
         if (page === 'admin') renderAdminPanelPage();
         if (page === 'carrinho') renderAllCarts();
         if (page === 'dashboard') updateDashboard();
     }
 
     // ============================================================
-    // ADMIN
+    // ADMIN (página)
     // ============================================================
     function renderAdminPanelPage() {
         const container = document.getElementById('adminUserListPage');
@@ -1042,7 +1042,10 @@
             const data = await resp.json();
             if (data.status === 'ok') { dot.className = 'status-dot online'; text.textContent = 'Online'; }
             else throw new Error('Resposta inválida');
-        } catch { dot.className = 'status-dot offline'; text.textContent = 'Offline'; }
+        } catch {
+            dot.className = 'status-dot offline';
+            text.textContent = 'Offline';
+        }
     }
 
     // ============================================================
@@ -1051,24 +1054,21 @@
     window._openReducerDetail = function(id) {
         const item = reducers.find(r => r.id === id);
         if (!item) return;
-        document.getElementById('reducerDetailTitle').textContent = item.name;
-        document.getElementById('reducerDetailContent').innerHTML = `
-            <p><strong>Fabricante:</strong> ${escapeHtml(item.manufacturer)}</p>
-            <p><strong>Local:</strong> ${escapeHtml(item.location)}</p>
-            <h4 style="margin-top:16px;">⚙️ Rolamentos (${(item.bearings||[]).length})</h4>
-            <ul>${(item.bearings||[]).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
-            <h4 style="margin-top:12px;">🔩 Retentores (${(item.retainers||[]).length})</h4>
-            <ul>${(item.retainers||[]).map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
-        `;
+        const title = document.getElementById('reducerDetailTitle');
+        const content = document.getElementById('reducerDetailContent');
+        if (title) title.textContent = item.name;
+        if (content) {
+            content.innerHTML = `
+                <p><strong>Fabricante:</strong> ${escapeHtml(item.manufacturer)}</p>
+                <p><strong>Local:</strong> ${escapeHtml(item.location)}</p>
+                <h4 style="margin-top:16px;">⚙️ Rolamentos (${(item.bearings||[]).length})</h4>
+                <ul>${(item.bearings||[]).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+                <h4 style="margin-top:12px;">🔩 Retentores (${(item.retainers||[]).length})</h4>
+                <ul>${(item.retainers||[]).map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+            `;
+        }
         document.getElementById('reducerDetailModal').style.display = 'flex';
     };
-    const closeReducerBtn = document.getElementById('btnCloseReducerDetail');
-    if (closeReducerBtn) closeReducerBtn.addEventListener('click', () => {
-        document.getElementById('reducerDetailModal').style.display = 'none';
-    });
-    document.getElementById('reducerDetailModal').addEventListener('click', function(e) {
-        if (e.target === this) this.style.display = 'none';
-    });
 
     // ============================================================
     // LOGIN / LOGOUT
@@ -1135,20 +1135,18 @@
     }
 
     // ============================================================
-    // EVENTOS (com verificações de existência)
+    // EVENTOS (com verificações de segurança)
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
-        // Login
         const btnLogin = document.getElementById('btnLogin');
         if (btnLogin) btnLogin.addEventListener('click', doLogin);
         const loginPass = document.getElementById('loginPass');
         if (loginPass) loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
         const loginUser = document.getElementById('loginUser');
-        if (loginUser) loginUser.addEventListener('keydown', e => { if (e.key === 'Enter') { const lp = document.getElementById('loginPass'); if (lp) lp.focus(); } });
+        if (loginUser) loginUser.addEventListener('keydown', e => { if (e.key === 'Enter') { const pass = document.getElementById('loginPass'); if (pass) pass.focus(); } });
         const btnLogout = document.getElementById('btnLogout');
         if (btnLogout) btnLogout.addEventListener('click', doLogout);
 
-        // Tema
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
             themeToggle.addEventListener('click', function() {
@@ -1162,21 +1160,23 @@
         if (savedTheme === 'dark') {
             document.body.classList.add('dark');
             document.body.classList.remove('light');
-            if (themeToggle) themeToggle.textContent = '☀️';
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) toggle.textContent = '☀️';
         } else {
             document.body.classList.add('light');
             document.body.classList.remove('dark');
-            if (themeToggle) themeToggle.textContent = '🌙';
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) toggle.textContent = '🌙';
         }
 
-        // Menu toggle
         const menuToggle = document.getElementById('menuToggle');
-        if (menuToggle) menuToggle.addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar) sidebar.classList.toggle('open');
-        });
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.classList.toggle('open');
+            });
+        }
 
-        // Navegação sidebar
         document.querySelectorAll('.sidebar-nav a').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1185,79 +1185,88 @@
             });
         });
 
-        // Fechar carrinho sidebar (mobile)
-        const closeCartSidebar = document.getElementById('closeCartSidebar');
-        if (closeCartSidebar) closeCartSidebar.addEventListener('click', function() {
-            const cartSidebar = document.getElementById('cartSidebar');
-            if (cartSidebar) cartSidebar.style.display = 'none';
-        });
+        const closeCart = document.getElementById('closeCartSidebar');
+        if (closeCart) {
+            closeCart.addEventListener('click', function() {
+                const sidebar = document.getElementById('cartSidebar');
+                if (sidebar) sidebar.style.display = 'none';
+            });
+        }
 
-        // Buscas
         ['searchRetentores', 'searchRolamentos', 'searchRedutores'].forEach(id => {
             const inp = document.getElementById(id);
             if (inp) inp.addEventListener('input', renderAllLists);
         });
 
-        // Botões adicionar
         const btnAddRet = document.getElementById('btnAddRetentor');
-        if (btnAddRet) btnAddRet.addEventListener('click', () => {
-            modalMode = 'add'; editingItemId = null; editingCategory = null;
-            createModal('Adicionar Retentor', 'retentor');
-            modalOverlay.style.display = 'flex';
-        });
+        if (btnAddRet) {
+            btnAddRet.addEventListener('click', () => {
+                modalMode = 'add'; editingItemId = null; editingCategory = null;
+                createModal('Adicionar Retentor', 'retentor');
+                modalOverlay.style.display = 'flex';
+            });
+        }
         const btnAddRol = document.getElementById('btnAddRolamento');
-        if (btnAddRol) btnAddRol.addEventListener('click', () => {
-            modalMode = 'add'; editingItemId = null; editingCategory = null;
-            createModal('Adicionar Rolamento', 'rolamento');
-            modalOverlay.style.display = 'flex';
-        });
+        if (btnAddRol) {
+            btnAddRol.addEventListener('click', () => {
+                modalMode = 'add'; editingItemId = null; editingCategory = null;
+                createModal('Adicionar Rolamento', 'rolamento');
+                modalOverlay.style.display = 'flex';
+            });
+        }
         const btnAddRed = document.getElementById('btnAddRedutor');
-        if (btnAddRed) btnAddRed.addEventListener('click', () => {
-            modalMode = 'add'; editingItemId = null; editingCategory = null;
-            createModal('Adicionar Redutor', 'redutor');
-            modalOverlay.style.display = 'flex';
-        });
+        if (btnAddRed) {
+            btnAddRed.addEventListener('click', () => {
+                modalMode = 'add'; editingItemId = null; editingCategory = null;
+                createModal('Adicionar Redutor', 'redutor');
+                modalOverlay.style.display = 'flex';
+            });
+        }
 
-        // WhatsApp
-        const btnWppPage = document.getElementById('btnWhatsAppPage');
-        if (btnWppPage) btnWppPage.addEventListener('click', sendWhatsApp);
-        const btnWppSidebar = document.getElementById('btnWhatsAppSidebar');
-        if (btnWppSidebar) btnWppSidebar.addEventListener('click', sendWhatsApp);
+        const btnWhatsappPage = document.getElementById('btnWhatsAppPage');
+        if (btnWhatsappPage) btnWhatsappPage.addEventListener('click', sendWhatsApp);
+        const btnWhatsappSidebar = document.getElementById('btnWhatsAppSidebar');
+        if (btnWhatsappSidebar) btnWhatsappSidebar.addEventListener('click', sendWhatsApp);
 
-        // Admin link do login
         const adminLink = document.getElementById('adminLinkFromLogin');
-        if (adminLink) adminLink.addEventListener('click', () => {
-            const user = prompt('Usuário mestre:');
-            if (!user) return;
-            const pass = prompt('Senha mestre:');
-            if (!pass) return;
-            users = loadUsers();
-            const master = users.find(u => u.username === user && u.password === pass && u.level === 'master');
-            if (!master) { alert('Acesso negado.'); return; }
-            currentUser = { username: master.username, level: 'master' };
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('app').style.display = 'flex';
-            document.getElementById('userInfo').textContent = `👤 ${currentUser.username} (Mestre)`;
-            const sidebarAdmin = document.getElementById('sidebarAdmin');
-            if (sidebarAdmin) sidebarAdmin.style.display = 'flex';
-            checkServerStatus();
-            initApp();
-        });
+        if (adminLink) {
+            adminLink.addEventListener('click', () => {
+                const user = prompt('Usuário mestre:');
+                if (!user) return;
+                const pass = prompt('Senha mestre:');
+                if (!pass) return;
+                users = loadUsers();
+                const master = users.find(u => u.username === user && u.password === pass && u.level === 'master');
+                if (!master) { alert('Acesso negado.'); return; }
+                currentUser = { username: master.username, level: 'master' };
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+                document.getElementById('userInfo').textContent = `👤 ${currentUser.username} (Mestre)`;
+                const sidebarAdmin = document.getElementById('sidebarAdmin');
+                if (sidebarAdmin) sidebarAdmin.style.display = 'flex';
+                checkServerStatus();
+                initApp();
+            });
+        }
 
-        // Fechar modal ao clicar fora
-        if (modalOverlay) modalOverlay.addEventListener('click', function(e) {
-            if (e.target === this) this.style.display = 'none';
-        });
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === this) this.style.display = 'none';
+            });
+        }
 
-        // Fechar admin panel (legado)
-        const closeAdminBtn = document.getElementById('btnCloseAdmin');
-        if (closeAdminBtn) closeAdminBtn.addEventListener('click', () => {
-            document.getElementById('adminPanel').style.display = 'none';
-        });
-        const adminPanelEl = document.getElementById('adminPanel');
-        if (adminPanelEl) adminPanelEl.addEventListener('click', function(e) {
-            if (e.target === this) this.style.display = 'none';
-        });
+        const btnCloseDetail = document.getElementById('btnCloseReducerDetail');
+        if (btnCloseDetail) {
+            btnCloseDetail.addEventListener('click', () => {
+                document.getElementById('reducerDetailModal').style.display = 'none';
+            });
+        }
+        const reducerModal = document.getElementById('reducerDetailModal');
+        if (reducerModal) {
+            reducerModal.addEventListener('click', function(e) {
+                if (e.target === this) this.style.display = 'none';
+            });
+        }
     });
 })();
 </script>
