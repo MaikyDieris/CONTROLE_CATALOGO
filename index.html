@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador de Retentores, Rolamentos e Redutores</title>
     <style>
+        /* ========== SEU CSS ORIGINAL (mantido integralmente) ========== */
         :root {
             --bg: #f1f5f9; --card-bg: #ffffff; --sidebar-bg: #f8fafc;
             --text: #1e293b; --text-secondary: #64748b; --text-light: #94a3b8;
@@ -324,22 +325,42 @@
     <script>
         (function() {
             // ============================================================
-            // CONFIGURAÇÃO (sem proxy, URL direta)
+            // CONFIGURAÇÃO
             // ============================================================
             const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvyfBtZ2VN6w_xJL2BHEUNHfXiESTGlM-pPHpvx8RgP8scaAO_E76FwGJMzXG2aHgd/exec';
             const SHEET_ID = '1MEghTuBZnbkddvgNsJ2Mi2DwebHyMmGG-Xir4TGtQm0';
 
             // ============================================================
-            // MOSTRADOR DE STATUS (com verificação de elementos)
+            // FUNÇÃO PARA ESPERAR ELEMENTOS EXISTIREM
+            // ============================================================
+            function waitForElements(selector, timeout = 5000) {
+                return new Promise((resolve, reject) => {
+                    const startTime = Date.now();
+                    const check = () => {
+                        const el = document.querySelector(selector);
+                        if (el) {
+                            resolve(el);
+                        } else if (Date.now() - startTime > timeout) {
+                            reject(new Error(`Elemento "${selector}" não encontrado após ${timeout}ms`));
+                        } else {
+                            setTimeout(check, 100);
+                        }
+                    };
+                    check();
+                });
+            }
+
+            // ============================================================
+            // MOSTRADOR DE STATUS (com espera)
             // ============================================================
             async function checkServerStatus() {
-                const dot = document.getElementById('statusDot');
-                const text = document.getElementById('statusText');
-                if (!dot || !text) {
-                    console.warn('Elementos de status não encontrados');
-                    return;
-                }
                 try {
+                    // Aguarda os elementos existirem
+                    await waitForElements('#statusDot');
+                    await waitForElements('#statusText');
+                    const dot = document.getElementById('statusDot');
+                    const text = document.getElementById('statusText');
+
                     const resp = await fetch(`${APP_SCRIPT_URL}?action=ping&t=${Date.now()}`);
                     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                     const data = await resp.json();
@@ -350,14 +371,23 @@
                         throw new Error(data.message || 'Resposta inválida');
                     }
                 } catch (e) {
-                    dot.className = 'status-dot offline';
-                    text.textContent = 'Offline';
+                    // Se o erro for de elementos, tenta novamente após 2 segundos
+                    if (e.message.includes('não encontrado')) {
+                        console.warn('Elementos de status não encontrados, tentando novamente em 2s...');
+                        setTimeout(checkServerStatus, 2000);
+                        return;
+                    }
+                    // Erro de conexão
+                    const dot = document.getElementById('statusDot');
+                    const text = document.getElementById('statusText');
+                    if (dot) dot.className = 'status-dot offline';
+                    if (text) text.textContent = 'Offline';
                     console.warn('Erro ao verificar servidor:', e.message);
                 }
             }
 
-            setInterval(checkServerStatus, 30000);
-            document.addEventListener('DOMContentLoaded', checkServerStatus);
+            // Inicia a verificação após o login (quando o sistema principal estiver visível)
+            // A primeira chamada será feita dentro da função doLogin
 
             // ============================================================
             // FUNÇÕES DE PERSISTÊNCIA
@@ -613,7 +643,7 @@
             }
 
             // ============================================================
-            // RENDERIZAÇÃO (com tratamento de undefined)
+            // RENDERIZAÇÃO
             // ============================================================
             function renderItems() {
                 if (!panelOpen) return;
@@ -712,7 +742,7 @@
             }
 
             // ============================================================
-            // AÇÕES (com chamadas de salvamento)
+            // AÇÕES
             // ============================================================
             async function addToCart(itemId) {
                 const existing = cart.find(i => i.itemId === itemId && i.category === activeCategory);
@@ -1037,6 +1067,9 @@
                 mainSystem.style.display = 'flex';
                 userInfo.textContent = `👤 ${currentUser.username} (${currentUser.level === 'master' ? 'Mestre' : 'Usuário'})`;
                 btnAddTop.disabled = !isMaster();
+                // Inicia a verificação de status após o login
+                checkServerStatus();
+                // Inicia o app
                 initApp();
             }
 
@@ -1202,6 +1235,7 @@
             // ============================================================
             loadTheme();
             renderCart();
+            // Nota: a verificação de status é iniciada após o login (dentro de doLogin)
         })();
     </script>
 </body>
