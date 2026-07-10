@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gerenciador • Retentores, Rolamentos, Redutores</title>
+    <title id="pageTitle">Gerenciador • Retentores, Rolamentos, Redutores</title>
     <style>
         /* ===== TODOS OS ESTILOS (idênticos ao seu) ===== */
         /* Mantenha exatamente o mesmo CSS que você já tem – não vou repetir para não estourar */
@@ -33,6 +33,56 @@
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+        }
+        /* Estilo para o campo de configuração de título na admin */
+        .config-block {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .config-block h4 {
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        .config-block .form-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .config-block .form-row input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--input-bg);
+            color: var(--text);
+            outline: none;
+        }
+        .config-block .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+        .config-block .form-row .btn-save-config {
+            padding: 10px 22px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .config-block .form-row .btn-save-config:hover {
+            background: var(--primary-hover);
+        }
+        .config-block .form-row .btn-save-config:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         /* O restante do CSS permanece idêntico ao seu */
         /* Inclua aqui todo o CSS que você já tem */
@@ -280,6 +330,56 @@
         .btn-small { padding:4px 10px; border:none; border-radius:4px; cursor:pointer; font-size:.75rem; font-weight:600; margin:0 2px; }
         .btn-small.btn-edit { background:var(--btn-edit-bg); color:var(--btn-edit-color); }
         .btn-small.btn-remove { background:var(--btn-remove-bg); color:var(--btn-remove-color); }
+        /* Configuração de título */
+        .config-block {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .config-block h4 {
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        .config-block .form-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .config-block .form-row input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--input-bg);
+            color: var(--text);
+            outline: none;
+        }
+        .config-block .form-row input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+        .config-block .form-row .btn-save-config {
+            padding: 10px 22px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .config-block .form-row .btn-save-config:hover {
+            background: var(--primary-hover);
+        }
+        .config-block .form-row .btn-save-config:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         /* Redutor detail */
         #reducerDetailModal .modal { max-width:500px; }
         #reducerDetailModal ul { margin-left:20px; }
@@ -299,6 +399,7 @@
             .page-header { flex-direction:column; align-items:stretch; }
             .page-header .search-box input { width:100%; }
             .top-bar .right .user-info { display:none; }
+            .config-block .form-row { flex-direction:column; align-items:stretch; }
         }
     </style>
 </head>
@@ -330,7 +431,7 @@
     <div class="top-bar">
         <div class="left">
             <button class="menu-toggle" id="menuToggle" title="Menu">☰</button>
-            <span class="app-title">🔩 Gerenciador</span>
+            <span class="app-title" id="appTitleDisplay">🔩 Gerenciador</span>
         </div>
         <div class="right">
             <span class="user-info" id="userInfo"></span>
@@ -339,7 +440,6 @@
                 <span id="statusText">Verificando...</span>
             </div>
             <span id="syncStatus">🔄 Sincronizado</span>
-            <!-- BOTÃO DE SINCRONIZAÇÃO MANUAL -->
             <button class="btn-sync" id="btnManualSync" title="Sincronizar com a planilha agora">🔄 Sync</button>
             <button class="theme-toggle" id="themeToggle">🌙</button>
             <button class="btn-logout" id="btnLogout">Sair</button>
@@ -420,7 +520,20 @@
             </div>
             <!-- ADMIN (página) -->
             <div class="page" id="page-admin">
-                <div class="page-header"><h2>👥 Administração de Usuários</h2></div>
+                <div class="page-header"><h2>👥 Administração</h2></div>
+                <!-- BLOCO DE CONFIGURAÇÃO DO TÍTULO -->
+                <div class="config-block">
+                    <h4>⚙️ Configurações do Sistema</h4>
+                    <div class="form-row">
+                        <input type="text" id="inputAppTitle" placeholder="Digite o novo título do sistema" value="🔩 Gerenciador">
+                        <button class="btn-save-config" id="btnSaveTitle">Salvar título</button>
+                    </div>
+                    <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">
+                        O título aparece na barra superior e na aba do navegador.
+                    </p>
+                </div>
+                <!-- ADMINISTRAÇÃO DE USUÁRIOS -->
+                <h3 style="margin-top:16px;">👥 Gerenciar Usuários</h3>
                 <div id="adminUserListPage"></div>
                 <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
                     <input type="text" id="newUserPage" placeholder="Novo usuário" style="flex:1; padding:10px; border:2px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text);">
@@ -462,6 +575,7 @@
     const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvyfBtZ2VN6w_xJL2BHEUNHfXiESTGlM-pPHpvx8RgP8scaAO_E76FwGJMzXG2aHgd/exec';
     const SHEET_ID = '1MEghTuBZnbkddvgNsJ2Mi2DwebHyMmGG-Xir4TGtQm0';
     const POLL_INTERVAL = 10000; // 10 segundos
+    const DEFAULT_TITLE = '🔩 Gerenciador';
 
     // ============================================================
     // ESTADO GLOBAL
@@ -469,7 +583,30 @@
     let retainers = [], bearings = [], reducers = [], cart = [];
     let nextRetainerId = 1, nextBearingId = 1, nextReducerId = 1;
     let currentUser = null, currentVersion = 0, pollingEnabled = true;
-    let isSyncing = false; // flag para evitar múltiplas sincronizações simultâneas
+    let isSyncing = false;
+
+    // ============================================================
+    // TÍTULO DO SISTEMA (persistente no localStorage)
+    // ============================================================
+    function getAppTitle() {
+        return localStorage.getItem('appTitle') || DEFAULT_TITLE;
+    }
+
+    function setAppTitle(newTitle) {
+        localStorage.setItem('appTitle', newTitle);
+        updateAppTitleUI(newTitle);
+    }
+
+    function updateAppTitleUI(title) {
+        // Atualiza o título da página HTML
+        document.title = title + ' • Gerenciador de Retentores, Rolamentos e Redutores';
+        // Atualiza o título na barra superior
+        const displayEl = document.getElementById('appTitleDisplay');
+        if (displayEl) displayEl.textContent = title;
+        // Atualiza o campo de input na admin (se existir)
+        const inputEl = document.getElementById('inputAppTitle');
+        if (inputEl) inputEl.value = title;
+    }
 
     // ============================================================
     // USUÁRIOS
@@ -1054,9 +1191,10 @@
     }
 
     // ============================================================
-    // ADMIN (página)
+    // ADMIN (página) – agora com configuração de título
     // ============================================================
     function renderAdminPanelPage() {
+        // Renderiza a lista de usuários
         const container = document.getElementById('adminUserListPage');
         if (!container) return;
         users = loadUsers();
@@ -1072,6 +1210,8 @@
         });
         html += '</table>';
         container.innerHTML = html;
+
+        // Configura o botão de adicionar usuário
         const btnAdd = document.getElementById('btnAddUserPage');
         if (btnAdd) {
             btnAdd.onclick = () => {
@@ -1087,8 +1227,24 @@
                 renderAdminPanelPage();
             };
         }
+
+        // Atualiza o campo de título com o valor atual
+        const inputTitle = document.getElementById('inputAppTitle');
+        if (inputTitle) {
+            inputTitle.value = getAppTitle();
+            // Configura o evento de salvar título
+            const btnSaveTitle = document.getElementById('btnSaveTitle');
+            if (btnSaveTitle) {
+                btnSaveTitle.onclick = function() {
+                    const newTitle = inputTitle.value.trim() || DEFAULT_TITLE;
+                    setAppTitle(newTitle);
+                    alert('Título atualizado com sucesso!');
+                };
+            }
+        }
     }
 
+    // Funções auxiliares para admin (expostas globalmente para onclick)
     window._renameUserPage = function(username) {
         const newName = prompt(`Novo nome para ${username}:`, username);
         if (newName && newName.trim()) {
@@ -1170,6 +1326,8 @@
         document.getElementById('userInfo').textContent = `👤 ${currentUser.username} (${currentUser.level === 'master' ? 'Mestre' : 'Usuário'})`;
         const sidebarAdmin = document.getElementById('sidebarAdmin');
         if (sidebarAdmin) sidebarAdmin.style.display = isMaster() ? 'flex' : 'none';
+        // Atualiza o título do sistema
+        updateAppTitleUI(getAppTitle());
         checkServerStatus();
         initApp();
     }
@@ -1222,6 +1380,9 @@
     // EVENTOS (com verificações de segurança)
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
+        // Título inicial
+        updateAppTitleUI(getAppTitle());
+
         const btnLogin = document.getElementById('btnLogin');
         if (btnLogin) btnLogin.addEventListener('click', doLogin);
         const loginPass = document.getElementById('loginPass');
@@ -1231,7 +1392,7 @@
         const btnLogout = document.getElementById('btnLogout');
         if (btnLogout) btnLogout.addEventListener('click', doLogout);
 
-        // BOTÃO DE SINCRONIZAÇÃO MANUAL
+        // Botão de sincronização manual
         const syncBtn = document.getElementById('btnManualSync');
         if (syncBtn) {
             syncBtn.addEventListener('click', function() {
