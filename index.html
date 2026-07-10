@@ -327,8 +327,14 @@
             // ============================================================
             // CONFIGURAÇÃO DO GOOGLE SHEETS (já preenchida com seus dados)
             // ============================================================
-            const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvyfBtZ2VN6w_xJL2BHEUNHfXiESTGlM-pPHpvx8RgP8scaAO_E76FwGJMzXG2aHgd/exec';
+            const APP_SCRIPT_URL_BASE = 'https://script.google.com/macros/s/AKfycbwvyfBtZ2VN6w_xJL2BHEUNHfXiESTGlM-pPHpvx8RgP8scaAO_E76FwGJMzXG2aHgd/exec';
             const SHEET_ID = '1MEghTuBZnbkddvgNsJ2Mi2DwebHyMmGG-Xir4TGtQm0';
+
+            // --- HABILITAR PROXY CORS (descomente a linha abaixo se ainda der CORS) ---
+            // const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+            // const APP_SCRIPT_URL = CORS_PROXY + APP_SCRIPT_URL_BASE;
+            // --- MODO DIRETO (caso as permissões do Apps Script já estejam públicas) ---
+            const APP_SCRIPT_URL = APP_SCRIPT_URL_BASE;
 
             // ============================================================
             // MOSTRADOR DE STATUS DO SERVIDOR
@@ -338,17 +344,22 @@
                 const text = document.getElementById('statusText');
                 try {
                     const resp = await fetch(`${APP_SCRIPT_URL}?action=ping&t=${Date.now()}`);
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                     const data = await resp.json();
                     if (data.status === 'ok') {
                         dot.className = 'status-dot online';
                         text.textContent = 'Online';
                     } else {
-                        throw new Error('Resposta inválida');
+                        throw new Error(data.message || 'Resposta inválida');
                     }
                 } catch (e) {
                     dot.className = 'status-dot offline';
                     text.textContent = 'Offline';
-                    console.warn('Servidor offline:', e);
+                    console.warn('Erro ao verificar servidor:', e.message);
+                    // Se o erro for CORS, sugere o proxy
+                    if (e.message.includes('Failed to fetch') || e.message.includes('CORS')) {
+                        console.info('Dica: ative o proxy CORS no código (descomente a linha com CORS_PROXY).');
+                    }
                 }
             }
 
@@ -362,6 +373,7 @@
             async function loadDataFromSheet() {
                 try {
                     const resp = await fetch(`${APP_SCRIPT_URL}?action=load&sheetId=${SHEET_ID}&t=${Date.now()}`);
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                     const result = await resp.json();
                     if (result.status === 'ok') {
                         return result.data;
@@ -390,6 +402,7 @@
                         method: 'POST',
                         body: formData
                     });
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                     const result = await resp.json();
                     if (result.status === 'ok') {
                         return true;
@@ -600,7 +613,7 @@
             }
 
             // ============================================================
-            // FUNÇÕES DE RENDERIZAÇÃO (USAM O ESTADO GLOBAL)
+            // FUNÇÕES DE RENDERIZAÇÃO
             // ============================================================
             function renderItems() {
                 if (!panelOpen) return;
@@ -696,7 +709,7 @@
             }
 
             // ============================================================
-            // FUNÇÕES DE AÇÃO (MODIFICAM O ESTADO E SALVAM)
+            // AÇÕES
             // ============================================================
             async function addToCart(itemId) {
                 const existing = cart.find(i => i.itemId === itemId && i.category === activeCategory);
@@ -929,7 +942,7 @@
             }
 
             // ============================================================
-            // FUNÇÕES DE INTERFACE (ABRIR/FECHAR PAINEL, TABS, TEMA)
+            // INTERFACE
             // ============================================================
             function switchCategory(cat) {
                 if (activeCategory === cat) return;
@@ -1004,7 +1017,6 @@
                 mainSystem.style.display = 'flex';
                 userInfo.textContent = `👤 ${currentUser.username} (${currentUser.level === 'master' ? 'Mestre' : 'Usuário'})`;
                 btnAddTop.disabled = !isMaster();
-                // Inicializa o sistema (carrega dados)
                 initApp();
             }
 
@@ -1092,7 +1104,7 @@
             });
 
             // ============================================================
-            // INICIALIZAÇÃO DO SISTEMA (CARREGA DADOS DO GOOGLE SHEETS)
+            // INICIALIZAÇÃO
             // ============================================================
             async function initApp() {
                 const data = await loadDataFromSheet();
@@ -1105,7 +1117,6 @@
                     nextBearingId = data.nextBearingId || 1;
                     nextReducerId = data.nextReducerId || 1;
                 } else {
-                    // Fallback: usar dados padrão e salvar na planilha
                     retainers = defaultData.retainers;
                     bearings = defaultData.bearings;
                     reducers = defaultData.reducers;
@@ -1115,12 +1126,10 @@
                     nextReducerId = defaultData.nextReducerId;
                     await saveData();
                 }
-                // Atualiza a interface
                 renderCart();
                 if (panelOpen) renderItems();
             }
 
-            // Função saveData (assíncrona) usada em todo lugar
             async function saveData() {
                 await saveDataToSheet({
                     retainers,
@@ -1164,11 +1173,11 @@
             reducerDetailModal.addEventListener('click', function(e) { if (e.target === reducerDetailModal) reducerDetailModal.style.display = 'none'; });
 
             // ============================================================
-            // INICIALIZAÇÃO
+            // INICIAR
             // ============================================================
             loadTheme();
             renderCart();
-            // O initApp será chamado após o login (dentro de doLogin)
+            // initApp será chamado após o login
         })();
     </script>
 </body>
