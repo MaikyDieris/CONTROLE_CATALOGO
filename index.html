@@ -5,831 +5,1261 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gerenciador • Retentores, Rolamentos, Redutores</title>
     <style>
-        /* ===== TODOS OS ESTILOS (idênticos ao anterior) ===== */
-        /* Mantenha o mesmo CSS que você já tem – não vou repetir para não estourar */
-        /* Apenas substitua o SCRIPT abaixo pela versão corrigida */
+        /* ===== ESTILOS COMPLETOS ===== */
+        :root {
+            --bg: #f1f5f9; --card-bg: #ffffff; --sidebar-bg: #1e293b;
+            --text: #1e293b; --text-secondary: #64748b; --text-light: #94a3b8;
+            --border: #e2e8f0; --primary: #1a73e8; --primary-hover: #1557b0;
+            --success: #25D366; --success-hover: #1da851; --danger: #ef4444; --danger-hover: #dc2626;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1); --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+            --header-bg: #ffffff; --input-bg: #f8fafc; --badge-bg: #1a73e8; --badge-text: #fff;
+            --cart-item-bg: #ffffff; --btn-cart-bg: #e8f0fe; --btn-cart-color: #1a73e8;
+            --btn-edit-bg: #fef3c7; --btn-edit-color: #92400e;
+            --btn-remove-bg: #fee2e2; --btn-remove-color: #991b1b;
+            --modal-overlay: rgba(0,0,0,0.5); --name-preview-bg: #f1f5f9;
+            --center-placeholder: #94a3b8; --input-focus-shadow: rgba(26,115,232,0.1);
+            --panel-header-bg: #f8fafc; --cart-footer-bg: #f8fafc;
+            --whatsapp-shadow: rgba(37,211,102,0.3); --status-online: #22c55e; --status-offline: #ef4444;
+            --sidebar-width: 260px; --header-height: 64px;
+        }
+        body.dark {
+            --bg: #0f172a; --card-bg: #1e293b; --sidebar-bg: #0f172a;
+            --text: #e2e8f0; --text-secondary: #94a3b8; --text-light: #64748b;
+            --border: #334155; --primary: #38bdf8; --primary-hover: #0ea5e9;
+            --danger: #f87171; --danger-hover: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.5);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.6);
+            --header-bg: #1e293b; --input-bg: #0f172a; --badge-bg: #38bdf8; --badge-text: #0f172a;
+            --cart-item-bg: #1e293b; --btn-cart-bg: #1e3a5f; --btn-cart-color: #38bdf8;
+            --btn-edit-bg: #4a3a1a; --btn-edit-color: #fbbf24;
+            --btn-remove-bg: #4a1e1e; --btn-remove-color: #f87171;
+            --modal-overlay: rgba(0,0,0,0.7); --name-preview-bg: #0f172a;
+            --center-placeholder: #64748b; --input-focus-shadow: rgba(56,189,248,0.15);
+            --panel-header-bg: #1e293b; --cart-footer-bg: #1e293b;
+            --whatsapp-shadow: rgba(37,211,102,0.2);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+            background:var(--bg); color:var(--text);
+            height:100vh; display:flex; flex-direction:column; overflow:hidden;
+            transition:background .3s, color .3s;
+        }
+        /* ===== LOGIN ===== */
+        .login-overlay {
+            position:fixed; inset:0; background:#0b1a2f; z-index:300;
+            display:flex; align-items:center; justify-content:center; overflow:hidden;
+        }
+        .login-bg {
+            position:absolute; inset:0;
+            background: radial-gradient(circle at 30% 40%, #1a3a5c 0%, #0b1a2f 70%);
+            display:flex; align-items:center; justify-content:center;
+        }
+        .gear-container { position:relative; width:450px; height:450px; display:flex; align-items:center; justify-content:center; }
+        .gear {
+            position:absolute; border-radius:50%;
+            background: conic-gradient(from 0deg, #2c5f8a, #4a90c2, #2c5f8a, #1e4a6e, #2c5f8a);
+            box-shadow: 0 0 30px rgba(74,144,194,0.3), inset 0 0 20px rgba(0,0,0,0.5);
+            animation: spin 20s linear infinite;
+        }
+        .gear1 { width:280px; height:280px; animation-duration:25s; }
+        .gear2 { width:200px; height:200px; top:20px; left:180px; animation-duration:18s; animation-direction:reverse; }
+        .gear3 { width:150px; height:150px; top:180px; left:30px; animation-duration:15s; }
+        .bearing {
+            position:absolute; border:8px solid #4a90c2; border-radius:50%;
+            background:transparent; box-shadow:0 0 15px rgba(74,144,194,0.4);
+            animation: spin 12s linear infinite;
+        }
+        .bearing1 { width:100px; height:100px; top:60px; left:250px; }
+        .bearing2 { width:70px; height:70px; top:250px; left:80px; animation-direction:reverse; }
+        .retainer-ring {
+            position:absolute; width:130px; height:130px; border:3px dashed #4a90c2;
+            border-radius:50%; top:120px; left:200px; opacity:0.7;
+            animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        @keyframes pulse { 0%,100% { transform:scale(1); opacity:0.5; } 50% { transform:scale(1.1); opacity:0.9; } }
+        .login-card {
+            position:relative; z-index:10; background:rgba(255,255,255,0.95);
+            backdrop-filter:blur(10px); border-radius:20px; padding:32px;
+            width:90%; max-width:380px; box-shadow:0 20px 50px rgba(0,0,0,0.6);
+            text-align:center; animation:fadeInUp .8s ease;
+        }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+        .login-card h2 { color:#1a3a5c; margin-bottom:8px; font-size:1.6rem; }
+        .login-card .subtitle { color:#4a90c2; font-size:.85rem; margin-bottom:24px; }
+        .login-card .form-group { margin-bottom:16px; text-align:left; }
+        .login-card .form-group label { display:block; font-weight:600; font-size:.85rem; margin-bottom:5px; color:#1e293b; }
+        .login-card .form-group input {
+            width:100%; padding:10px 14px; border:2px solid #e2e8f0; border-radius:8px;
+            font-size:.95rem; outline:none; background:#f8fafc;
+        }
+        .login-card .form-group input:focus { border-color:#1a73e8; box-shadow:0 0 0 3px rgba(26,115,232,0.1); }
+        .login-card .btn-login {
+            width:100%; padding:12px; background:#1a73e8; color:#fff; border:none;
+            border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:8px;
+        }
+        .login-card .btn-login:hover { background:#1557b0; }
+        .login-error { color:#ef4444; font-size:.85rem; margin-top:8px; }
+        .admin-link {
+            display:inline-block; margin-top:12px; color:#94a3b8; font-size:.8rem;
+            cursor:pointer; text-decoration:underline; opacity:.7; transition:opacity .2s;
+        }
+        .admin-link:hover { opacity:1; color:#1a73e8; }
+        /* ===== APP LAYOUT ===== */
+        #app { display:none; height:100vh; flex-direction:column; }
+        .top-bar {
+            height:var(--header-height); background:var(--header-bg); border-bottom:1px solid var(--border);
+            padding:0 24px; display:flex; align-items:center; justify-content:space-between;
+            flex-shrink:0; z-index:20; box-shadow:var(--shadow-sm);
+        }
+        .top-bar .left { display:flex; align-items:center; gap:16px; }
+        .top-bar .left .menu-toggle { background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text); padding:4px 8px; border-radius:6px; }
+        .top-bar .left .menu-toggle:hover { background:var(--border); }
+        .top-bar .left .app-title { font-weight:700; font-size:1.1rem; }
+        .top-bar .right { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+        .top-bar .right .user-info { font-size:.85rem; font-weight:600; color:var(--primary); }
+        .btn-logout { padding:6px 14px; background:var(--danger); color:#fff; border:none; border-radius:50px; cursor:pointer; font-size:.8rem; font-weight:600; }
+        .btn-logout:hover { background:var(--danger-hover); }
+        .theme-toggle { background:none; border:2px solid var(--border); border-radius:50%; width:36px; height:36px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text); transition:all .2s; }
+        .theme-toggle:hover { background:var(--border); }
+        .status-indicator { display:inline-flex; align-items:center; gap:6px; font-size:.75rem; font-weight:600; padding:4px 12px; border-radius:50px; background:var(--bg); border:1px solid var(--border); }
+        .status-dot { width:10px; height:10px; border-radius:50%; display:inline-block; transition:background .3s; }
+        .status-dot.online { background:var(--status-online); }
+        .status-dot.offline { background:var(--status-offline); }
+        #syncStatus { font-size:.75rem; color:var(--text-light); }
+        .app-body { display:flex; flex:1; overflow:hidden; }
+        /* Sidebar */
+        .sidebar {
+            width:var(--sidebar-width); background:var(--sidebar-bg); color:#e2e8f0;
+            display:flex; flex-direction:column; flex-shrink:0; transition:width .3s, transform .3s;
+            overflow:hidden; z-index:10; border-right:1px solid var(--border);
+        }
+        .sidebar.collapsed { width:0; border-right:none; }
+        .sidebar .sidebar-header { padding:20px 20px 10px; font-weight:700; font-size:1rem; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; gap:8px; color:#fff; flex-shrink:0; }
+        .sidebar .sidebar-nav { flex:1; overflow-y:auto; padding:12px 0; }
+        .sidebar .sidebar-nav a {
+            display:flex; align-items:center; gap:12px; padding:12px 20px;
+            color:#cbd5e1; text-decoration:none; font-size:.9rem; font-weight:500;
+            transition:all .2s; cursor:pointer; border-left:3px solid transparent;
+        }
+        .sidebar .sidebar-nav a:hover { background:rgba(255,255,255,0.08); color:#fff; }
+        .sidebar .sidebar-nav a.active { background:rgba(255,255,255,0.1); color:#fff; border-left-color:var(--primary); }
+        .sidebar .sidebar-nav a .icon { font-size:1.2rem; width:24px; text-align:center; }
+        .sidebar .sidebar-footer { padding:16px 20px; border-top:1px solid rgba(255,255,255,0.1); font-size:.8rem; color:#94a3b8; flex-shrink:0; }
+        /* Conteúdo */
+        .content { flex:1; overflow-y:auto; padding:24px; background:var(--bg); transition:background .3s; }
+        .content .page { display:none; animation:fadeIn .3s ease; }
+        .content .page.active { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+        /* Dashboard */
+        .dashboard-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:20px; margin-bottom:30px; }
+        .dash-card { background:var(--card-bg); border-radius:16px; padding:20px; box-shadow:var(--shadow-sm); border:1px solid var(--border); transition:all .2s; }
+        .dash-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+        .dash-card .dash-icon { font-size:2.2rem; margin-bottom:8px; }
+        .dash-card .dash-number { font-size:2rem; font-weight:700; }
+        .dash-card .dash-label { font-size:.85rem; color:var(--text-secondary); margin-top:4px; }
+        /* Listagens */
+        .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+        .page-header h2 { font-size:1.4rem; display:flex; align-items:center; gap:8px; }
+        .page-header .search-box { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        .page-header .search-box input { padding:8px 16px; border:2px solid var(--border); border-radius:50px; font-size:.9rem; background:var(--input-bg); color:var(--text); outline:none; min-width:200px; }
+        .page-header .search-box input:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--input-focus-shadow); }
+        .btn-add { padding:10px 20px; background:var(--primary); color:#fff; border:none; border-radius:50px; cursor:pointer; font-weight:600; transition:all .2s; }
+        .btn-add:hover { background:var(--primary-hover); transform:translateY(-1px); box-shadow:var(--shadow-md); }
+        .btn-add:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+        .items-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:16px; }
+        .item-card { background:var(--card-bg); border-radius:14px; padding:16px; box-shadow:var(--shadow-sm); border:1px solid var(--border); transition:all .2s; }
+        .item-card:hover { box-shadow:var(--shadow); border-color:var(--primary); }
+        .item-card .card-name { font-weight:600; font-size:.95rem; }
+        .item-card .card-name-clickable { cursor:pointer; color:var(--primary); text-decoration:underline; }
+        .item-card .card-info { font-size:.8rem; color:var(--text-secondary); background:var(--tab-bg); padding:2px 10px; border-radius:20px; display:inline-block; margin:4px 0; }
+        .item-card .card-actions { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+        .item-card .btn { padding:6px 12px; border:none; border-radius:8px; cursor:pointer; font-size:.75rem; font-weight:600; transition:all .2s; display:flex; align-items:center; gap:4px; }
+        .item-card .btn:active { transform:scale(.96); }
+        .item-card .btn-cart { background:var(--btn-cart-bg); color:var(--btn-cart-color); }
+        .item-card .btn-edit { background:var(--btn-edit-bg); color:var(--btn-edit-color); }
+        .item-card .btn-remove { background:var(--btn-remove-bg); color:var(--btn-remove-color); }
+        .no-results { text-align:center; padding:30px; color:var(--text-light); }
+        /* Carrinho */
+        .cart-badge { background:var(--badge-bg); color:var(--badge-text); padding:2px 12px; border-radius:50px; font-size:.8rem; }
+        .cart-item { background:var(--cart-item-bg); border-radius:10px; padding:12px; border:1px solid var(--border); margin-bottom:8px; }
+        .cart-item .cart-item-name { font-weight:600; font-size:.9rem; }
+        .cart-item .cart-item-measures { font-size:.8rem; color:var(--text-secondary); }
+        .cart-item .cart-item-controls { display:flex; gap:8px; align-items:center; margin-top:6px; flex-wrap:wrap; }
+        .cart-item .qty-input { width:60px; padding:4px 6px; border:1px solid var(--border); border-radius:6px; text-align:center; background:var(--input-bg); color:var(--text); }
+        .btn-remove-cart { padding:4px 12px; background:var(--btn-remove-bg); color:var(--btn-remove-color); border:none; border-radius:6px; cursor:pointer; font-size:.75rem; font-weight:600; }
+        .cart-sidebar { width:340px; flex-shrink:0; background:var(--card-bg); border-left:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+        .cart-sidebar .cart-header { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+        .cart-sidebar .cart-header h3 { font-size:1rem; display:flex; align-items:center; gap:8px; }
+        .cart-sidebar .cart-items { flex:1; overflow-y:auto; padding:12px 16px; }
+        .cart-sidebar .cart-empty { text-align:center; color:var(--text-light); padding:20px; }
+        .cart-sidebar .cart-footer { padding:16px 20px; border-top:1px solid var(--border); }
+        .btn-whatsapp { width:100%; padding:10px; background:var(--success); color:#fff; border:none; border-radius:50px; cursor:pointer; font-weight:600; transition:all .2s; }
+        .btn-whatsapp:hover { background:var(--success-hover); }
+        .btn-whatsapp:disabled { background:#a3a3a3; cursor:not-allowed; opacity:.6; }
+        /* Modal */
+        .modal-overlay { position:fixed; inset:0; background:var(--modal-overlay); z-index:100; display:none; align-items:center; justify-content:center; }
+        .modal { background:var(--card-bg); border-radius:16px; padding:28px 30px; width:90%; max-width:520px; box-shadow:var(--shadow-lg); max-height:90vh; overflow-y:auto; }
+        .modal h3 { margin-bottom:18px; }
+        .form-group { margin-bottom:14px; }
+        .form-group label { display:block; font-weight:600; font-size:.85rem; margin-bottom:5px; }
+        .form-group input, .form-group select, .form-group textarea { width:100%; padding:10px 14px; border:2px solid var(--border); border-radius:8px; font-size:.95rem; outline:none; background:var(--input-bg); color:var(--text); font-family:inherit; }
+        .form-group textarea { min-height:60px; resize:vertical; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--input-focus-shadow); }
+        .name-preview { background:var(--name-preview-bg); padding:10px 14px; border-radius:8px; font-size:.9rem; margin-bottom:14px; }
+        .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+        .btn-save { padding:10px 22px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; }
+        .btn-save:hover { background:var(--primary-hover); }
+        .btn-cancel { padding:10px 22px; background:transparent; color:var(--text); border:2px solid var(--border); border-radius:8px; cursor:pointer; font-weight:600; }
+        .btn-cancel:hover { background:var(--border); }
+        /* Admin */
+        .admin-panel { position:fixed; inset:0; background:var(--modal-overlay); z-index:150; display:none; align-items:center; justify-content:center; }
+        .admin-panel .modal { max-width:600px; }
+        .user-table { width:100%; border-collapse:collapse; margin:16px 0; }
+        .user-table th, .user-table td { padding:10px 12px; border:1px solid var(--border); text-align:left; font-size:.85rem; }
+        .user-table th { background:var(--tab-bg); color:var(--text-secondary); }
+        .btn-small { padding:4px 10px; border:none; border-radius:4px; cursor:pointer; font-size:.75rem; font-weight:600; margin:0 2px; }
+        .btn-small.btn-edit { background:var(--btn-edit-bg); color:var(--btn-edit-color); }
+        .btn-small.btn-remove { background:var(--btn-remove-bg); color:var(--btn-remove-color); }
+        /* Responsivo */
+        @media (max-width:768px) {
+            .sidebar { position:fixed; top:0; left:0; bottom:0; width:260px; transform:translateX(-100%); z-index:30; }
+            .sidebar.open { transform:translateX(0); }
+            .cart-sidebar { width:100%; max-height:40vh; border-left:none; border-top:1px solid var(--border); }
+            .app-body { flex-direction:column; }
+            .dashboard-grid { grid-template-columns:1fr 1fr; }
+            .items-grid { grid-template-columns:1fr; }
+            .top-bar .left .app-title { display:none; }
+        }
+        @media (max-width:480px) {
+            .dashboard-grid { grid-template-columns:1fr; }
+            .page-header { flex-direction:column; align-items:stretch; }
+            .page-header .search-box input { width:100%; }
+        }
+        #reducerDetailModal .modal { max-width:500px; }
+        #reducerDetailModal ul { margin-left:20px; }
     </style>
 </head>
 <body>
-    <!-- ===== HTML IDÊNTICO AO ANTERIOR ===== -->
-    <!-- Mantenha toda a estrutura HTML que você já tem (login, app, sidebar, etc.) -->
-    <!-- Apenas substitua o SCRIPT pelo corrigido -->
 
-    <script>
-        (function() {
-            // ============================================================
-            // CONFIGURAÇÃO
-            // ============================================================
-            const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvyfBtZ2VN6w_xJL2BHEUNHfXiESTGlM-pPHpvx8RgP8scaAO_E76FwGJMzXG2aHgd/exec';
-            const SHEET_ID = '1MEghTuBZnbkddvgNsJ2Mi2DwebHyMmGG-Xir4TGtQm0';
-            const POLL_INTERVAL = 10000; // 10 segundos
+<!-- ===== LOGIN ===== -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-bg">
+        <div class="gear-container">
+            <div class="gear gear1"></div><div class="gear gear2"></div><div class="gear gear3"></div>
+            <div class="bearing bearing1"></div><div class="bearing bearing2"></div>
+            <div class="retainer-ring"></div>
+        </div>
+    </div>
+    <div class="login-card">
+        <h2>🔩 Bem‑vindo</h2>
+        <div class="subtitle">Gerenciador de Retentores, Rolamentos e Redutores</div>
+        <div class="form-group"><label for="loginUser">Usuário</label><input type="text" id="loginUser" placeholder="Digite seu usuário" autocomplete="off"></div>
+        <div class="form-group"><label for="loginPass">Senha</label><input type="password" id="loginPass" placeholder="Digite sua senha"></div>
+        <button class="btn-login" id="btnLogin">Entrar</button>
+        <div class="login-error" id="loginError"></div>
+        <span class="admin-link" id="adminLinkFromLogin">⚙️ Gerenciar usuários</span>
+    </div>
+</div>
 
-            // ============================================================
-            // ESTADO GLOBAL
-            // ============================================================
-            let retainers = [], bearings = [], reducers = [], cart = [];
-            let nextRetainerId = 1, nextBearingId = 1, nextReducerId = 1;
-            let currentUser = null, currentVersion = 0, pollingEnabled = true;
+<!-- ===== APP ===== -->
+<div id="app">
+    <!-- Top bar -->
+    <div class="top-bar">
+        <div class="left">
+            <button class="menu-toggle" id="menuToggle" title="Menu">☰</button>
+            <span class="app-title">🔩 Gerenciador</span>
+        </div>
+        <div class="right">
+            <span class="user-info" id="userInfo"></span>
+            <div class="status-indicator">
+                <span class="status-dot offline" id="statusDot"></span>
+                <span id="statusText">Verificando...</span>
+            </div>
+            <span id="syncStatus">🔄 Sincronizado</span>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+            <button class="btn-logout" id="btnLogout">Sair</button>
+        </div>
+    </div>
+    <div class="app-body">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">📋 Navegação</div>
+            <div class="sidebar-nav">
+                <a class="active" data-page="dashboard"><span class="icon">📊</span> Dashboard</a>
+                <a data-page="retentores"><span class="icon">🔩</span> Retentores</a>
+                <a data-page="rolamentos"><span class="icon">⚙️</span> Rolamentos</a>
+                <a data-page="redutores"><span class="icon">🔧</span> Redutores</a>
+                <a data-page="carrinho"><span class="icon">🛒</span> Carrinho</a>
+                <a data-page="admin" id="sidebarAdmin"><span class="icon">👥</span> Administração</a>
+            </div>
+            <div class="sidebar-footer">v2.1 • Auto-sync ativo</div>
+        </div>
+        <!-- Conteúdo -->
+        <div class="content" id="contentArea">
+            <!-- DASHBOARD -->
+            <div class="page active" id="page-dashboard">
+                <h2>📊 Dashboard</h2>
+                <div class="dashboard-grid" id="dashboardGrid">
+                    <div class="dash-card"><div class="dash-icon">🔩</div><div class="dash-number" id="dashRetentores">0</div><div class="dash-label">Retentores</div></div>
+                    <div class="dash-card"><div class="dash-icon">⚙️</div><div class="dash-number" id="dashRolamentos">0</div><div class="dash-label">Rolamentos</div></div>
+                    <div class="dash-card"><div class="dash-icon">🔧</div><div class="dash-number" id="dashRedutores">0</div><div class="dash-label">Redutores</div></div>
+                    <div class="dash-card"><div class="dash-icon">🛒</div><div class="dash-number" id="dashCarrinho">0</div><div class="dash-label">Itens no carrinho</div></div>
+                </div>
+                <div style="background:var(--card-bg); border-radius:16px; padding:20px; border:1px solid var(--border);">
+                    <p style="color:var(--text-secondary);">✅ Sistema conectado ao Google Sheets. Todos os dados são sincronizados automaticamente.</p>
+                    <p style="margin-top:8px; font-size:.9rem;">🔹 Use o menu lateral para navegar entre as categorias.</p>
+                </div>
+            </div>
+            <!-- RETENTORES -->
+            <div class="page" id="page-retentores">
+                <div class="page-header">
+                    <h2>🔩 Retentores</h2>
+                    <div class="search-box">
+                        <input type="text" id="searchRetentores" placeholder="Pesquisar retentor...">
+                        <button class="btn-add" id="btnAddRetentor">➕ Adicionar</button>
+                    </div>
+                </div>
+                <div class="items-grid" id="listRetentores"></div>
+            </div>
+            <!-- ROLAMENTOS -->
+            <div class="page" id="page-rolamentos">
+                <div class="page-header">
+                    <h2>⚙️ Rolamentos</h2>
+                    <div class="search-box">
+                        <input type="text" id="searchRolamentos" placeholder="Pesquisar rolamento...">
+                        <button class="btn-add" id="btnAddRolamento">➕ Adicionar</button>
+                    </div>
+                </div>
+                <div class="items-grid" id="listRolamentos"></div>
+            </div>
+            <!-- REDUTORES -->
+            <div class="page" id="page-redutores">
+                <div class="page-header">
+                    <h2>🔧 Redutores</h2>
+                    <div class="search-box">
+                        <input type="text" id="searchRedutores" placeholder="Pesquisar redutor...">
+                        <button class="btn-add" id="btnAddRedutor">➕ Adicionar</button>
+                    </div>
+                </div>
+                <div class="items-grid" id="listRedutores"></div>
+            </div>
+            <!-- CARRINHO (página) -->
+            <div class="page" id="page-carrinho">
+                <div class="page-header">
+                    <h2>🛒 Carrinho <span class="cart-badge" id="cartBadgePage">0</span></h2>
+                    <button class="btn-add" id="btnWhatsAppPage" disabled>📤 Enviar via WhatsApp</button>
+                </div>
+                <div id="cartItemsPage"></div>
+                <div style="margin-top:16px; font-weight:700;" id="cartTotalPage">Total de itens: 0</div>
+            </div>
+            <!-- ADMIN (página) -->
+            <div class="page" id="page-admin">
+                <div class="page-header"><h2>👥 Administração de Usuários</h2></div>
+                <div id="adminUserListPage"></div>
+                <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+                    <input type="text" id="newUserPage" placeholder="Novo usuário" style="flex:1; padding:10px; border:2px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text);">
+                    <input type="password" id="newPassPage" placeholder="Senha" style="flex:1; padding:10px; border:2px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text);">
+                    <button class="btn-save" id="btnAddUserPage">Adicionar</button>
+                </div>
+            </div>
+        </div>
+        <!-- Carrinho sidebar -->
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-header">
+                <h3>🛒 Carrinho <span class="cart-badge" id="cartBadge">0</span></h3>
+                <button style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text);" id="closeCartSidebar">✕</button>
+            </div>
+            <div class="cart-items" id="cartItemsSidebar"><div class="cart-empty">📦 Seu carrinho está vazio</div></div>
+            <div class="cart-footer">
+                <div style="font-weight:600; margin-bottom:8px;" id="cartTotalSidebar">Total: 0</div>
+                <button class="btn-whatsapp" id="btnWhatsAppSidebar" disabled>📤 Enviar via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // ============================================================
-            // USUÁRIOS
-            // ============================================================
-            const MASTER_USER = 'Maiky', MASTER_PASS = 'Dieris';
-            function loadUsers() {
-                let saved = localStorage.getItem('app_users');
-                let users = saved ? JSON.parse(saved) : [];
-                if (!users.find(u => u.username === MASTER_USER)) users.push({ username: MASTER_USER, password: MASTER_PASS, level: 'master' });
-                else { const m = users.find(u => u.username === MASTER_USER); m.password = MASTER_PASS; m.level = 'master'; }
-                if (!users.find(u => u.username === 'visitante')) users.push({ username: 'visitante', password: 'visitante123', level: 'user' });
+<!-- ===== MODAIS ===== -->
+<div class="modal-overlay" id="modalOverlay"><div class="modal"></div></div>
+<div class="modal-overlay" id="reducerDetailModal">
+    <div class="modal" style="max-width:500px;">
+        <h3 id="reducerDetailTitle"></h3>
+        <div id="reducerDetailContent"></div>
+        <div class="modal-actions"><button class="btn-cancel" id="btnCloseReducerDetail">Fechar</button></div>
+    </div>
+</div>
+<div class="admin-panel" id="adminPanel">
+    <div class="modal">
+        <h3>👥 Gerenciar Usuários</h3>
+        <div id="adminUserList"></div>
+        <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+            <input type="text" id="newUser" placeholder="Novo usuário" style="flex:1; padding:10px; border:2px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text);">
+            <input type="password" id="newPass" placeholder="Senha" style="flex:1; padding:10px; border:2px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text);">
+            <button class="btn-save" id="btnAddUser">Adicionar</button>
+        </div>
+        <div class="modal-actions" style="margin-top:16px;"><button class="btn-cancel" id="btnCloseAdmin">Fechar</button></div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // ============================================================
+    // CONFIGURAÇÃO
+    // ============================================================
+    const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvyfBtZ2VN6w_xJL2BHEUNHfXiESTGlM-pPHpvx8RgP8scaAO_E76FwGJMzXG2aHgd/exec';
+    const SHEET_ID = '1MEghTuBZnbkddvgNsJ2Mi2DwebHyMmGG-Xir4TGtQm0';
+    const POLL_INTERVAL = 10000; // 10 segundos
+
+    // ============================================================
+    // ESTADO GLOBAL
+    // ============================================================
+    let retainers = [], bearings = [], reducers = [], cart = [];
+    let nextRetainerId = 1, nextBearingId = 1, nextReducerId = 1;
+    let currentUser = null, currentVersion = 0, pollingEnabled = true;
+
+    // ============================================================
+    // USUÁRIOS
+    // ============================================================
+    const MASTER_USER = 'Maiky', MASTER_PASS = 'Dieris';
+    function loadUsers() {
+        let saved = localStorage.getItem('app_users');
+        let users = saved ? JSON.parse(saved) : [];
+        if (!users.find(u => u.username === MASTER_USER)) users.push({ username: MASTER_USER, password: MASTER_PASS, level: 'master' });
+        else { const m = users.find(u => u.username === MASTER_USER); m.password = MASTER_PASS; m.level = 'master'; }
+        if (!users.find(u => u.username === 'visitante')) users.push({ username: 'visitante', password: 'visitante123', level: 'user' });
+        localStorage.setItem('app_users', JSON.stringify(users));
+        return users;
+    }
+    let users = loadUsers();
+
+    // ============================================================
+    // PERSISTÊNCIA (com versionamento)
+    // ============================================================
+    async function getVersionFromSheet() {
+        try {
+            const resp = await fetch(`${APP_SCRIPT_URL}?action=version&sheetId=${SHEET_ID}&t=${Date.now()}`);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            return result.status === 'ok' ? (result.version || 0) : 0;
+        } catch { return currentVersion; }
+    }
+
+    async function loadDataFromSheet() {
+        try {
+            const resp = await fetch(`${APP_SCRIPT_URL}?action=load&sheetId=${SHEET_ID}&t=${Date.now()}`);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            if (result.status === 'ok') {
+                currentVersion = result.version || 0;
+                return result.data;
+            }
+            throw new Error(result.message);
+        } catch (e) { console.error('Load error:', e); return null; }
+    }
+
+    async function saveDataToSheet(data) {
+        try {
+            const payload = { action: 'save', sheetId: SHEET_ID, data: JSON.stringify(data) };
+            const formData = new FormData();
+            for (let k in payload) formData.append(k, payload[k]);
+            const resp = await fetch(APP_SCRIPT_URL, { method: 'POST', body: formData });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            if (result.status === 'ok') {
+                if (result.version) currentVersion = result.version;
+                return true;
+            }
+            throw new Error(result.message);
+        } catch (e) {
+            console.error('Save error:', e);
+            alert('Erro ao salvar: ' + e.message);
+            return false;
+        }
+    }
+
+    async function saveData() {
+        const ok = await saveDataToSheet({ retainers, bearings, reducers, cart, nextRetainerId, nextBearingId, nextReducerId });
+        if (ok) {
+            const syncEl = document.getElementById('syncStatus');
+            if (syncEl) { syncEl.textContent = '✅ Sincronizado'; setTimeout(() => syncEl.textContent = '🔄 Sincronizado', 2000); }
+        }
+        return ok;
+    }
+
+    // ============================================================
+    // AUTO-SYNC (POLLING)
+    // ============================================================
+    async function checkForUpdates() {
+        if (!pollingEnabled || !currentUser) return;
+        try {
+            const remoteVersion = await getVersionFromSheet();
+            if (remoteVersion !== currentVersion) {
+                const syncEl = document.getElementById('syncStatus');
+                if (syncEl) syncEl.textContent = '🔄 Atualizando...';
+                await refreshData();
+                if (syncEl) { syncEl.textContent = '✅ Atualizado'; setTimeout(() => syncEl.textContent = '🔄 Sincronizado', 2000); }
+            }
+        } catch (e) { console.warn('Polling error:', e); }
+    }
+
+    async function refreshData() {
+        const data = await loadDataFromSheet();
+        if (data) {
+            retainers = data.retainers || [];
+            bearings = data.bearings || [];
+            reducers = data.reducers || [];
+            cart = data.cart || [];
+            nextRetainerId = data.nextRetainerId || 1;
+            nextBearingId = data.nextBearingId || 1;
+            nextReducerId = data.nextReducerId || 1;
+            renderAllLists();
+            renderAllCarts();
+            updateDashboard();
+        }
+    }
+
+    // ============================================================
+    // DADOS PADRÃO
+    // ============================================================
+    const defaultData = {
+        retainers: [
+            { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm' },
+            { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm' },
+            { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm' },
+            { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm' },
+            { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm' },
+            { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm' },
+            { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm' },
+            { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm' },
+            { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm' },
+            { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm' },
+            { id:11, name:'Retentor 30x45x8', measures:'30 x 45 x 8 mm' },
+            { id:12, name:'Retentor 32x47x8', measures:'32 x 47 x 8 mm' },
+            { id:13, name:'Retentor 35x50x10', measures:'35 x 50 x 10 mm' },
+            { id:14, name:'Retentor 38x55x10', measures:'38 x 55 x 10 mm' },
+            { id:15, name:'Retentor 40x55x10', measures:'40 x 55 x 10 mm' },
+            { id:16, name:'Retentor 42x62x10', measures:'42 x 62 x 10 mm' },
+            { id:17, name:'Retentor 45x60x10', measures:'45 x 60 x 10 mm' },
+            { id:18, name:'Retentor 48x65x10', measures:'48 x 65 x 10 mm' },
+            { id:19, name:'Retentor 50x65x10', measures:'50 x 65 x 10 mm' },
+            { id:20, name:'Retentor 55x70x10', measures:'55 x 70 x 10 mm' },
+            { id:21, name:'Retentor 60x80x12', measures:'60 x 80 x 12 mm' },
+            { id:22, name:'Retentor 65x85x12', measures:'65 x 85 x 12 mm' },
+            { id:23, name:'Retentor 70x90x12', measures:'70 x 90 x 12 mm' },
+            { id:24, name:'Retentor 75x95x12', measures:'75 x 95 x 12 mm' },
+            { id:25, name:'Retentor 80x100x12', measures:'80 x 100 x 12 mm' },
+            { id:26, name:'Retentor 85x110x12', measures:'85 x 110 x 12 mm' },
+            { id:27, name:'Retentor 90x110x12', measures:'90 x 110 x 12 mm' },
+            { id:28, name:'Retentor 100x120x12', measures:'100 x 120 x 12 mm' },
+            { id:29, name:'Retentor 110x130x12', measures:'110 x 130 x 12 mm' },
+            { id:30, name:'Retentor 120x140x13', measures:'120 x 140 x 13 mm' }
+        ],
+        bearings: [
+            { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm' },
+            { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm' },
+            { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm' },
+            { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm' },
+            { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm' },
+            { id:6, name:'Rolamento 6005', measures:'47 x 25 x 12 mm' },
+            { id:7, name:'Rolamento 6006', measures:'55 x 30 x 13 mm' },
+            { id:8, name:'Rolamento 6007', measures:'62 x 35 x 14 mm' },
+            { id:9, name:'Rolamento 6008', measures:'68 x 40 x 15 mm' },
+            { id:10, name:'Rolamento 6009', measures:'75 x 45 x 16 mm' },
+            { id:11, name:'Rolamento 6010', measures:'80 x 50 x 16 mm' },
+            { id:12, name:'Rolamento 6200', measures:'30 x 10 x 9 mm' },
+            { id:13, name:'Rolamento 6201', measures:'32 x 12 x 10 mm' },
+            { id:14, name:'Rolamento 6202', measures:'35 x 15 x 11 mm' },
+            { id:15, name:'Rolamento 6203', measures:'40 x 17 x 12 mm' },
+            { id:16, name:'Rolamento 6204', measures:'47 x 20 x 14 mm' },
+            { id:17, name:'Rolamento 6205', measures:'52 x 25 x 15 mm' },
+            { id:18, name:'Rolamento 6206', measures:'62 x 30 x 16 mm' },
+            { id:19, name:'Rolamento 6207', measures:'72 x 35 x 17 mm' },
+            { id:20, name:'Rolamento 6208', measures:'80 x 40 x 18 mm' },
+            { id:21, name:'Rolamento 6300', measures:'35 x 10 x 11 mm' },
+            { id:22, name:'Rolamento 6301', measures:'37 x 12 x 12 mm' },
+            { id:23, name:'Rolamento 6302', measures:'42 x 15 x 13 mm' },
+            { id:24, name:'Rolamento 6303', measures:'47 x 17 x 14 mm' },
+            { id:25, name:'Rolamento 6304', measures:'52 x 20 x 15 mm' },
+            { id:26, name:'Rolamento 6305', measures:'62 x 25 x 17 mm' },
+            { id:27, name:'Rolamento 6306', measures:'72 x 30 x 19 mm' },
+            { id:28, name:'Rolamento 6307', measures:'80 x 35 x 21 mm' },
+            { id:29, name:'Rolamento 30203', measures:'40 x 17 x 13.25 mm' },
+            { id:30, name:'Rolamento 30204', measures:'47 x 20 x 14 mm' },
+            { id:31, name:'Rolamento 30205', measures:'52 x 25 x 15 mm' },
+            { id:32, name:'Rolamento 30206', measures:'62 x 30 x 16 mm' }
+        ],
+        reducers: [
+            { id:1, name:'Redutor Planetário A10', manufacturer:'SEW', location:'Esteira Transportadora', bearings:['Rolamento 6001','Rolamento 6203'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
+            { id:2, name:'Redutor WEG Cestari C06', manufacturer:'WEG Cestari', location:'Transportador de Correia', bearings:['Rolamento 6204','Rolamento 6205'], retainers:['Retentor 25x40x7','Retentor 35x50x10'] },
+            { id:3, name:'Redutor WEG Cestari C05', manufacturer:'WEG Cestari', location:'Elevador de Canecas', bearings:['Rolamento 6203','Rolamento 6204'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
+            { id:4, name:'Redutor Geremia GO34', manufacturer:'Geremia', location:'Moinho de Martelo', bearings:['Rolamento 6305','Rolamento 6306'], retainers:['Retentor 35x50x10','Retentor 40x55x10'] },
+            { id:5, name:'Redutor Geremia GO29', manufacturer:'Geremia', location:'Agitador Industrial', bearings:['Rolamento 6304','Rolamento 6206'], retainers:['Retentor 25x40x7'] }
+        ],
+        nextRetainerId: 31, nextBearingId: 33, nextReducerId: 6
+    };
+
+    // ============================================================
+    // AUXILIARES
+    // ============================================================
+    function escapeHtml(s) { if (!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+    function generateRetentorName(m) { if (!m) return 'Retentor sem medida'; let c=String(m).replace(/mm/gi,'').trim().replace(/\s*x\s*/g,'x').replace(/\s+/g,''); return 'Retentor '+(c||'sem medida'); }
+    function isMaster() { return currentUser && currentUser.level === 'master'; }
+    function cartTotalQty() { return cart.reduce((s,i) => s + i.quantity, 0); }
+    function cleanCart() {
+        cart = cart.filter(i => {
+            if (i.category === 'retentor') return retainers.some(r => r.id === i.itemId);
+            if (i.category === 'rolamento') return bearings.some(b => b.id === i.itemId);
+            if (i.category === 'redutor') return reducers.some(rd => rd.id === i.itemId);
+            return false;
+        });
+    }
+    function getCurrentList(cat) {
+        if (cat === 'retentor') return retainers;
+        if (cat === 'rolamento') return bearings;
+        if (cat === 'redutor') return reducers;
+        return [];
+    }
+    function getItemById(id, cat) { return getCurrentList(cat).find(i => i.id === id); }
+    function activeCategory() {
+        const active = document.querySelector('.page.active');
+        if (!active) return 'retentor';
+        const id = active.id;
+        if (id === 'page-retentores') return 'retentor';
+        if (id === 'page-rolamentos') return 'rolamento';
+        if (id === 'page-redutores') return 'redutor';
+        return 'retentor';
+    }
+
+    // ============================================================
+    // RENDERIZAÇÃO
+    // ============================================================
+    function renderList(containerId, list, type, searchInputId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const search = document.getElementById(searchInputId);
+        const q = search ? search.value.toLowerCase() : '';
+        const master = isMaster();
+        const filtered = list.filter(item => {
+            if (!item) return false;
+            const name = String(item.name || '').toLowerCase();
+            const measures = String(item.measures || '').toLowerCase();
+            if (type === 'redutor') {
+                const mf = String(item.manufacturer || '').toLowerCase();
+                const loc = String(item.location || '').toLowerCase();
+                const bs = (item.bearings || []).join(' ').toLowerCase();
+                const rs = (item.retainers || []).join(' ').toLowerCase();
+                return name.includes(q) || mf.includes(q) || loc.includes(q) || bs.includes(q) || rs.includes(q);
+            }
+            return name.includes(q) || measures.includes(q);
+        });
+        if (!filtered.length) { container.innerHTML = '<div class="no-results">🔍 Nenhum resultado encontrado.</div>'; return; }
+        container.innerHTML = filtered.map(item => {
+            if (type === 'redutor') {
+                return `<div class="item-card">
+                    <div class="card-name card-name-clickable" onclick="window._openReducerDetail(${item.id})">${escapeHtml(item.name)}</div>
+                    <div class="card-info">🏭 ${escapeHtml(item.manufacturer)}</div>
+                    <div class="card-info">📍 ${escapeHtml(item.location)}</div>
+                    <div class="card-actions">
+                        <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="redutor">🛒 Carrinho</button>
+                        ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="redutor">✏️ Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="redutor">🗑️ Remover</button>` : ''}
+                    </div>
+                </div>`;
+            } else {
+                return `<div class="item-card">
+                    <div class="card-name">${escapeHtml(item.name)}</div>
+                    <div class="card-info">📏 ${escapeHtml(item.measures)}</div>
+                    <div class="card-actions">
+                        <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="${type}">🛒 Carrinho</button>
+                        ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="${type}">✏️ Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="${type}">🗑️ Remover</button>` : ''}
+                    </div>
+                </div>`;
+            }
+        }).join('');
+        container.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.dataset.action;
+                const id = parseInt(this.dataset.id);
+                const cat = this.dataset.category || activeCategory();
+                if (action === 'add') addToCart(id, cat);
+                else if (action === 'edit') openEditModal(id, cat);
+                else if (action === 'remove') removeItem(id, cat);
+            });
+        });
+    }
+
+    function renderAllLists() {
+        renderList('listRetentores', retainers, 'retentor', 'searchRetentores');
+        renderList('listRolamentos', bearings, 'rolamento', 'searchRolamentos');
+        renderList('listRedutores', reducers, 'redutor', 'searchRedutores');
+    }
+
+    function renderAllCarts() {
+        cleanCart();
+        const total = cartTotalQty();
+        document.querySelectorAll('.cart-badge').forEach(el => el.textContent = total);
+        const cartTotalPage = document.getElementById('cartTotalPage');
+        if (cartTotalPage) cartTotalPage.textContent = `Total de itens: ${total}`;
+        const cartTotalSidebar = document.getElementById('cartTotalSidebar');
+        if (cartTotalSidebar) cartTotalSidebar.textContent = `Total: ${total}`;
+        const btnWppPage = document.getElementById('btnWhatsAppPage');
+        const btnWppSidebar = document.getElementById('btnWhatsAppSidebar');
+        if (btnWppPage) btnWppPage.disabled = total === 0;
+        if (btnWppSidebar) btnWppSidebar.disabled = total === 0;
+
+        const renderCartItems = (containerId) => {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!cart.length) { container.innerHTML = '<div class="cart-empty">📦 Seu carrinho está vazio</div>'; return; }
+            container.innerHTML = cart.map(ci => {
+                const item = getItemById(ci.itemId, ci.category);
+                if (!item) return '';
+                let measuresText = '';
+                if (ci.category === 'retentor' || ci.category === 'rolamento') {
+                    measuresText = `📏 ${escapeHtml(item.measures)}`;
+                } else {
+                    measuresText = `🏭 ${escapeHtml(item.manufacturer)} | 📍 ${escapeHtml(item.location)}<br>⚙️ ${(item.bearings||[]).join(', ')}<br>🔩 ${(item.retainers||[]).join(', ')}`;
+                }
+                return `<div class="cart-item">
+                    <div class="cart-item-name">${escapeHtml(item.name)}</div>
+                    <div class="cart-item-measures">${measuresText}</div>
+                    <div class="cart-item-controls">
+                        <input type="number" class="qty-input" value="${ci.quantity}" min="1" data-category="${ci.category}" data-id="${ci.itemId}">
+                        <button class="btn-remove-cart" data-category="${ci.category}" data-id="${ci.itemId}">🗑️ Remover</button>
+                    </div>
+                </div>`;
+            }).join('');
+            container.querySelectorAll('.qty-input').forEach(inp => {
+                inp.addEventListener('change', function() {
+                    const cat = this.dataset.category, id = parseInt(this.dataset.id);
+                    let qty = parseInt(this.value);
+                    if (isNaN(qty) || qty < 1) { qty = 1; this.value = 1; }
+                    updateCartQty(cat, id, qty);
+                });
+            });
+            container.querySelectorAll('.btn-remove-cart').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cat = this.dataset.category, id = parseInt(this.dataset.id);
+                    cart = cart.filter(i => !(i.category === cat && i.itemId === id));
+                    renderAllCarts();
+                    saveData();
+                });
+            });
+        };
+        renderCartItems('cartItemsPage');
+        renderCartItems('cartItemsSidebar');
+    }
+
+    function updateDashboard() {
+        const el1 = document.getElementById('dashRetentores'); if (el1) el1.textContent = retainers.length;
+        const el2 = document.getElementById('dashRolamentos'); if (el2) el2.textContent = bearings.length;
+        const el3 = document.getElementById('dashRedutores'); if (el3) el3.textContent = reducers.length;
+        const el4 = document.getElementById('dashCarrinho'); if (el4) el4.textContent = cartTotalQty();
+    }
+
+    // ============================================================
+    // AÇÕES
+    // ============================================================
+    async function addToCart(itemId, category) {
+        const existing = cart.find(i => i.itemId === itemId && i.category === category);
+        if (existing) existing.quantity++;
+        else cart.push({ category, itemId, quantity: 1 });
+        renderAllCarts();
+        await saveData();
+        pulseBadge();
+    }
+
+    async function updateCartQty(cat, id, qty) {
+        const item = cart.find(i => i.category === cat && i.itemId === id);
+        if (item) item.quantity = Math.max(1, qty);
+        renderAllCarts();
+        await saveData();
+    }
+
+    async function removeItem(itemId, category) {
+        if (!isMaster()) return;
+        const list = getCurrentList(category);
+        const item = list.find(i => i.id === itemId);
+        if (!item || !confirm(`Remover "${item.name}"?`)) return;
+        if (category === 'retentor') retainers = retainers.filter(i => i.id !== itemId);
+        else if (category === 'rolamento') bearings = bearings.filter(i => i.id !== itemId);
+        else if (category === 'redutor') reducers = reducers.filter(i => i.id !== itemId);
+        cart = cart.filter(i => !(i.category === category && i.itemId === itemId));
+        renderAllLists();
+        renderAllCarts();
+        updateDashboard();
+        await saveData();
+    }
+
+    function pulseBadge() {
+        document.querySelectorAll('.cart-badge').forEach(el => {
+            el.style.transform = 'scale(1.3)';
+            setTimeout(() => el.style.transform = '', 150);
+        });
+    }
+
+    function sendWhatsApp() {
+        cleanCart();
+        if (!cart.length) { alert('Carrinho vazio.'); return; }
+        let msg = '🛒 *Carrinho de Itens*\n\n';
+        cart.forEach((ci, idx) => {
+            const item = getItemById(ci.itemId, ci.category);
+            if (!item) return;
+            msg += `📦 *${item.name}*\n`;
+            if (ci.category === 'redutor') {
+                msg += `   Fabricante: ${item.manufacturer}\n   Local: ${item.location}\n   Rolamentos: ${(item.bearings||[]).join(', ')}\n   Retentores: ${(item.retainers||[]).join(', ')}\n`;
+            } else {
+                msg += `   Medidas: ${item.measures}\n`;
+            }
+            msg += `   Quantidade: ${ci.quantity}\n`;
+            if (idx < cart.length - 1) msg += '\n';
+        });
+        msg += `\n📊 *Total de itens: ${cartTotalQty()}*`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // ============================================================
+    // MODAL ADICIONAR/EDITAR
+    // ============================================================
+    let modalMode = 'add', editingItemId = null, editingCategory = null;
+    const modalOverlay = document.getElementById('modalOverlay');
+    let categorySelect, retentorFields, rolamentoFields, redutorFields;
+    let inputMeasuresRet, inputNameRol, inputMeasuresRol;
+    let inputRedutorName, inputFabricante, inputLocal;
+    let inputRolamentosAssoc, inputRetentoresAssoc, namePreviewText, btnSave, btnCancel;
+
+    function createModal(title, category, item) {
+        modalOverlay.innerHTML = `<div class="modal"><h3>${title}</h3>
+            <div class="form-group"><label for="categorySelect">Tipo</label>
+            <select id="categorySelect"><option value="retentor">Retentor</option><option value="rolamento">Rolamento</option><option value="redutor">Redutor</option></select></div>
+            <div id="retentorFields"><div class="name-preview">📌 Nome gerado: <strong id="namePreviewText">Retentor ...</strong></div>
+            <div class="form-group"><label for="inputMeasuresRet">Medida</label><input type="text" id="inputMeasuresRet" placeholder="Ex: 20 x 35 x 7 mm"></div></div>
+            <div id="rolamentoFields" style="display:none;"><div class="form-group"><label for="inputNameRol">Nome</label><input type="text" id="inputNameRol"></div>
+            <div class="form-group"><label for="inputMeasuresRol">Medidas</label><input type="text" id="inputMeasuresRol"></div></div>
+            <div id="redutorFields" style="display:none;"><div class="form-group"><label for="inputRedutorName">Nome</label><input type="text" id="inputRedutorName"></div>
+            <div class="form-group"><label for="inputFabricante">Fabricante</label><input type="text" id="inputFabricante"></div>
+            <div class="form-group"><label for="inputLocal">Local</label><input type="text" id="inputLocal"></div>
+            <div class="form-group"><label for="inputRolamentosAssoc">Rolamentos</label><textarea id="inputRolamentosAssoc"></textarea></div>
+            <div class="form-group"><label for="inputRetentoresAssoc">Retentores</label><textarea id="inputRetentoresAssoc"></textarea></div></div>
+            <div class="modal-actions"><button class="btn-cancel" id="btnCancel">Cancelar</button><button class="btn-save" id="btnSave">💾 Salvar</button></div></div>`;
+
+        categorySelect = document.getElementById('categorySelect');
+        retentorFields = document.getElementById('retentorFields');
+        rolamentoFields = document.getElementById('rolamentoFields');
+        redutorFields = document.getElementById('redutorFields');
+        inputMeasuresRet = document.getElementById('inputMeasuresRet');
+        inputNameRol = document.getElementById('inputNameRol');
+        inputMeasuresRol = document.getElementById('inputMeasuresRol');
+        inputRedutorName = document.getElementById('inputRedutorName');
+        inputFabricante = document.getElementById('inputFabricante');
+        inputLocal = document.getElementById('inputLocal');
+        inputRolamentosAssoc = document.getElementById('inputRolamentosAssoc');
+        inputRetentoresAssoc = document.getElementById('inputRetentoresAssoc');
+        namePreviewText = document.getElementById('namePreviewText');
+        btnSave = document.getElementById('btnSave');
+        btnCancel = document.getElementById('btnCancel');
+
+        if (category) {
+            categorySelect.value = category;
+            categorySelect.disabled = true;
+            toggleModalFields(category);
+            if (category === 'retentor' && item) { inputMeasuresRet.value = item.measures || ''; updateNamePreview(); }
+            else if (category === 'rolamento' && item) { inputNameRol.value = item.name || ''; inputMeasuresRol.value = item.measures || ''; }
+            else if (category === 'redutor' && item) {
+                inputRedutorName.value = item.name || '';
+                inputFabricante.value = item.manufacturer || '';
+                inputLocal.value = item.location || '';
+                inputRolamentosAssoc.value = (item.bearings||[]).join(', ');
+                inputRetentoresAssoc.value = (item.retainers||[]).join(', ');
+            }
+        } else {
+            categorySelect.value = 'retentor';
+            categorySelect.disabled = false;
+            toggleModalFields('retentor');
+        }
+
+        btnCancel.addEventListener('click', () => modalOverlay.style.display = 'none');
+        btnSave.addEventListener('click', saveModal);
+        categorySelect.addEventListener('change', function() {
+            toggleModalFields(this.value);
+            if (this.value === 'retentor') updateNamePreview();
+        });
+        if (inputMeasuresRet) inputMeasuresRet.addEventListener('input', updateNamePreview);
+        [inputMeasuresRet, inputNameRol, inputMeasuresRol, inputRedutorName, inputFabricante, inputLocal].forEach(inp => {
+            if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); btnSave.click(); } });
+        });
+    }
+
+    function toggleModalFields(cat) {
+        if (retentorFields) retentorFields.style.display = cat === 'retentor' ? 'block' : 'none';
+        if (rolamentoFields) rolamentoFields.style.display = cat === 'rolamento' ? 'block' : 'none';
+        if (redutorFields) redutorFields.style.display = cat === 'redutor' ? 'block' : 'none';
+    }
+
+    function updateNamePreview() {
+        if (namePreviewText) {
+            const m = inputMeasuresRet ? inputMeasuresRet.value.trim() : '';
+            namePreviewText.textContent = m ? generateRetentorName(m) : 'Retentor ...';
+        }
+    }
+
+    function openEditModal(itemId, category) {
+        if (!isMaster()) return;
+        const item = getItemById(itemId, category);
+        if (!item) return;
+        modalMode = 'edit';
+        editingItemId = itemId;
+        editingCategory = category;
+        createModal('Editar Item', category, item);
+        modalOverlay.style.display = 'flex';
+    }
+
+    async function saveModal() {
+        if (!isMaster()) return;
+        const cat = categorySelect.value;
+        try {
+            if (cat === 'retentor') {
+                const measures = inputMeasuresRet.value.trim();
+                if (!measures) { alert('Informe a medida.'); return; }
+                const name = generateRetentorName(measures);
+                if (modalMode === 'add') retainers.push({ id: nextRetainerId++, name, measures });
+                else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.measures = measures; } }
+            } else if (cat === 'rolamento') {
+                const name = inputNameRol.value.trim(), measures = inputMeasuresRol.value.trim();
+                if (!name || !measures) { alert('Preencha todos os campos.'); return; }
+                if (modalMode === 'add') bearings.push({ id: nextBearingId++, name, measures });
+                else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.measures = measures; } }
+            } else {
+                const name = inputRedutorName.value.trim();
+                const manufacturer = inputFabricante.value.trim();
+                const location = inputLocal.value.trim();
+                const blist = inputRolamentosAssoc.value.split(',').map(s=>s.trim()).filter(Boolean);
+                const rlist = inputRetentoresAssoc.value.split(',').map(s=>s.trim()).filter(Boolean);
+                if (!name || !manufacturer || !location) { alert('Preencha todos os campos.'); return; }
+                if (modalMode === 'add') reducers.push({ id: nextReducerId++, name, manufacturer, location, bearings: blist, retainers: rlist });
+                else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.manufacturer = manufacturer; item.location = location; item.bearings = blist; item.retainers = rlist; } }
+            }
+            modalOverlay.style.display = 'none';
+            renderAllLists();
+            renderAllCarts();
+            updateDashboard();
+            await saveData();
+        } catch (e) {
+            alert('Erro ao salvar: ' + e.message);
+        }
+    }
+
+    // ============================================================
+    // NAVEGAÇÃO
+    // ============================================================
+    function navigateTo(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const target = document.getElementById('page-' + page);
+        if (target) target.classList.add('active');
+        document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`.sidebar-nav a[data-page="${page}"]`);
+        if (link) link.classList.add('active');
+        if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+        if (page === 'admin') renderAdminPanelPage();
+        if (page === 'carrinho') renderAllCarts();
+        if (page === 'dashboard') updateDashboard();
+    }
+
+    // ============================================================
+    // ADMIN
+    // ============================================================
+    function renderAdminPanelPage() {
+        const container = document.getElementById('adminUserListPage');
+        if (!container) return;
+        users = loadUsers();
+        let html = `<table class="user-table"><tr><th>Usuário</th><th>Nível</th><th>Ações</th></tr>`;
+        users.forEach(u => {
+            const isMasterUser = (u.username === MASTER_USER);
+            html += `<tr><td>${escapeHtml(u.username)}</td><td>${u.level === 'master' ? 'Mestre' : 'Usuário'}</td>
+            <td>
+                <button class="btn-small btn-edit" onclick="window._renameUserPage('${escapeHtml(u.username)}')">Alterar nome</button>
+                <button class="btn-small btn-edit" onclick="window._resetPassPage('${escapeHtml(u.username)}')">Redefinir senha</button>
+                ${!isMasterUser ? `<button class="btn-small btn-remove" onclick="window._deleteUserPage('${escapeHtml(u.username)}')">Excluir</button>` : ''}
+            </td></tr>`;
+        });
+        html += '</table>';
+        container.innerHTML = html;
+        const btnAdd = document.getElementById('btnAddUserPage');
+        if (btnAdd) {
+            btnAdd.onclick = () => {
+                const u = document.getElementById('newUserPage').value.trim();
+                const p = document.getElementById('newPassPage').value.trim();
+                if (!u || !p) { alert('Preencha usuário e senha.'); return; }
+                users = loadUsers();
+                if (users.some(user => user.username === u)) { alert('Usuário já existe.'); return; }
+                users.push({ username: u, password: p, level: 'user' });
                 localStorage.setItem('app_users', JSON.stringify(users));
-                return users;
-            }
-            let users = loadUsers();
-
-            // ============================================================
-            // PERSISTÊNCIA (com versionamento)
-            // ============================================================
-            async function getVersionFromSheet() {
-                try {
-                    const resp = await fetch(`${APP_SCRIPT_URL}?action=version&sheetId=${SHEET_ID}&t=${Date.now()}`);
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    const result = await resp.json();
-                    return result.status === 'ok' ? (result.version || 0) : 0;
-                } catch { return currentVersion; }
-            }
-
-            async function loadDataFromSheet() {
-                try {
-                    const resp = await fetch(`${APP_SCRIPT_URL}?action=load&sheetId=${SHEET_ID}&t=${Date.now()}`);
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    const result = await resp.json();
-                    if (result.status === 'ok') {
-                        currentVersion = result.version || 0;
-                        return result.data;
-                    }
-                    throw new Error(result.message);
-                } catch (e) { console.error('Load error:', e); return null; }
-            }
-
-            async function saveDataToSheet(data) {
-                try {
-                    const payload = { action: 'save', sheetId: SHEET_ID, data: JSON.stringify(data) };
-                    const formData = new FormData();
-                    for (let k in payload) formData.append(k, payload[k]);
-                    const resp = await fetch(APP_SCRIPT_URL, { method: 'POST', body: formData });
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    const result = await resp.json();
-                    if (result.status === 'ok') {
-                        if (result.version) currentVersion = result.version;
-                        return true;
-                    }
-                    throw new Error(result.message);
-                } catch (e) {
-                    console.error('Save error:', e);
-                    alert('Erro ao salvar: ' + e.message);
-                    return false;
-                }
-            }
-
-            async function saveData() {
-                const ok = await saveDataToSheet({ retainers, bearings, reducers, cart, nextRetainerId, nextBearingId, nextReducerId });
-                if (ok) {
-                    document.getElementById('syncStatus').textContent = '✅ Sincronizado';
-                    setTimeout(() => document.getElementById('syncStatus').textContent = '🔄 Sincronizado', 2000);
-                }
-                return ok;
-            }
-
-            // ============================================================
-            // AUTO-SYNC (POLLING)
-            // ============================================================
-            async function checkForUpdates() {
-                if (!pollingEnabled || !currentUser) return;
-                try {
-                    const remoteVersion = await getVersionFromSheet();
-                    if (remoteVersion !== currentVersion) {
-                        document.getElementById('syncStatus').textContent = '🔄 Atualizando...';
-                        await refreshData();
-                        document.getElementById('syncStatus').textContent = '✅ Atualizado';
-                        setTimeout(() => document.getElementById('syncStatus').textContent = '🔄 Sincronizado', 2000);
-                    }
-                } catch (e) { console.warn('Polling error:', e); }
-            }
-
-            async function refreshData() {
-                const data = await loadDataFromSheet();
-                if (data) {
-                    retainers = data.retainers || [];
-                    bearings = data.bearings || [];
-                    reducers = data.reducers || [];
-                    cart = data.cart || [];
-                    nextRetainerId = data.nextRetainerId || 1;
-                    nextBearingId = data.nextBearingId || 1;
-                    nextReducerId = data.nextReducerId || 1;
-                    renderAllLists();
-                    renderAllCarts();
-                    updateDashboard();
-                }
-            }
-
-            // ============================================================
-            // DADOS PADRÃO (idêntico ao anterior)
-            // ============================================================
-            const defaultData = {
-                retainers: [
-                    { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm' },
-                    { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm' },
-                    { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm' },
-                    { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm' },
-                    { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm' },
-                    { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm' },
-                    { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm' },
-                    { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm' },
-                    { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm' },
-                    { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm' },
-                    { id:11, name:'Retentor 30x45x8', measures:'30 x 45 x 8 mm' },
-                    { id:12, name:'Retentor 32x47x8', measures:'32 x 47 x 8 mm' },
-                    { id:13, name:'Retentor 35x50x10', measures:'35 x 50 x 10 mm' },
-                    { id:14, name:'Retentor 38x55x10', measures:'38 x 55 x 10 mm' },
-                    { id:15, name:'Retentor 40x55x10', measures:'40 x 55 x 10 mm' },
-                    { id:16, name:'Retentor 42x62x10', measures:'42 x 62 x 10 mm' },
-                    { id:17, name:'Retentor 45x60x10', measures:'45 x 60 x 10 mm' },
-                    { id:18, name:'Retentor 48x65x10', measures:'48 x 65 x 10 mm' },
-                    { id:19, name:'Retentor 50x65x10', measures:'50 x 65 x 10 mm' },
-                    { id:20, name:'Retentor 55x70x10', measures:'55 x 70 x 10 mm' },
-                    { id:21, name:'Retentor 60x80x12', measures:'60 x 80 x 12 mm' },
-                    { id:22, name:'Retentor 65x85x12', measures:'65 x 85 x 12 mm' },
-                    { id:23, name:'Retentor 70x90x12', measures:'70 x 90 x 12 mm' },
-                    { id:24, name:'Retentor 75x95x12', measures:'75 x 95 x 12 mm' },
-                    { id:25, name:'Retentor 80x100x12', measures:'80 x 100 x 12 mm' },
-                    { id:26, name:'Retentor 85x110x12', measures:'85 x 110 x 12 mm' },
-                    { id:27, name:'Retentor 90x110x12', measures:'90 x 110 x 12 mm' },
-                    { id:28, name:'Retentor 100x120x12', measures:'100 x 120 x 12 mm' },
-                    { id:29, name:'Retentor 110x130x12', measures:'110 x 130 x 12 mm' },
-                    { id:30, name:'Retentor 120x140x13', measures:'120 x 140 x 13 mm' }
-                ],
-                bearings: [
-                    { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm' },
-                    { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm' },
-                    { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm' },
-                    { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm' },
-                    { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm' },
-                    { id:6, name:'Rolamento 6005', measures:'47 x 25 x 12 mm' },
-                    { id:7, name:'Rolamento 6006', measures:'55 x 30 x 13 mm' },
-                    { id:8, name:'Rolamento 6007', measures:'62 x 35 x 14 mm' },
-                    { id:9, name:'Rolamento 6008', measures:'68 x 40 x 15 mm' },
-                    { id:10, name:'Rolamento 6009', measures:'75 x 45 x 16 mm' },
-                    { id:11, name:'Rolamento 6010', measures:'80 x 50 x 16 mm' },
-                    { id:12, name:'Rolamento 6200', measures:'30 x 10 x 9 mm' },
-                    { id:13, name:'Rolamento 6201', measures:'32 x 12 x 10 mm' },
-                    { id:14, name:'Rolamento 6202', measures:'35 x 15 x 11 mm' },
-                    { id:15, name:'Rolamento 6203', measures:'40 x 17 x 12 mm' },
-                    { id:16, name:'Rolamento 6204', measures:'47 x 20 x 14 mm' },
-                    { id:17, name:'Rolamento 6205', measures:'52 x 25 x 15 mm' },
-                    { id:18, name:'Rolamento 6206', measures:'62 x 30 x 16 mm' },
-                    { id:19, name:'Rolamento 6207', measures:'72 x 35 x 17 mm' },
-                    { id:20, name:'Rolamento 6208', measures:'80 x 40 x 18 mm' },
-                    { id:21, name:'Rolamento 6300', measures:'35 x 10 x 11 mm' },
-                    { id:22, name:'Rolamento 6301', measures:'37 x 12 x 12 mm' },
-                    { id:23, name:'Rolamento 6302', measures:'42 x 15 x 13 mm' },
-                    { id:24, name:'Rolamento 6303', measures:'47 x 17 x 14 mm' },
-                    { id:25, name:'Rolamento 6304', measures:'52 x 20 x 15 mm' },
-                    { id:26, name:'Rolamento 6305', measures:'62 x 25 x 17 mm' },
-                    { id:27, name:'Rolamento 6306', measures:'72 x 30 x 19 mm' },
-                    { id:28, name:'Rolamento 6307', measures:'80 x 35 x 21 mm' },
-                    { id:29, name:'Rolamento 30203', measures:'40 x 17 x 13.25 mm' },
-                    { id:30, name:'Rolamento 30204', measures:'47 x 20 x 14 mm' },
-                    { id:31, name:'Rolamento 30205', measures:'52 x 25 x 15 mm' },
-                    { id:32, name:'Rolamento 30206', measures:'62 x 30 x 16 mm' }
-                ],
-                reducers: [
-                    { id:1, name:'Redutor Planetário A10', manufacturer:'SEW', location:'Esteira Transportadora', bearings:['Rolamento 6001','Rolamento 6203'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
-                    { id:2, name:'Redutor WEG Cestari C06', manufacturer:'WEG Cestari', location:'Transportador de Correia', bearings:['Rolamento 6204','Rolamento 6205'], retainers:['Retentor 25x40x7','Retentor 35x50x10'] },
-                    { id:3, name:'Redutor WEG Cestari C05', manufacturer:'WEG Cestari', location:'Elevador de Canecas', bearings:['Rolamento 6203','Rolamento 6204'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
-                    { id:4, name:'Redutor Geremia GO34', manufacturer:'Geremia', location:'Moinho de Martelo', bearings:['Rolamento 6305','Rolamento 6306'], retainers:['Retentor 35x50x10','Retentor 40x55x10'] },
-                    { id:5, name:'Redutor Geremia GO29', manufacturer:'Geremia', location:'Agitador Industrial', bearings:['Rolamento 6304','Rolamento 6206'], retainers:['Retentor 25x40x7'] }
-                ],
-                nextRetainerId: 31, nextBearingId: 33, nextReducerId: 6
+                document.getElementById('newUserPage').value = '';
+                document.getElementById('newPassPage').value = '';
+                renderAdminPanelPage();
             };
+        }
+    }
 
-            // ============================================================
-            // AUXILIARES
-            // ============================================================
-            function escapeHtml(s) { if (!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-            function generateRetentorName(m) { if (!m) return 'Retentor sem medida'; let c=String(m).replace(/mm/gi,'').trim().replace(/\s*x\s*/g,'x').replace(/\s+/g,''); return 'Retentor '+(c||'sem medida'); }
-            function isMaster() { return currentUser && currentUser.level === 'master'; }
-            function cartTotalQty() { return cart.reduce((s,i) => s + i.quantity, 0); }
-            function cleanCart() {
-                cart = cart.filter(i => {
-                    if (i.category === 'retentor') return retainers.some(r => r.id === i.itemId);
-                    if (i.category === 'rolamento') return bearings.some(b => b.id === i.itemId);
-                    if (i.category === 'redutor') return reducers.some(rd => rd.id === i.itemId);
-                    return false;
-                });
-            }
-            function getCurrentList(cat) {
-                if (cat === 'retentor') return retainers;
-                if (cat === 'rolamento') return bearings;
-                if (cat === 'redutor') return reducers;
-                return [];
-            }
-            function getItemById(id, cat) { return getCurrentList(cat).find(i => i.id === id); }
-            function activeCategory() {
-                const active = document.querySelector('.page.active');
-                if (!active) return 'retentor';
-                const id = active.id;
-                if (id === 'page-retentores') return 'retentor';
-                if (id === 'page-rolamentos') return 'rolamento';
-                if (id === 'page-redutores') return 'redutor';
-                return 'retentor';
-            }
+    window._renameUserPage = function(username) {
+        const newName = prompt(`Novo nome para ${username}:`, username);
+        if (newName && newName.trim()) {
+            users = loadUsers();
+            const user = users.find(u => u.username === username);
+            if (user) { user.username = newName.trim(); localStorage.setItem('app_users', JSON.stringify(users)); renderAdminPanelPage(); }
+        }
+    };
+    window._resetPassPage = function(username) {
+        const newPwd = prompt(`Nova senha para ${username}:`);
+        if (newPwd) {
+            users = loadUsers();
+            const user = users.find(u => u.username === username);
+            if (user) { user.password = newPwd; localStorage.setItem('app_users', JSON.stringify(users)); alert('Senha redefinida.'); renderAdminPanelPage(); }
+        }
+    };
+    window._deleteUserPage = function(username) {
+        if (confirm(`Excluir usuário ${username}?`)) {
+            users = loadUsers();
+            users = users.filter(u => u.username !== username);
+            localStorage.setItem('app_users', JSON.stringify(users));
+            renderAdminPanelPage();
+        }
+    };
 
-            // ============================================================
-            // RENDERIZAÇÃO (CORRIGIDA – conversão segura para string)
-            // ============================================================
-            function renderList(containerId, list, type, searchInputId) {
-                const container = document.getElementById(containerId);
-                if (!container) return;
-                const search = document.getElementById(searchInputId);
-                const q = search ? search.value.toLowerCase() : '';
-                const master = isMaster();
-                // Filtro com conversão segura
-                const filtered = list.filter(item => {
-                    if (!item) return false;
-                    // Converter todos os campos para string antes de usar toLowerCase
-                    const name = String(item.name || '').toLowerCase();
-                    const measures = String(item.measures || '').toLowerCase();
-                    if (type === 'redutor') {
-                        const mf = String(item.manufacturer || '').toLowerCase();
-                        const loc = String(item.location || '').toLowerCase();
-                        const bs = (item.bearings || []).join(' ').toLowerCase();
-                        const rs = (item.retainers || []).join(' ').toLowerCase();
-                        return name.includes(q) || mf.includes(q) || loc.includes(q) || bs.includes(q) || rs.includes(q);
-                    }
-                    return name.includes(q) || measures.includes(q);
-                });
-                if (!filtered.length) { container.innerHTML = '<div class="no-results">🔍 Nenhum resultado encontrado.</div>'; return; }
-                container.innerHTML = filtered.map(item => {
-                    if (type === 'redutor') {
-                        return `<div class="item-card">
-                            <div class="card-name card-name-clickable" onclick="window._openReducerDetail(${item.id})">${escapeHtml(item.name)}</div>
-                            <div class="card-info">🏭 ${escapeHtml(item.manufacturer)}</div>
-                            <div class="card-info">📍 ${escapeHtml(item.location)}</div>
-                            <div class="card-actions">
-                                <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="redutor">🛒 Carrinho</button>
-                                ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="redutor">✏️ Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="redutor">🗑️ Remover</button>` : ''}
-                            </div>
-                        </div>`;
-                    } else {
-                        return `<div class="item-card">
-                            <div class="card-name">${escapeHtml(item.name)}</div>
-                            <div class="card-info">📏 ${escapeHtml(item.measures)}</div>
-                            <div class="card-actions">
-                                <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="${type}">🛒 Carrinho</button>
-                                ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="${type}">✏️ Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="${type}">🗑️ Remover</button>` : ''}
-                            </div>
-                        </div>`;
-                    }
-                }).join('');
-                container.querySelectorAll('.btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const action = this.dataset.action;
-                        const id = parseInt(this.dataset.id);
-                        const cat = this.dataset.category || activeCategory();
-                        if (action === 'add') addToCart(id, cat);
-                        else if (action === 'edit') openEditModal(id, cat);
-                        else if (action === 'remove') removeItem(id, cat);
-                    });
-                });
-            }
+    // ============================================================
+    // STATUS DO SERVIDOR
+    // ============================================================
+    async function checkServerStatus() {
+        const dot = document.getElementById('statusDot'), text = document.getElementById('statusText');
+        if (!dot || !text) { setTimeout(checkServerStatus, 2000); return; }
+        try {
+            const resp = await fetch(`${APP_SCRIPT_URL}?action=ping&t=${Date.now()}`);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+            if (data.status === 'ok') { dot.className = 'status-dot online'; text.textContent = 'Online'; }
+            else throw new Error('Resposta inválida');
+        } catch { dot.className = 'status-dot offline'; text.textContent = 'Offline'; }
+    }
 
-            function renderAllLists() {
-                renderList('listRetentores', retainers, 'retentor', 'searchRetentores');
-                renderList('listRolamentos', bearings, 'rolamento', 'searchRolamentos');
-                renderList('listRedutores', reducers, 'redutor', 'searchRedutores');
-            }
+    // ============================================================
+    // DETALHES DO REDUTOR
+    // ============================================================
+    window._openReducerDetail = function(id) {
+        const item = reducers.find(r => r.id === id);
+        if (!item) return;
+        document.getElementById('reducerDetailTitle').textContent = item.name;
+        document.getElementById('reducerDetailContent').innerHTML = `
+            <p><strong>Fabricante:</strong> ${escapeHtml(item.manufacturer)}</p>
+            <p><strong>Local:</strong> ${escapeHtml(item.location)}</p>
+            <h4 style="margin-top:16px;">⚙️ Rolamentos (${(item.bearings||[]).length})</h4>
+            <ul>${(item.bearings||[]).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+            <h4 style="margin-top:12px;">🔩 Retentores (${(item.retainers||[]).length})</h4>
+            <ul>${(item.retainers||[]).map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+        `;
+        document.getElementById('reducerDetailModal').style.display = 'flex';
+    };
+    const closeReducerBtn = document.getElementById('btnCloseReducerDetail');
+    if (closeReducerBtn) closeReducerBtn.addEventListener('click', () => {
+        document.getElementById('reducerDetailModal').style.display = 'none';
+    });
+    document.getElementById('reducerDetailModal').addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+    });
 
-            function renderAllCarts() {
-                cleanCart();
-                const total = cartTotalQty();
-                document.querySelectorAll('.cart-badge').forEach(el => el.textContent = total);
-                document.getElementById('cartTotalPage').textContent = `Total de itens: ${total}`;
-                document.getElementById('cartTotalSidebar').textContent = `Total: ${total}`;
-                document.getElementById('btnWhatsAppPage').disabled = total === 0;
-                document.getElementById('btnWhatsAppSidebar').disabled = total === 0;
+    // ============================================================
+    // LOGIN / LOGOUT
+    // ============================================================
+    function doLogin() {
+        const u = document.getElementById('loginUser').value.trim();
+        const p = document.getElementById('loginPass').value.trim();
+        if (!u || !p) { document.getElementById('loginError').textContent = 'Preencha usuário e senha.'; return; }
+        users = loadUsers();
+        const found = users.find(user => user.username === u && user.password === p);
+        if (!found) { document.getElementById('loginError').textContent = 'Usuário ou senha inválidos.'; return; }
+        currentUser = { username: found.username, level: found.level };
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        document.getElementById('userInfo').textContent = `👤 ${currentUser.username} (${currentUser.level === 'master' ? 'Mestre' : 'Usuário'})`;
+        const sidebarAdmin = document.getElementById('sidebarAdmin');
+        if (sidebarAdmin) sidebarAdmin.style.display = isMaster() ? 'flex' : 'none';
+        checkServerStatus();
+        initApp();
+    }
 
-                const renderCartItems = (containerId) => {
-                    const container = document.getElementById(containerId);
-                    if (!container) return;
-                    if (!cart.length) { container.innerHTML = '<div class="cart-empty">📦 Seu carrinho está vazio</div>'; return; }
-                    container.innerHTML = cart.map(ci => {
-                        const item = getItemById(ci.itemId, ci.category);
-                        if (!item) return '';
-                        let measuresText = '';
-                        if (ci.category === 'retentor' || ci.category === 'rolamento') {
-                            measuresText = `📏 ${escapeHtml(item.measures)}`;
-                        } else {
-                            measuresText = `🏭 ${escapeHtml(item.manufacturer)} | 📍 ${escapeHtml(item.location)}<br>⚙️ ${(item.bearings||[]).join(', ')}<br>🔩 ${(item.retainers||[]).join(', ')}`;
-                        }
-                        return `<div class="cart-item">
-                            <div class="cart-item-name">${escapeHtml(item.name)}</div>
-                            <div class="cart-item-measures">${measuresText}</div>
-                            <div class="cart-item-controls">
-                                <input type="number" class="qty-input" value="${ci.quantity}" min="1" data-category="${ci.category}" data-id="${ci.itemId}">
-                                <button class="btn-remove-cart" data-category="${ci.category}" data-id="${ci.itemId}">🗑️ Remover</button>
-                            </div>
-                        </div>`;
-                    }).join('');
-                    container.querySelectorAll('.qty-input').forEach(inp => {
-                        inp.addEventListener('change', function() {
-                            const cat = this.dataset.category, id = parseInt(this.dataset.id);
-                            let qty = parseInt(this.value);
-                            if (isNaN(qty) || qty < 1) { qty = 1; this.value = 1; }
-                            updateCartQty(cat, id, qty);
-                        });
-                    });
-                    container.querySelectorAll('.btn-remove-cart').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            const cat = this.dataset.category, id = parseInt(this.dataset.id);
-                            cart = cart.filter(i => !(i.category === cat && i.itemId === id));
-                            renderAllCarts();
-                            saveData();
-                        });
-                    });
-                };
-                renderCartItems('cartItemsPage');
-                renderCartItems('cartItemsSidebar');
-            }
+    function doLogout() {
+        currentUser = null;
+        pollingEnabled = false;
+        document.getElementById('loginOverlay').style.display = 'flex';
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('loginUser').value = '';
+        document.getElementById('loginPass').value = '';
+        document.getElementById('loginError').textContent = '';
+        cart = [];
+        renderAllCarts();
+    }
 
-            function updateDashboard() {
-                document.getElementById('dashRetentores').textContent = retainers.length;
-                document.getElementById('dashRolamentos').textContent = bearings.length;
-                document.getElementById('dashRedutores').textContent = reducers.length;
-                document.getElementById('dashCarrinho').textContent = cartTotalQty();
-            }
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+    async function initApp() {
+        const data = await loadDataFromSheet();
+        if (data) {
+            retainers = data.retainers || [];
+            bearings = data.bearings || [];
+            reducers = data.reducers || [];
+            cart = data.cart || [];
+            nextRetainerId = data.nextRetainerId || 1;
+            nextBearingId = data.nextBearingId || 1;
+            nextReducerId = data.nextReducerId || 1;
+        } else {
+            retainers = defaultData.retainers;
+            bearings = defaultData.bearings;
+            reducers = defaultData.reducers;
+            cart = defaultData.cart || [];
+            nextRetainerId = defaultData.nextRetainerId;
+            nextBearingId = defaultData.nextBearingId;
+            nextReducerId = defaultData.nextReducerId;
+            await saveData();
+        }
+        renderAllLists();
+        renderAllCarts();
+        updateDashboard();
+        navigateTo('dashboard');
+        pollingEnabled = true;
+        setInterval(checkForUpdates, POLL_INTERVAL);
+        console.log('✅ Auto-sync ativado (polling a cada', POLL_INTERVAL/1000, 's)');
+    }
 
-            // ============================================================
-            // AÇÕES
-            // ============================================================
-            async function addToCart(itemId, category) {
-                const existing = cart.find(i => i.itemId === itemId && i.category === category);
-                if (existing) existing.quantity++;
-                else cart.push({ category, itemId, quantity: 1 });
-                renderAllCarts();
-                await saveData();
-                pulseBadge();
-            }
+    // ============================================================
+    // EVENTOS (com verificações de existência)
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Login
+        const btnLogin = document.getElementById('btnLogin');
+        if (btnLogin) btnLogin.addEventListener('click', doLogin);
+        const loginPass = document.getElementById('loginPass');
+        if (loginPass) loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+        const loginUser = document.getElementById('loginUser');
+        if (loginUser) loginUser.addEventListener('keydown', e => { if (e.key === 'Enter') { const lp = document.getElementById('loginPass'); if (lp) lp.focus(); } });
+        const btnLogout = document.getElementById('btnLogout');
+        if (btnLogout) btnLogout.addEventListener('click', doLogout);
 
-            async function updateCartQty(cat, id, qty) {
-                const item = cart.find(i => i.category === cat && i.itemId === id);
-                if (item) item.quantity = Math.max(1, qty);
-                renderAllCarts();
-                await saveData();
-            }
-
-            async function removeItem(itemId, category) {
-                if (!isMaster()) return;
-                const list = getCurrentList(category);
-                const item = list.find(i => i.id === itemId);
-                if (!item || !confirm(`Remover "${item.name}"?`)) return;
-                if (category === 'retentor') retainers = retainers.filter(i => i.id !== itemId);
-                else if (category === 'rolamento') bearings = bearings.filter(i => i.id !== itemId);
-                else if (category === 'redutor') reducers = reducers.filter(i => i.id !== itemId);
-                cart = cart.filter(i => !(i.category === category && i.itemId === itemId));
-                renderAllLists();
-                renderAllCarts();
-                updateDashboard();
-                await saveData();
-            }
-
-            function pulseBadge() {
-                document.querySelectorAll('.cart-badge').forEach(el => {
-                    el.style.transform = 'scale(1.3)';
-                    setTimeout(() => el.style.transform = '', 150);
-                });
-            }
-
-            function sendWhatsApp() {
-                cleanCart();
-                if (!cart.length) { alert('Carrinho vazio.'); return; }
-                let msg = '🛒 *Carrinho de Itens*\n\n';
-                cart.forEach((ci, idx) => {
-                    const item = getItemById(ci.itemId, ci.category);
-                    if (!item) return;
-                    msg += `📦 *${item.name}*\n`;
-                    if (ci.category === 'redutor') {
-                        msg += `   Fabricante: ${item.manufacturer}\n   Local: ${item.location}\n   Rolamentos: ${(item.bearings||[]).join(', ')}\n   Retentores: ${(item.retainers||[]).join(', ')}\n`;
-                    } else {
-                        msg += `   Medidas: ${item.measures}\n`;
-                    }
-                    msg += `   Quantidade: ${ci.quantity}\n`;
-                    if (idx < cart.length - 1) msg += '\n';
-                });
-                msg += `\n📊 *Total de itens: ${cartTotalQty()}*`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-            }
-
-            // ============================================================
-            // MODAL ADICIONAR/EDITAR (idêntico ao anterior)
-            // ============================================================
-            let modalMode = 'add', editingItemId = null, editingCategory = null;
-            const modalOverlay = document.getElementById('modalOverlay');
-            let categorySelect, retentorFields, rolamentoFields, redutorFields;
-            let inputMeasuresRet, inputNameRol, inputMeasuresRol;
-            let inputRedutorName, inputFabricante, inputLocal;
-            let inputRolamentosAssoc, inputRetentoresAssoc, namePreviewText, btnSave, btnCancel;
-
-            function createModal(title, category, item) {
-                modalOverlay.innerHTML = `<div class="modal"><h3>${title}</h3>
-                    <div class="form-group"><label for="categorySelect">Tipo</label>
-                    <select id="categorySelect"><option value="retentor">Retentor</option><option value="rolamento">Rolamento</option><option value="redutor">Redutor</option></select></div>
-                    <div id="retentorFields"><div class="name-preview">📌 Nome gerado: <strong id="namePreviewText">Retentor ...</strong></div>
-                    <div class="form-group"><label for="inputMeasuresRet">Medida</label><input type="text" id="inputMeasuresRet" placeholder="Ex: 20 x 35 x 7 mm"></div></div>
-                    <div id="rolamentoFields" style="display:none;"><div class="form-group"><label for="inputNameRol">Nome</label><input type="text" id="inputNameRol"></div>
-                    <div class="form-group"><label for="inputMeasuresRol">Medidas</label><input type="text" id="inputMeasuresRol"></div></div>
-                    <div id="redutorFields" style="display:none;"><div class="form-group"><label for="inputRedutorName">Nome</label><input type="text" id="inputRedutorName"></div>
-                    <div class="form-group"><label for="inputFabricante">Fabricante</label><input type="text" id="inputFabricante"></div>
-                    <div class="form-group"><label for="inputLocal">Local</label><input type="text" id="inputLocal"></div>
-                    <div class="form-group"><label for="inputRolamentosAssoc">Rolamentos</label><textarea id="inputRolamentosAssoc"></textarea></div>
-                    <div class="form-group"><label for="inputRetentoresAssoc">Retentores</label><textarea id="inputRetentoresAssoc"></textarea></div></div>
-                    <div class="modal-actions"><button class="btn-cancel" id="btnCancel">Cancelar</button><button class="btn-save" id="btnSave">💾 Salvar</button></div></div>`;
-
-                categorySelect = document.getElementById('categorySelect');
-                retentorFields = document.getElementById('retentorFields');
-                rolamentoFields = document.getElementById('rolamentoFields');
-                redutorFields = document.getElementById('redutorFields');
-                inputMeasuresRet = document.getElementById('inputMeasuresRet');
-                inputNameRol = document.getElementById('inputNameRol');
-                inputMeasuresRol = document.getElementById('inputMeasuresRol');
-                inputRedutorName = document.getElementById('inputRedutorName');
-                inputFabricante = document.getElementById('inputFabricante');
-                inputLocal = document.getElementById('inputLocal');
-                inputRolamentosAssoc = document.getElementById('inputRolamentosAssoc');
-                inputRetentoresAssoc = document.getElementById('inputRetentoresAssoc');
-                namePreviewText = document.getElementById('namePreviewText');
-                btnSave = document.getElementById('btnSave');
-                btnCancel = document.getElementById('btnCancel');
-
-                if (category) {
-                    categorySelect.value = category;
-                    categorySelect.disabled = true;
-                    toggleModalFields(category);
-                    if (category === 'retentor' && item) { inputMeasuresRet.value = item.measures || ''; updateNamePreview(); }
-                    else if (category === 'rolamento' && item) { inputNameRol.value = item.name || ''; inputMeasuresRol.value = item.measures || ''; }
-                    else if (category === 'redutor' && item) {
-                        inputRedutorName.value = item.name || '';
-                        inputFabricante.value = item.manufacturer || '';
-                        inputLocal.value = item.location || '';
-                        inputRolamentosAssoc.value = (item.bearings||[]).join(', ');
-                        inputRetentoresAssoc.value = (item.retainers||[]).join(', ');
-                    }
-                } else {
-                    categorySelect.value = 'retentor';
-                    categorySelect.disabled = false;
-                    toggleModalFields('retentor');
-                }
-
-                btnCancel.addEventListener('click', () => modalOverlay.style.display = 'none');
-                btnSave.addEventListener('click', saveModal);
-                categorySelect.addEventListener('change', function() {
-                    toggleModalFields(this.value);
-                    if (this.value === 'retentor') updateNamePreview();
-                });
-                if (inputMeasuresRet) inputMeasuresRet.addEventListener('input', updateNamePreview);
-                [inputMeasuresRet, inputNameRol, inputMeasuresRol, inputRedutorName, inputFabricante, inputLocal].forEach(inp => {
-                    if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); btnSave.click(); } });
-                });
-            }
-
-            function toggleModalFields(cat) {
-                if (retentorFields) retentorFields.style.display = cat === 'retentor' ? 'block' : 'none';
-                if (rolamentoFields) rolamentoFields.style.display = cat === 'rolamento' ? 'block' : 'none';
-                if (redutorFields) redutorFields.style.display = cat === 'redutor' ? 'block' : 'none';
-            }
-
-            function updateNamePreview() {
-                if (namePreviewText) {
-                    const m = inputMeasuresRet ? inputMeasuresRet.value.trim() : '';
-                    namePreviewText.textContent = m ? generateRetentorName(m) : 'Retentor ...';
-                }
-            }
-
-            function openEditModal(itemId, category) {
-                if (!isMaster()) return;
-                const item = getItemById(itemId, category);
-                if (!item) return;
-                modalMode = 'edit';
-                editingItemId = itemId;
-                editingCategory = category;
-                createModal('Editar Item', category, item);
-                modalOverlay.style.display = 'flex';
-            }
-
-            async function saveModal() {
-                if (!isMaster()) return;
-                const cat = categorySelect.value;
-                try {
-                    if (cat === 'retentor') {
-                        const measures = inputMeasuresRet.value.trim();
-                        if (!measures) { alert('Informe a medida.'); return; }
-                        const name = generateRetentorName(measures);
-                        if (modalMode === 'add') retainers.push({ id: nextRetainerId++, name, measures });
-                        else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.measures = measures; } }
-                    } else if (cat === 'rolamento') {
-                        const name = inputNameRol.value.trim(), measures = inputMeasuresRol.value.trim();
-                        if (!name || !measures) { alert('Preencha todos os campos.'); return; }
-                        if (modalMode === 'add') bearings.push({ id: nextBearingId++, name, measures });
-                        else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.measures = measures; } }
-                    } else {
-                        const name = inputRedutorName.value.trim();
-                        const manufacturer = inputFabricante.value.trim();
-                        const location = inputLocal.value.trim();
-                        const blist = inputRolamentosAssoc.value.split(',').map(s=>s.trim()).filter(Boolean);
-                        const rlist = inputRetentoresAssoc.value.split(',').map(s=>s.trim()).filter(Boolean);
-                        if (!name || !manufacturer || !location) { alert('Preencha todos os campos.'); return; }
-                        if (modalMode === 'add') reducers.push({ id: nextReducerId++, name, manufacturer, location, bearings: blist, retainers: rlist });
-                        else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.manufacturer = manufacturer; item.location = location; item.bearings = blist; item.retainers = rlist; } }
-                    }
-                    modalOverlay.style.display = 'none';
-                    renderAllLists();
-                    renderAllCarts();
-                    updateDashboard();
-                    await saveData();
-                } catch (e) {
-                    alert('Erro ao salvar: ' + e.message);
-                }
-            }
-
-            // ============================================================
-            // NAVEGAÇÃO
-            // ============================================================
-            function navigateTo(page) {
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                const target = document.getElementById('page-' + page);
-                if (target) target.classList.add('active');
-                document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
-                const link = document.querySelector(`.sidebar-nav a[data-page="${page}"]`);
-                if (link) link.classList.add('active');
-                if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
-                if (page === 'admin') renderAdminPanelPage();
-                if (page === 'carrinho') renderAllCarts();
-                if (page === 'dashboard') updateDashboard();
-            }
-
-            // ============================================================
-            // ADMIN
-            // ============================================================
-            function renderAdminPanelPage() {
-                const container = document.getElementById('adminUserListPage');
-                users = loadUsers();
-                let html = `<table class="user-table"><tr><th>Usuário</th><th>Nível</th><th>Ações</th></tr>`;
-                users.forEach(u => {
-                    const isMasterUser = (u.username === MASTER_USER);
-                    html += `<tr><td>${escapeHtml(u.username)}</td><td>${u.level === 'master' ? 'Mestre' : 'Usuário'}</td>
-                    <td>
-                        <button class="btn-small btn-edit" onclick="window._renameUserPage('${escapeHtml(u.username)}')">Alterar nome</button>
-                        <button class="btn-small btn-edit" onclick="window._resetPassPage('${escapeHtml(u.username)}')">Redefinir senha</button>
-                        ${!isMasterUser ? `<button class="btn-small btn-remove" onclick="window._deleteUserPage('${escapeHtml(u.username)}')">Excluir</button>` : ''}
-                    </td></tr>`;
-                });
-                html += '</table>';
-                container.innerHTML = html;
-                document.getElementById('btnAddUserPage').onclick = () => {
-                    const u = document.getElementById('newUserPage').value.trim();
-                    const p = document.getElementById('newPassPage').value.trim();
-                    if (!u || !p) { alert('Preencha usuário e senha.'); return; }
-                    users = loadUsers();
-                    if (users.some(user => user.username === u)) { alert('Usuário já existe.'); return; }
-                    users.push({ username: u, password: p, level: 'user' });
-                    localStorage.setItem('app_users', JSON.stringify(users));
-                    document.getElementById('newUserPage').value = '';
-                    document.getElementById('newPassPage').value = '';
-                    renderAdminPanelPage();
-                };
-            }
-
-            window._renameUserPage = function(username) {
-                const newName = prompt(`Novo nome para ${username}:`, username);
-                if (newName && newName.trim()) {
-                    users = loadUsers();
-                    const user = users.find(u => u.username === username);
-                    if (user) { user.username = newName.trim(); localStorage.setItem('app_users', JSON.stringify(users)); renderAdminPanelPage(); }
-                }
-            };
-            window._resetPassPage = function(username) {
-                const newPwd = prompt(`Nova senha para ${username}:`);
-                if (newPwd) {
-                    users = loadUsers();
-                    const user = users.find(u => u.username === username);
-                    if (user) { user.password = newPwd; localStorage.setItem('app_users', JSON.stringify(users)); alert('Senha redefinida.'); renderAdminPanelPage(); }
-                }
-            };
-            window._deleteUserPage = function(username) {
-                if (confirm(`Excluir usuário ${username}?`)) {
-                    users = loadUsers();
-                    users = users.filter(u => u.username !== username);
-                    localStorage.setItem('app_users', JSON.stringify(users));
-                    renderAdminPanelPage();
-                }
-            };
-
-            // ============================================================
-            // STATUS DO SERVIDOR
-            // ============================================================
-            async function checkServerStatus() {
-                const dot = document.getElementById('statusDot'), text = document.getElementById('statusText');
-                if (!dot || !text) { setTimeout(checkServerStatus, 2000); return; }
-                try {
-                    const resp = await fetch(`${APP_SCRIPT_URL}?action=ping&t=${Date.now()}`);
-                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    const data = await resp.json();
-                    if (data.status === 'ok') { dot.className = 'status-dot online'; text.textContent = 'Online'; }
-                    else throw new Error('Resposta inválida');
-                } catch { dot.className = 'status-dot offline'; text.textContent = 'Offline'; }
-            }
-
-            // ============================================================
-            // DETALHES DO REDUTOR
-            // ============================================================
-            window._openReducerDetail = function(id) {
-                const item = reducers.find(r => r.id === id);
-                if (!item) return;
-                document.getElementById('reducerDetailTitle').textContent = item.name;
-                document.getElementById('reducerDetailContent').innerHTML = `
-                    <p><strong>Fabricante:</strong> ${escapeHtml(item.manufacturer)}</p>
-                    <p><strong>Local:</strong> ${escapeHtml(item.location)}</p>
-                    <h4 style="margin-top:16px;">⚙️ Rolamentos (${(item.bearings||[]).length})</h4>
-                    <ul>${(item.bearings||[]).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
-                    <h4 style="margin-top:12px;">🔩 Retentores (${(item.retainers||[]).length})</h4>
-                    <ul>${(item.retainers||[]).map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
-                `;
-                document.getElementById('reducerDetailModal').style.display = 'flex';
-            };
-            document.getElementById('btnCloseReducerDetail').addEventListener('click', () => {
-                document.getElementById('reducerDetailModal').style.display = 'none';
+        // Tema
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                const dark = document.body.classList.toggle('dark');
+                document.body.classList.toggle('light');
+                this.textContent = dark ? '☀️' : '🌙';
+                localStorage.setItem('theme', dark ? 'dark' : 'light');
             });
-            document.getElementById('reducerDetailModal').addEventListener('click', function(e) {
-                if (e.target === this) this.style.display = 'none';
+        }
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark');
+            document.body.classList.remove('light');
+            if (themeToggle) themeToggle.textContent = '☀️';
+        } else {
+            document.body.classList.add('light');
+            document.body.classList.remove('dark');
+            if (themeToggle) themeToggle.textContent = '🌙';
+        }
+
+        // Menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        if (menuToggle) menuToggle.addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.classList.toggle('open');
+        });
+
+        // Navegação sidebar
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.dataset.page;
+                if (page) navigateTo(page);
             });
+        });
 
-            // ============================================================
-            // LOGIN / LOGOUT
-            // ============================================================
-            function doLogin() {
-                const u = document.getElementById('loginUser').value.trim();
-                const p = document.getElementById('loginPass').value.trim();
-                if (!u || !p) { document.getElementById('loginError').textContent = 'Preencha usuário e senha.'; return; }
-                users = loadUsers();
-                const found = users.find(user => user.username === u && user.password === p);
-                if (!found) { document.getElementById('loginError').textContent = 'Usuário ou senha inválidos.'; return; }
-                currentUser = { username: found.username, level: found.level };
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('app').style.display = 'flex';
-                document.getElementById('userInfo').textContent = `👤 ${currentUser.username} (${currentUser.level === 'master' ? 'Mestre' : 'Usuário'})`;
-                document.getElementById('sidebarAdmin').style.display = isMaster() ? 'flex' : 'none';
-                checkServerStatus();
-                initApp();
-            }
+        // Fechar carrinho sidebar (mobile)
+        const closeCartSidebar = document.getElementById('closeCartSidebar');
+        if (closeCartSidebar) closeCartSidebar.addEventListener('click', function() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            if (cartSidebar) cartSidebar.style.display = 'none';
+        });
 
-            function doLogout() {
-                currentUser = null;
-                pollingEnabled = false;
-                document.getElementById('loginOverlay').style.display = 'flex';
-                document.getElementById('app').style.display = 'none';
-                document.getElementById('loginUser').value = '';
-                document.getElementById('loginPass').value = '';
-                document.getElementById('loginError').textContent = '';
-                cart = [];
-                renderAllCarts();
-            }
+        // Buscas
+        ['searchRetentores', 'searchRolamentos', 'searchRedutores'].forEach(id => {
+            const inp = document.getElementById(id);
+            if (inp) inp.addEventListener('input', renderAllLists);
+        });
 
-            // ============================================================
-            // INICIALIZAÇÃO
-            // ============================================================
-            async function initApp() {
-                const data = await loadDataFromSheet();
-                if (data) {
-                    retainers = data.retainers || [];
-                    bearings = data.bearings || [];
-                    reducers = data.reducers || [];
-                    cart = data.cart || [];
-                    nextRetainerId = data.nextRetainerId || 1;
-                    nextBearingId = data.nextBearingId || 1;
-                    nextReducerId = data.nextReducerId || 1;
-                } else {
-                    retainers = defaultData.retainers;
-                    bearings = defaultData.bearings;
-                    reducers = defaultData.reducers;
-                    cart = defaultData.cart || [];
-                    nextRetainerId = defaultData.nextRetainerId;
-                    nextBearingId = defaultData.nextBearingId;
-                    nextReducerId = defaultData.nextReducerId;
-                    await saveData();
-                }
-                renderAllLists();
-                renderAllCarts();
-                updateDashboard();
-                navigateTo('dashboard');
-                pollingEnabled = true;
-                setInterval(checkForUpdates, POLL_INTERVAL);
-                console.log('✅ Auto-sync ativado (polling a cada', POLL_INTERVAL/1000, 's)');
-            }
+        // Botões adicionar
+        const btnAddRet = document.getElementById('btnAddRetentor');
+        if (btnAddRet) btnAddRet.addEventListener('click', () => {
+            modalMode = 'add'; editingItemId = null; editingCategory = null;
+            createModal('Adicionar Retentor', 'retentor');
+            modalOverlay.style.display = 'flex';
+        });
+        const btnAddRol = document.getElementById('btnAddRolamento');
+        if (btnAddRol) btnAddRol.addEventListener('click', () => {
+            modalMode = 'add'; editingItemId = null; editingCategory = null;
+            createModal('Adicionar Rolamento', 'rolamento');
+            modalOverlay.style.display = 'flex';
+        });
+        const btnAddRed = document.getElementById('btnAddRedutor');
+        if (btnAddRed) btnAddRed.addEventListener('click', () => {
+            modalMode = 'add'; editingItemId = null; editingCategory = null;
+            createModal('Adicionar Redutor', 'redutor');
+            modalOverlay.style.display = 'flex';
+        });
 
-            // ============================================================
-            // EVENTOS
-            // ============================================================
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('btnLogin').addEventListener('click', doLogin);
-                document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-                document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
-                document.getElementById('btnLogout').addEventListener('click', doLogout);
+        // WhatsApp
+        const btnWppPage = document.getElementById('btnWhatsAppPage');
+        if (btnWppPage) btnWppPage.addEventListener('click', sendWhatsApp);
+        const btnWppSidebar = document.getElementById('btnWhatsAppSidebar');
+        if (btnWppSidebar) btnWppSidebar.addEventListener('click', sendWhatsApp);
 
-                document.getElementById('themeToggle').addEventListener('click', function() {
-                    const dark = document.body.classList.toggle('dark');
-                    document.body.classList.toggle('light');
-                    this.textContent = dark ? '☀️' : '🌙';
-                    localStorage.setItem('theme', dark ? 'dark' : 'light');
-                });
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                if (savedTheme === 'dark') {
-                    document.body.classList.add('dark');
-                    document.body.classList.remove('light');
-                    document.getElementById('themeToggle').textContent = '☀️';
-                } else {
-                    document.body.classList.add('light');
-                    document.body.classList.remove('dark');
-                    document.getElementById('themeToggle').textContent = '🌙';
-                }
+        // Admin link do login
+        const adminLink = document.getElementById('adminLinkFromLogin');
+        if (adminLink) adminLink.addEventListener('click', () => {
+            const user = prompt('Usuário mestre:');
+            if (!user) return;
+            const pass = prompt('Senha mestre:');
+            if (!pass) return;
+            users = loadUsers();
+            const master = users.find(u => u.username === user && u.password === pass && u.level === 'master');
+            if (!master) { alert('Acesso negado.'); return; }
+            currentUser = { username: master.username, level: 'master' };
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            document.getElementById('userInfo').textContent = `👤 ${currentUser.username} (Mestre)`;
+            const sidebarAdmin = document.getElementById('sidebarAdmin');
+            if (sidebarAdmin) sidebarAdmin.style.display = 'flex';
+            checkServerStatus();
+            initApp();
+        });
 
-                document.getElementById('menuToggle').addEventListener('click', function() {
-                    document.getElementById('sidebar').classList.toggle('open');
-                });
+        // Fechar modal ao clicar fora
+        if (modalOverlay) modalOverlay.addEventListener('click', function(e) {
+            if (e.target === this) this.style.display = 'none';
+        });
 
-                document.querySelectorAll('.sidebar-nav a').forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const page = this.dataset.page;
-                        if (page) navigateTo(page);
-                    });
-                });
-
-                document.getElementById('closeCartSidebar').addEventListener('click', function() {
-                    document.getElementById('cartSidebar').style.display = 'none';
-                });
-
-                ['searchRetentores', 'searchRolamentos', 'searchRedutores'].forEach(id => {
-                    const inp = document.getElementById(id);
-                    if (inp) inp.addEventListener('input', renderAllLists);
-                });
-
-                document.getElementById('btnAddRetentor').addEventListener('click', () => {
-                    modalMode = 'add'; editingItemId = null; editingCategory = null;
-                    createModal('Adicionar Retentor', 'retentor');
-                    modalOverlay.style.display = 'flex';
-                });
-                document.getElementById('btnAddRolamento').addEventListener('click', () => {
-                    modalMode = 'add'; editingItemId = null; editingCategory = null;
-                    createModal('Adicionar Rolamento', 'rolamento');
-                    modalOverlay.style.display = 'flex';
-                });
-                document.getElementById('btnAddRedutor').addEventListener('click', () => {
-                    modalMode = 'add'; editingItemId = null; editingCategory = null;
-                    createModal('Adicionar Redutor', 'redutor');
-                    modalOverlay.style.display = 'flex';
-                });
-
-                document.getElementById('btnWhatsAppPage').addEventListener('click', sendWhatsApp);
-                document.getElementById('btnWhatsAppSidebar').addEventListener('click', sendWhatsApp);
-
-                document.getElementById('adminLinkFromLogin').addEventListener('click', () => {
-                    const user = prompt('Usuário mestre:');
-                    if (!user) return;
-                    const pass = prompt('Senha mestre:');
-                    if (!pass) return;
-                    users = loadUsers();
-                    const master = users.find(u => u.username === user && u.password === pass && u.level === 'master');
-                    if (!master) { alert('Acesso negado.'); return; }
-                    currentUser = { username: master.username, level: 'master' };
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    document.getElementById('app').style.display = 'flex';
-                    document.getElementById('userInfo').textContent = `👤 ${currentUser.username} (Mestre)`;
-                    document.getElementById('sidebarAdmin').style.display = 'flex';
-                    checkServerStatus();
-                    initApp();
-                });
-
-                modalOverlay.addEventListener('click', function(e) {
-                    if (e.target === this) this.style.display = 'none';
-                });
-
-                document.getElementById('btnCloseAdmin').addEventListener('click', () => {
-                    document.getElementById('adminPanel').style.display = 'none';
-                });
-                document.getElementById('adminPanel').addEventListener('click', function(e) {
-                    if (e.target === this) this.style.display = 'none';
-                });
-            });
-        })();
-    </script>
+        // Fechar admin panel (legado)
+        const closeAdminBtn = document.getElementById('btnCloseAdmin');
+        if (closeAdminBtn) closeAdminBtn.addEventListener('click', () => {
+            document.getElementById('adminPanel').style.display = 'none';
+        });
+        const adminPanelEl = document.getElementById('adminPanel');
+        if (adminPanelEl) adminPanelEl.addEventListener('click', function(e) {
+            if (e.target === this) this.style.display = 'none';
+        });
+    });
+})();
+</script>
 </body>
 </html>
