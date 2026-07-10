@@ -5,322 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador de Retentores, Rolamentos e Redutores</title>
     <style>
-        /* ========== SEU CSS ORIGINAL (mantido integralmente) ========== */
-        :root {
-            --bg: #f1f5f9; --card-bg: #ffffff; --sidebar-bg: #f8fafc;
-            --text: #1e293b; --text-secondary: #64748b; --text-light: #94a3b8;
-            --border: #e2e8f0; --primary: #1a73e8; --primary-hover: #1557b0;
-            --success: #25D366; --success-hover: #1da851; --danger: #ef4444; --danger-hover: #dc2626;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow: 0 1px 3px rgba(0,0,0,0.1),0 1px 2px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.07),0 2px 4px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.12),0 4px 10px rgba(0,0,0,0.08);
-            --header-bg: #ffffff; --tab-bg: #f1f5f9; --tab-active: #ffffff;
-            --input-bg: #f8fafc; --badge-bg: #1a73e8; --badge-text: #fff;
-            --cart-item-bg: #ffffff; --btn-cart-bg: #e8f0fe; --btn-cart-color: #1a73e8;
-            --btn-edit-bg: #fef3c7; --btn-edit-color: #92400e;
-            --btn-remove-bg: #fee2e2; --btn-remove-color: #991b1b;
-            --modal-overlay: rgba(0,0,0,0.5); --name-preview-bg: #f1f5f9;
-            --center-placeholder: #94a3b8; --input-focus-shadow: rgba(26,115,232,0.1);
-            --panel-header-bg: #f8fafc; --cart-footer-bg: #f8fafc;
-            --whatsapp-shadow: rgba(37,211,102,0.3); --whatsapp-shadow-hover: rgba(37,211,102,0.4);
-            --status-online: #22c55e; --status-offline: #ef4444;
-        }
-        body.dark {
-            --bg: #0f172a; --card-bg: #1e293b; --sidebar-bg: #1e293b;
-            --text: #e2e8f0; --text-secondary: #94a3b8; --text-light: #64748b;
-            --border: #334155; --primary: #38bdf8; --primary-hover: #0ea5e9;
-            --danger: #f87171; --danger-hover: #ef4444;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-            --shadow: 0 1px 3px rgba(0,0,0,0.4),0 1px 2px rgba(0,0,0,0.3);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.5),0 2px 4px rgba(0,0,0,0.4);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.6),0 4px 10px rgba(0,0,0,0.5);
-            --header-bg: #1e293b; --tab-bg: #0f172a; --tab-active: #1e293b;
-            --input-bg: #0f172a; --badge-bg: #38bdf8; --badge-text: #0f172a;
-            --cart-item-bg: #1e293b; --btn-cart-bg: #1e3a5f; --btn-cart-color: #38bdf8;
-            --btn-edit-bg: #4a3a1a; --btn-edit-color: #fbbf24;
-            --btn-remove-bg: #4a1e1e; --btn-remove-color: #f87171;
-            --modal-overlay: rgba(0,0,0,0.7); --name-preview-bg: #0f172a;
-            --center-placeholder: #64748b; --input-focus-shadow: rgba(56,189,248,0.15);
-            --panel-header-bg: #1e293b; --cart-footer-bg: #1e293b;
-            --whatsapp-shadow: rgba(37,211,102,0.2); --whatsapp-shadow-hover: rgba(37,211,102,0.3);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-            background:var(--bg); color:var(--text);
-            height:100vh; display:flex; flex-direction:column; overflow:hidden;
-            transition:background 0.3s ease, color 0.3s ease;
-        }
-        .login-overlay {
-            position:fixed; inset:0; background:#0b1a2f; z-index:300;
-            display:flex; align-items:center; justify-content:center; overflow:hidden;
-        }
-        .login-bg {
-            position:absolute; inset:0;
-            background: radial-gradient(circle at 30% 40%, #1a3a5c 0%, #0b1a2f 70%);
-            display:flex; align-items:center; justify-content:center;
-        }
-        .gear-container { position:relative; width:450px; height:450px; display:flex; align-items:center; justify-content:center; }
-        .gear {
-            position:absolute; border-radius:50%;
-            background: conic-gradient(from 0deg, #2c5f8a, #4a90c2, #2c5f8a, #1e4a6e, #2c5f8a);
-            box-shadow: 0 0 30px rgba(74,144,194,0.3), inset 0 0 20px rgba(0,0,0,0.5);
-            animation: spin 20s linear infinite;
-        }
-        .gear1 { width:280px; height:280px; animation-duration:25s; }
-        .gear2 { width:200px; height:200px; top:20px; left:180px; animation-duration:18s; animation-direction:reverse; }
-        .gear3 { width:150px; height:150px; top:180px; left:30px; animation-duration:15s; }
-        .bearing {
-            position:absolute; border:8px solid #4a90c2; border-radius:50%;
-            background:transparent; box-shadow:0 0 15px rgba(74,144,194,0.4);
-            animation: spin 12s linear infinite;
-        }
-        .bearing1 { width:100px; height:100px; top:60px; left:250px; }
-        .bearing2 { width:70px; height:70px; top:250px; left:80px; animation-direction:reverse; }
-        .retainer-ring {
-            position:absolute; width:130px; height:130px; border:3px dashed #4a90c2;
-            border-radius:50%; top:120px; left:200px; opacity:0.7;
-            animation: pulse 3s ease-in-out infinite;
-        }
-        @keyframes spin { to { transform:rotate(360deg); } }
-        @keyframes pulse { 0%,100% { transform:scale(1); opacity:0.5; } 50% { transform:scale(1.1); opacity:0.9; } }
-        .login-card {
-            position:relative; z-index:10; background:rgba(255,255,255,0.95);
-            backdrop-filter:blur(10px); border-radius:20px; padding:32px;
-            width:90%; max-width:380px; box-shadow:0 20px 50px rgba(0,0,0,0.6);
-            text-align:center; animation:fadeInUp 0.8s ease;
-        }
-        @keyframes fadeInUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
-        .login-card h2 { color:#1a3a5c; margin-bottom:8px; font-size:1.6rem; }
-        .login-card .subtitle { color:#4a90c2; font-size:0.85rem; margin-bottom:24px; }
-        .login-card .form-group { margin-bottom:16px; text-align:left; }
-        .login-card .form-group label { display:block; font-weight:600; font-size:0.85rem; margin-bottom:5px; color:#1e293b; }
-        .login-card .form-group input {
-            width:100%; padding:10px 14px; border:2px solid #e2e8f0; border-radius:8px;
-            font-size:0.95rem; outline:none; background:#f8fafc;
-        }
-        .login-card .form-group input:focus { border-color:#1a73e8; box-shadow:0 0 0 3px rgba(26,115,232,0.1); }
-        .login-card .btn-login {
-            width:100%; padding:12px; background:#1a73e8; color:#fff; border:none;
-            border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:8px;
-        }
-        .login-card .btn-login:hover { background:#1557b0; }
-        .login-error { color:#ef4444; font-size:0.85rem; margin-top:8px; }
-        .admin-link {
-            display:inline-block; margin-top:12px; color:#94a3b8; font-size:0.8rem;
-            cursor:pointer; text-decoration:underline; opacity:0.7; transition:opacity 0.2s;
-        }
-        .admin-link:hover { opacity:1; color:#1a73e8; }
-        .top-bar {
-            background:var(--header-bg); border-bottom:1px solid var(--border);
-            padding:10px 24px; display:flex; align-items:center; gap:12px;
-            flex-shrink:0; z-index:20; box-shadow:var(--shadow-sm); flex-wrap:wrap;
-        }
-        .tab-group { display:flex; gap:4px; background:var(--tab-bg); border-radius:50px; padding:4px; }
-        .tab-btn {
-            padding:10px 18px; border:none; background:transparent; border-radius:50px;
-            cursor:pointer; font-weight:600; font-size:0.9rem; color:var(--text-secondary);
-            transition:all 0.2s ease; white-space:nowrap; display:flex; align-items:center; gap:6px;
-        }
-        .tab-btn.active { background:var(--tab-active); color:var(--primary); box-shadow:var(--shadow-sm); }
-        .tab-btn:hover:not(.active) { background:rgba(255,255,255,0.08); color:var(--text); }
-        .search-container { flex:1; min-width:200px; position:relative; display:flex; align-items:center; }
-        .search-container input {
-            width:100%; padding:11px 18px 11px 42px; border:2px solid var(--border);
-            border-radius:50px; font-size:0.95rem; background:var(--input-bg);
-            transition:all 0.2s ease; outline:none; color:var(--text);
-            background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
-            background-repeat:no-repeat; background-position:14px center; background-size:1.1rem;
-        }
-        .search-container input:focus { border-color:var(--primary); background-color:var(--card-bg); box-shadow:0 0 0 3px var(--input-focus-shadow); }
-        .btn-add-top { padding:11px 22px; background:var(--primary); color:#fff; border:none; border-radius:50px; cursor:pointer; font-size:0.9rem; font-weight:600; white-space:nowrap; transition:all 0.2s ease; display:flex; align-items:center; gap:6px; }
-        .btn-add-top:hover { background:var(--primary-hover); transform:translateY(-1px); box-shadow:var(--shadow-md); }
-        .btn-add-top:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
-        .theme-toggle { background:none; border:2px solid var(--border); border-radius:50%; width:40px; height:40px; font-size:1.3rem; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text); transition:all 0.2s ease; }
-        .theme-toggle:hover { background:var(--border); }
-        .user-info { font-size:0.85rem; font-weight:600; color:var(--primary); display:flex; align-items:center; gap:6px; margin-left:8px; }
-        .btn-logout { padding:8px 16px; background:var(--danger); color:#fff; border:none; border-radius:50px; cursor:pointer; font-size:0.8rem; font-weight:600; transition:all 0.2s ease; }
-        .btn-logout:hover { background:var(--danger-hover); }
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 50px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            margin-left: 8px;
-        }
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background 0.3s;
-        }
-        .status-dot.online { background: var(--status-online); }
-        .status-dot.offline { background: var(--status-offline); }
-        .main-content { display:flex; flex:1; overflow:hidden; position:relative; }
-        .left-panel { position:absolute; top:0; left:0; height:100%; width:380px; background:var(--card-bg); border-right:1px solid var(--border); box-shadow:var(--shadow-lg); z-index:15; transform:translateX(-100%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); display:flex; flex-direction:column; overflow:hidden; }
-        .left-panel.open { transform:translateX(0); }
-        .left-panel-header { padding:14px 18px; border-bottom:1px solid var(--border); font-weight:700; font-size:1rem; background:var(--panel-header-bg); display:flex; align-items:center; justify-content:space-between; }
-        .btn-close-panel { background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--text-light); padding:4px 8px; border-radius:6px; }
-        .btn-close-panel:hover { background:var(--border); color:var(--text); }
-        .items-area { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
-        .items-area::-webkit-scrollbar { width:5px; } .items-area::-webkit-scrollbar-track { background:transparent; } .items-area::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:10px; }
-        .item-card { background:var(--card-bg); border-radius:14px; padding:16px; box-shadow:var(--shadow-sm); border:1px solid var(--border); transition:all 0.2s ease; display:flex; flex-direction:column; gap:8px; animation:fadeIn 0.25s ease; }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
-        .item-card:hover { box-shadow:var(--shadow); border-color:var(--primary); }
-        .card-name { font-weight:600; font-size:0.95rem; color:var(--text); word-break:break-word; }
-        .card-name-clickable { cursor:pointer; text-decoration:underline; color:var(--primary); }
-        .card-name-clickable:hover { color:var(--primary-hover); }
-        .card-info { font-size:0.8rem; color:var(--text-secondary); background:var(--tab-bg); padding:3px 10px; border-radius:20px; display:inline-block; white-space:nowrap; font-weight:500; }
-        .card-components { font-size:0.78rem; color:var(--text-secondary); margin-top:4px; display:flex; flex-wrap:wrap; gap:4px; }
-        .component-badge { background:var(--btn-cart-bg); color:var(--btn-cart-color); padding:2px 8px; border-radius:12px; font-size:0.7rem; font-weight:500; }
-        .card-actions { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
-        .btn { padding:7px 12px; border:none; border-radius:8px; cursor:pointer; font-size:0.78rem; font-weight:600; transition:all 0.2s ease; display:flex; align-items:center; gap:4px; white-space:nowrap; }
-        .btn:disabled { opacity:0.5; cursor:not-allowed; }
-        .btn:active { transform:scale(0.96); }
-        .btn-cart { background:var(--btn-cart-bg); color:var(--btn-cart-color); }
-        .btn-edit { background:var(--btn-edit-bg); color:var(--btn-edit-color); }
-        .btn-remove { background:var(--btn-remove-bg); color:var(--btn-remove-color); }
-        .no-results { text-align:center; padding:30px 10px; color:var(--text-light); font-size:0.9rem; }
-        .center-area { flex:1; background:var(--bg); display:flex; align-items:center; justify-content:center; color:var(--center-placeholder); font-size:0.95rem; transition:opacity 0.3s ease; padding:20px; }
-        .placeholder { text-align:center; opacity:0.8; } .placeholder .icon { font-size:4rem; display:block; margin-bottom:12px; }
-        .cart-sidebar { width:370px; flex-shrink:0; background:var(--sidebar-bg); border-left:1px solid var(--border); display:flex; flex-direction:column; box-shadow:var(--shadow-md); z-index:10; }
-        .cart-header { padding:20px 20px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-        .cart-header h2 { font-size:1.15rem; font-weight:700; display:flex; align-items:center; gap:8px; }
-        .cart-badge { background:var(--badge-bg); color:var(--badge-text); font-size:0.75rem; font-weight:700; padding:3px 10px; border-radius:50px; }
-        .cart-whatsapp-top { padding:14px 20px; border-bottom:1px solid var(--border); background:var(--card-bg); }
-        .cart-items { flex:1; overflow-y:auto; padding:12px 16px; display:flex; flex-direction:column; gap:10px; }
-        .cart-items::-webkit-scrollbar { width:4px; } .cart-items::-webkit-scrollbar-track { background:transparent; } .cart-items::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:10px; }
-        .cart-empty { text-align:center; padding:30px 10px; color:var(--text-light); } .cart-empty .icon { font-size:3rem; display:block; margin-bottom:8px; }
-        .cart-item { background:var(--cart-item-bg); border-radius:14px; padding:14px 16px; border:1px solid var(--border); animation:fadeIn 0.25s ease; }
-        .cart-item-name { font-weight:600; font-size:0.9rem; margin-bottom:4px; }
-        .cart-item-measures { font-size:0.78rem; color:var(--text-secondary); margin-bottom:10px; }
-        .cart-item-controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-        .qty-input { width:60px; padding:7px 8px; border:1.5px solid var(--border); border-radius:8px; text-align:center; font-weight:600; background:var(--input-bg); color:var(--text); outline:none; }
-        .qty-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--input-focus-shadow); }
-        .btn-remove-cart { padding:7px 12px; background:var(--btn-remove-bg); color:var(--btn-remove-color); border:none; border-radius:8px; cursor:pointer; font-size:0.78rem; font-weight:600; }
-        .btn-remove-cart:hover { filter:brightness(0.95); }
-        .cart-footer { padding:16px 20px; border-top:1px solid var(--border); background:var(--cart-footer-bg); }
-        .cart-total { font-weight:700; font-size:0.95rem; text-align:center; }
-        .btn-whatsapp { width:100%; padding:13px 20px; background:var(--success); color:#fff; border:none; border-radius:50px; cursor:pointer; font-size:0.95rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 2px 8px var(--whatsapp-shadow); transition:all 0.2s ease; }
-        .btn-whatsapp:hover { background:var(--success-hover); box-shadow:0 4px 16px var(--whatsapp-shadow-hover); transform:translateY(-2px); }
-        .btn-whatsapp:disabled { background:#a3a3a3; cursor:not-allowed; box-shadow:none; transform:none; opacity:0.6; }
-        .modal-overlay { position:fixed; inset:0; background:var(--modal-overlay); z-index:100; display:flex; align-items:center; justify-content:center; }
-        .modal { background:var(--card-bg); border-radius:16px; padding:28px 30px; width:90%; max-width:520px; box-shadow:var(--shadow-lg); }
-        .modal h3 { margin-bottom:18px; }
-        .form-group { margin-bottom:14px; } .form-group label { display:block; font-weight:600; font-size:0.85rem; margin-bottom:5px; }
-        .form-group input, .form-group select, .form-group textarea { width:100%; padding:10px 14px; border:2px solid var(--border); border-radius:8px; font-size:0.95rem; outline:none; background:var(--input-bg); color:var(--text); font-family:inherit; }
-        .form-group textarea { min-height:60px; resize:vertical; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--input-focus-shadow); }
-        .name-preview { background:var(--name-preview-bg); padding:10px 14px; border-radius:8px; font-size:0.9rem; color:var(--text); margin-bottom:14px; word-break:break-word; }
-        .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
-        .btn-save { padding:10px 22px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600; }
-        .btn-save:hover { background:var(--primary-hover); }
-        .btn-cancel { padding:10px 22px; background:transparent; color:var(--text); border:2px solid var(--border); border-radius:8px; cursor:pointer; font-weight:600; }
-        .btn-cancel:hover { background:var(--border); }
-        .panel-backdrop { display:none; position:absolute; inset:0; background:transparent; z-index:5; }
-        .left-panel.open~.panel-backdrop { display:block; }
-        .admin-panel { position:fixed; inset:0; background:var(--modal-overlay); z-index:150; display:none; align-items:center; justify-content:center; }
-        .admin-panel .modal { max-width:600px; }
-        .user-table { width:100%; border-collapse:collapse; margin:16px 0; }
-        .user-table th, .user-table td { padding:10px 12px; border:1px solid var(--border); text-align:left; font-size:0.85rem; }
-        .user-table th { background:var(--tab-bg); color:var(--text-secondary); }
-        .btn-small { padding:4px 10px; border:none; border-radius:4px; cursor:pointer; font-size:0.75rem; font-weight:600; margin:0 2px; }
-        @media (max-width:900px) {
-            .left-panel { width:280px; }
-            .cart-sidebar { width:100%; max-height:35vh; border-left:none; border-top:1px solid var(--border); }
-            .main-content { flex-direction:column; } .center-area { flex:0 0 auto; padding:10px; } .cart-sidebar { order:2; }
-        }
+        /* ===== TODO O SEU CSS ORIGINAL AQUI (não vou repetir para não estourar) ===== */
+        /* Mantenha o CSS que você já tinha, é o mesmo de antes */
+        /* Apenas substitua o SCRIPT abaixo */
     </style>
 </head>
-<body class="light">
-    <!-- TELA DE LOGIN -->
-    <div class="login-overlay" id="loginOverlay">
-        <div class="login-bg">
-            <div class="gear-container">
-                <div class="gear gear1"></div><div class="gear gear2"></div><div class="gear gear3"></div>
-                <div class="bearing bearing1"></div><div class="bearing bearing2"></div>
-                <div class="retainer-ring"></div>
-            </div>
-        </div>
-        <div class="login-card">
-            <h2>🔩 Bem‑vindo</h2>
-            <div class="subtitle">Gerenciador de Retentores, Rolamentos e Redutores</div>
-            <div class="form-group"><label for="loginUser">Usuário</label><input type="text" id="loginUser" placeholder="Digite seu usuário" autocomplete="off"></div>
-            <div class="form-group"><label for="loginPass">Senha</label><input type="password" id="loginPass" placeholder="Digite sua senha"></div>
-            <button class="btn-login" id="btnLogin">Entrar</button>
-            <div class="login-error" id="loginError"></div>
-            <span class="admin-link" id="adminLinkFromLogin">⚙️ Gerenciar usuários</span>
-        </div>
-    </div>
-
-    <!-- SISTEMA PRINCIPAL -->
-    <div id="mainSystem" style="display:none; flex:1; flex-direction:column; height:100vh;">
-        <div class="top-bar">
-            <div class="tab-group">
-                <button class="tab-btn active" id="tabRetentor">🔩 Retentores</button>
-                <button class="tab-btn" id="tabRolamento">⚙️ Rolamentos</button>
-                <button class="tab-btn" id="tabRedutor">🔧 Redutores</button>
-            </div>
-            <div class="search-container"><input type="text" id="searchInput" placeholder="Pesquisar retentor..." autocomplete="off"></div>
-            <button class="btn-add-top" id="btnAddTop" title="Adicionar novo item">➕ Adicionar</button>
-            <button class="theme-toggle" id="themeToggle" title="Alternar tema">🌙</button>
-            <span class="user-info" id="userInfo"></span>
-            <button class="btn-logout" id="btnLogout">Sair</button>
-            <div class="status-indicator" id="statusIndicator">
-                <span class="status-dot offline" id="statusDot"></span>
-                <span id="statusText">Verificando...</span>
-            </div>
-        </div>
-        <div class="main-content">
-            <div class="left-panel" id="leftPanel">
-                <div class="left-panel-header"><span id="panelTitle">📋 Retentores</span><button class="btn-close-panel" id="btnClosePanel">✕</button></div>
-                <div class="items-area" id="itemsArea"></div>
-            </div>
-            <div class="panel-backdrop" id="panelBackdrop"></div>
-            <div class="center-area" id="centerArea"><div class="placeholder"><span class="icon">📦</span><p>Selecione uma categoria acima.</p></div></div>
-            <div class="cart-sidebar">
-                <div class="cart-header"><h2>🛒 Carrinho <span class="cart-badge" id="cartBadge">0</span></h2></div>
-                <div class="cart-whatsapp-top"><button class="btn-whatsapp" id="btnWhatsAppTop" disabled>📤 Enviar via WhatsApp</button></div>
-                <div class="cart-items" id="cartItems"><div class="cart-empty"><span class="icon">📦</span>Seu carrinho está vazio</div></div>
-                <div class="cart-footer"><div class="cart-total" id="cartTotal">Total de itens: 0</div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL ADICIONAR/EDITAR -->
-    <div class="modal-overlay" id="modalOverlay" style="display:none;"><div class="modal"></div></div>
-
-    <!-- MODAL DE DETALHES DO REDUTOR -->
-    <div class="modal-overlay" id="reducerDetailModal" style="display:none;">
-        <div class="modal" style="max-width:500px;">
-            <h3 id="reducerDetailTitle"></h3>
-            <div id="reducerDetailContent"></div>
-            <div class="modal-actions" style="margin-top:20px;">
-                <button class="btn-cancel" id="btnCloseReducerDetail">Fechar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PAINEL ADMIN -->
-    <div class="admin-panel" id="adminPanel">
-        <div class="modal">
-            <h3>👥 Gerenciar Usuários</h3>
-            <div id="adminUserList"></div>
-            <div style="display:flex; gap:10px; margin-top:16px;">
-                <input type="text" id="newUser" placeholder="Novo usuário" style="flex:1;">
-                <input type="password" id="newPass" placeholder="Senha" style="flex:1;">
-                <button type="button" class="btn-save" id="btnAddUser">Adicionar</button>
-            </div>
-            <div class="modal-actions" style="margin-top:16px;"><button class="btn-cancel" id="btnCloseAdmin">Fechar</button></div>
-        </div>
-    </div>
+<body>
+    <!-- TODO O SEU HTML ORIGINAL AQUI (não vou repetir) -->
+    <!-- Substitua apenas o SCRIPT -->
 
     <script>
         (function() {
@@ -351,11 +43,10 @@
             }
 
             // ============================================================
-            // MOSTRADOR DE STATUS (com espera)
+            // MOSTRADOR DE STATUS
             // ============================================================
             async function checkServerStatus() {
                 try {
-                    // Aguarda os elementos existirem
                     await waitForElements('#statusDot');
                     await waitForElements('#statusText');
                     const dot = document.getElementById('statusDot');
@@ -371,13 +62,10 @@
                         throw new Error(data.message || 'Resposta inválida');
                     }
                 } catch (e) {
-                    // Se o erro for de elementos, tenta novamente após 2 segundos
                     if (e.message.includes('não encontrado')) {
-                        console.warn('Elementos de status não encontrados, tentando novamente em 2s...');
                         setTimeout(checkServerStatus, 2000);
                         return;
                     }
-                    // Erro de conexão
                     const dot = document.getElementById('statusDot');
                     const text = document.getElementById('statusText');
                     if (dot) dot.className = 'status-dot offline';
@@ -385,9 +73,6 @@
                     console.warn('Erro ao verificar servidor:', e.message);
                 }
             }
-
-            // Inicia a verificação após o login (quando o sistema principal estiver visível)
-            // A primeira chamada será feita dentro da função doLogin
 
             // ============================================================
             // FUNÇÕES DE PERSISTÊNCIA
@@ -413,7 +98,7 @@
 
             async function saveDataToSheet(data) {
                 try {
-                    console.log('💾 Salvando dados na planilha...', data);
+                    console.log('💾 Salvando dados na planilha...');
                     const payload = {
                         action: 'save',
                         sheetId: SHEET_ID,
@@ -439,7 +124,7 @@
                     }
                 } catch (e) {
                     console.error('❌ Falha ao salvar:', e);
-                    alert('Erro de conexão ao salvar. Verifique o console para detalhes.');
+                    alert('Erro de conexão ao salvar. Verifique o console.');
                     return false;
                 }
             }
@@ -450,76 +135,13 @@
             const defaultData = {
                 retainers: [
                     { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm' },
-                    { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm' },
-                    { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm' },
-                    { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm' },
-                    { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm' },
-                    { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm' },
-                    { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm' },
-                    { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm' },
-                    { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm' },
-                    { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm' },
-                    { id:11, name:'Retentor 30x45x8', measures:'30 x 45 x 8 mm' },
-                    { id:12, name:'Retentor 32x47x8', measures:'32 x 47 x 8 mm' },
-                    { id:13, name:'Retentor 35x50x10', measures:'35 x 50 x 10 mm' },
-                    { id:14, name:'Retentor 38x55x10', measures:'38 x 55 x 10 mm' },
-                    { id:15, name:'Retentor 40x55x10', measures:'40 x 55 x 10 mm' },
-                    { id:16, name:'Retentor 42x62x10', measures:'42 x 62 x 10 mm' },
-                    { id:17, name:'Retentor 45x60x10', measures:'45 x 60 x 10 mm' },
-                    { id:18, name:'Retentor 48x65x10', measures:'48 x 65 x 10 mm' },
-                    { id:19, name:'Retentor 50x65x10', measures:'50 x 65 x 10 mm' },
-                    { id:20, name:'Retentor 55x70x10', measures:'55 x 70 x 10 mm' },
-                    { id:21, name:'Retentor 60x80x12', measures:'60 x 80 x 12 mm' },
-                    { id:22, name:'Retentor 65x85x12', measures:'65 x 85 x 12 mm' },
-                    { id:23, name:'Retentor 70x90x12', measures:'70 x 90 x 12 mm' },
-                    { id:24, name:'Retentor 75x95x12', measures:'75 x 95 x 12 mm' },
-                    { id:25, name:'Retentor 80x100x12', measures:'80 x 100 x 12 mm' },
-                    { id:26, name:'Retentor 85x110x12', measures:'85 x 110 x 12 mm' },
-                    { id:27, name:'Retentor 90x110x12', measures:'90 x 110 x 12 mm' },
-                    { id:28, name:'Retentor 100x120x12', measures:'100 x 120 x 12 mm' },
-                    { id:29, name:'Retentor 110x130x12', measures:'110 x 130 x 12 mm' },
-                    { id:30, name:'Retentor 120x140x13', measures:'120 x 140 x 13 mm' }
+                    // ... mantenha todos os dados padrão que você já tinha
                 ],
                 bearings: [
-                    { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm' },
-                    { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm' },
-                    { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm' },
-                    { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm' },
-                    { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm' },
-                    { id:6, name:'Rolamento 6005', measures:'47 x 25 x 12 mm' },
-                    { id:7, name:'Rolamento 6006', measures:'55 x 30 x 13 mm' },
-                    { id:8, name:'Rolamento 6007', measures:'62 x 35 x 14 mm' },
-                    { id:9, name:'Rolamento 6008', measures:'68 x 40 x 15 mm' },
-                    { id:10, name:'Rolamento 6009', measures:'75 x 45 x 16 mm' },
-                    { id:11, name:'Rolamento 6010', measures:'80 x 50 x 16 mm' },
-                    { id:12, name:'Rolamento 6200', measures:'30 x 10 x 9 mm' },
-                    { id:13, name:'Rolamento 6201', measures:'32 x 12 x 10 mm' },
-                    { id:14, name:'Rolamento 6202', measures:'35 x 15 x 11 mm' },
-                    { id:15, name:'Rolamento 6203', measures:'40 x 17 x 12 mm' },
-                    { id:16, name:'Rolamento 6204', measures:'47 x 20 x 14 mm' },
-                    { id:17, name:'Rolamento 6205', measures:'52 x 25 x 15 mm' },
-                    { id:18, name:'Rolamento 6206', measures:'62 x 30 x 16 mm' },
-                    { id:19, name:'Rolamento 6207', measures:'72 x 35 x 17 mm' },
-                    { id:20, name:'Rolamento 6208', measures:'80 x 40 x 18 mm' },
-                    { id:21, name:'Rolamento 6300', measures:'35 x 10 x 11 mm' },
-                    { id:22, name:'Rolamento 6301', measures:'37 x 12 x 12 mm' },
-                    { id:23, name:'Rolamento 6302', measures:'42 x 15 x 13 mm' },
-                    { id:24, name:'Rolamento 6303', measures:'47 x 17 x 14 mm' },
-                    { id:25, name:'Rolamento 6304', measures:'52 x 20 x 15 mm' },
-                    { id:26, name:'Rolamento 6305', measures:'62 x 25 x 17 mm' },
-                    { id:27, name:'Rolamento 6306', measures:'72 x 30 x 19 mm' },
-                    { id:28, name:'Rolamento 6307', measures:'80 x 35 x 21 mm' },
-                    { id:29, name:'Rolamento 30203', measures:'40 x 17 x 13.25 mm' },
-                    { id:30, name:'Rolamento 30204', measures:'47 x 20 x 14 mm' },
-                    { id:31, name:'Rolamento 30205', measures:'52 x 25 x 15 mm' },
-                    { id:32, name:'Rolamento 30206', measures:'62 x 30 x 16 mm' }
+                    // ...
                 ],
                 reducers: [
-                    { id:1, name:'Redutor Planetário A10', manufacturer:'SEW', location:'Esteira Transportadora', bearings:['Rolamento 6001','Rolamento 6203'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
-                    { id:2, name:'Redutor WEG Cestari C06', manufacturer:'WEG Cestari', location:'Transportador de Correia', bearings:['Rolamento 6204','Rolamento 6205'], retainers:['Retentor 25x40x7','Retentor 35x50x10'] },
-                    { id:3, name:'Redutor WEG Cestari C05', manufacturer:'WEG Cestari', location:'Elevador de Canecas', bearings:['Rolamento 6203','Rolamento 6204'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
-                    { id:4, name:'Redutor Geremia GO34', manufacturer:'Geremia', location:'Moinho de Martelo', bearings:['Rolamento 6305','Rolamento 6306'], retainers:['Retentor 35x50x10','Retentor 40x55x10'] },
-                    { id:5, name:'Redutor Geremia GO29', manufacturer:'Geremia', location:'Agitador Industrial', bearings:['Rolamento 6304','Rolamento 6206'], retainers:['Retentor 25x40x7'] }
+                    // ...
                 ],
                 nextRetainerId: 31,
                 nextBearingId: 33,
@@ -643,7 +265,7 @@
             }
 
             // ============================================================
-            // RENDERIZAÇÃO
+            // RENDERIZAÇÃO (igual a anterior, com tratamento de undefined)
             // ============================================================
             function renderItems() {
                 if (!panelOpen) return;
@@ -742,7 +364,7 @@
             }
 
             // ============================================================
-            // AÇÕES
+            // AÇÕES (com salvamento)
             // ============================================================
             async function addToCart(itemId) {
                 const existing = cart.find(i => i.itemId === itemId && i.category === activeCategory);
@@ -750,11 +372,8 @@
                 else cart.push({ category: activeCategory, itemId, quantity: 1 });
                 renderCart();
                 const saved = await saveData();
-                if (saved) {
-                    console.log('✅ Carrinho salvo com sucesso.');
-                } else {
-                    alert('⚠️ Erro ao salvar o carrinho. Os dados podem não estar na planilha.');
-                }
+                if (saved) console.log('✅ Carrinho salvo com sucesso.');
+                else alert('⚠️ Erro ao salvar o carrinho.');
                 pulseBadge();
             }
 
@@ -782,7 +401,7 @@
                 if (panelOpen) renderItems();
                 renderCart();
                 const saved = await saveData();
-                if (!saved) alert('⚠️ Erro ao salvar a remoção. Verifique a planilha.');
+                if (!saved) alert('⚠️ Erro ao salvar a remoção.');
             }
 
             function openReducerDetail(item) {
@@ -980,11 +599,8 @@
                     if (panelOpen) renderItems();
                     renderCart();
                     saved = await saveData();
-                    if (saved) {
-                        console.log('✅ Item salvo com sucesso na planilha.');
-                    } else {
-                        alert('⚠️ Item adicionado localmente, mas não foi salvo na planilha. Verifique a conexão.');
-                    }
+                    if (saved) console.log('✅ Item salvo com sucesso na planilha.');
+                    else alert('⚠️ Item adicionado localmente, mas não foi salvo na planilha.');
                 } catch (e) {
                     console.error('❌ Erro ao salvar modal:', e);
                     alert('Erro ao salvar: ' + e.message);
@@ -1067,9 +683,7 @@
                 mainSystem.style.display = 'flex';
                 userInfo.textContent = `👤 ${currentUser.username} (${currentUser.level === 'master' ? 'Mestre' : 'Usuário'})`;
                 btnAddTop.disabled = !isMaster();
-                // Inicia a verificação de status após o login
                 checkServerStatus();
-                // Inicia o app
                 initApp();
             }
 
@@ -1235,7 +849,6 @@
             // ============================================================
             loadTheme();
             renderCart();
-            // Nota: a verificação de status é iniciada após o login (dentro de doLogin)
         })();
     </script>
 </body>
