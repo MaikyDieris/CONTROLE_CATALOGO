@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- PWA -->
-<link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#2563eb" />
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Gerenciador" />
-<link rel="apple-touch-icon" href="icons/icon-192.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title id="pageTitle">Gerenciador • Retentores, Rolamentos, Redutores</title>
+
+  <!-- PWA Configuração -->
+  <link rel="manifest" href="/CONTROLE_CATALOGO/manifest.json" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Gerenciador" />
+  <link rel="apple-touch-icon" href="/CONTROLE_CATALOGO/icons/icon-192.png" />
 
   <!-- Google Fonts (Inter) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,7 +23,7 @@
 
   <style>
     /* ============================================================
-       RESET E VARIÁVEIS (com cores mais suaves e modernas)
+       RESET E VARIÁVEIS
        ============================================================ */
     * {
       margin: 0;
@@ -47,6 +48,7 @@
       --danger: #ef4444;
       --danger-hover: #dc2626;
       --warning: #f59e0b;
+      --warning-hover: #d97706;
       --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
       --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.10);
@@ -92,6 +94,7 @@
       --primary-light: #1e3a5f;
       --danger: #f87171;
       --danger-hover: #ef4444;
+      --warning: #fbbf24;
       --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
       --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
       --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
@@ -126,9 +129,6 @@
       overflow: hidden;
     }
 
-    /* ============================================================
-       SCROLLBAR PERSONALIZADA
-       ============================================================ */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -145,7 +145,7 @@
     }
 
     /* ============================================================
-       LOGIN (com animação e gradiente)
+       LOGIN
        ============================================================ */
     .login-overlay {
       position: fixed;
@@ -327,7 +327,6 @@
       background: var(--bg);
     }
 
-    /* TOP BAR */
     .top-bar {
       height: var(--header-height);
       background: var(--header-bg);
@@ -500,14 +499,12 @@
       box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
-    /* APP BODY */
     .app-body {
       display: flex;
       flex: 1;
       overflow: hidden;
     }
 
-    /* SIDEBAR */
     .sidebar {
       width: var(--sidebar-width);
       background: var(--sidebar-bg);
@@ -593,7 +590,6 @@
       gap: 6px;
     }
 
-    /* CONTEÚDO PRINCIPAL */
     .content {
       flex: 1;
       overflow-y: auto;
@@ -615,47 +611,245 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* DASHBOARD */
+    /* ============================================================
+       DASHBOARD
+       ============================================================ */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 22px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
       margin-bottom: 32px;
     }
     .dash-card {
       background: var(--card-bg);
       backdrop-filter: blur(8px);
       border-radius: var(--radius);
-      padding: 24px 20px;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow);
+      padding: 20px 16px;
+      border: 2px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
       transition: all var(--transition);
       text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
     .dash-card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-4px);
       box-shadow: var(--shadow-md);
       border-color: var(--primary);
     }
+    .dash-card:active {
+      transform: scale(0.96);
+    }
     .dash-card .dash-icon {
-      font-size: 2.6rem;
+      font-size: 2rem;
       color: var(--primary);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
     .dash-card .dash-number {
-      font-size: 2.4rem;
+      font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.5px;
       line-height: 1.2;
     }
     .dash-card .dash-label {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-secondary);
-      margin-top: 6px;
+      margin-top: 4px;
       font-weight: 500;
     }
+    .dash-card .dash-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.7rem;
+      background: var(--danger);
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 50px;
+      font-weight: 700;
+    }
+    .dash-card.alert-baixo {
+      border-color: var(--warning);
+    }
+    .dash-card.alert-baixo .dash-icon {
+      color: var(--warning);
+    }
+    .dash-card.alert-critico {
+      border-color: var(--danger);
+    }
+    .dash-card.alert-critico .dash-icon {
+      color: var(--danger);
+    }
 
-    /* PAGE HEADER */
+    /* ============================================================
+       ESTOQUE - TABELA
+       ============================================================ */
+    .estoque-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-top: 16px;
+    }
+
+    .estoque-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .estoque-table th {
+      background: var(--panel-header-bg);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .estoque-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .estoque-table tr:hover td {
+      background: var(--primary-light);
+      opacity: 0.5;
+    }
+
+    .estoque-table .qtd-input {
+      width: 70px;
+      padding: 6px 10px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: var(--input-bg);
+      color: var(--text);
+      transition: border var(--transition), box-shadow var(--transition);
+    }
+    .estoque-table .qtd-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--input-focus-shadow);
+      outline: none;
+    }
+    .estoque-table .qtd-input.estoque-critico {
+      border-color: var(--danger);
+      background: #fee2e2;
+    }
+    .estoque-table .qtd-input.estoque-baixo {
+      border-color: var(--warning);
+      background: #fef3c7;
+    }
+    .estoque-table .qtd-input.estoque-ok {
+      border-color: var(--success);
+      background: #dcfce7;
+    }
+
+    .estoque-table .btn-salvar-estoque {
+      padding: 6px 16px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .estoque-table .btn-salvar-estoque:hover {
+      background: var(--primary-hover);
+      transform: scale(1.05);
+    }
+    .estoque-table .btn-salvar-estoque:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .estoque-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 50px;
+    }
+    .estoque-status-badge.critico {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .estoque-status-badge.baixo {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .estoque-status-badge.ok {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .estoque-filtros {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 16px 20px;
+      background: var(--panel-header-bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .estoque-filtros select,
+    .estoque-filtros input {
+      padding: 8px 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      background: var(--input-bg);
+      color: var(--text);
+      outline: none;
+      transition: border var(--transition);
+    }
+    .estoque-filtros select:focus,
+    .estoque-filtros input:focus {
+      border-color: var(--primary);
+    }
+
+    .estoque-resumo {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding: 12px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .estoque-resumo span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .estoque-resumo .total {
+      color: var(--primary);
+    }
+    .estoque-resumo .critico {
+      color: var(--danger);
+    }
+    .estoque-resumo .baixo {
+      color: var(--warning);
+    }
+    .estoque-resumo .ok {
+      color: var(--success);
+    }
+
+    /* ============================================================
+       PAGE HEADER
+       ============================================================ */
     .page-header {
       display: flex;
       justify-content: space-between;
@@ -725,7 +919,9 @@
       transform: none;
     }
 
-    /* ITEMS GRID */
+    /* ============================================================
+       ITEMS GRID
+       ============================================================ */
     .items-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -750,6 +946,9 @@
       font-weight: 600;
       font-size: 1rem;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .item-card .card-name-clickable {
       cursor: pointer;
@@ -764,7 +963,7 @@
       padding: 3px 12px;
       border-radius: 50px;
       display: inline-block;
-      margin: 6px 0 2px;
+      margin: 4px 4px 2px 0;
     }
     .item-card .card-actions {
       display: flex;
@@ -820,7 +1019,34 @@
       grid-column: 1 / -1;
     }
 
-    /* CARRINHO BADGE */
+    /* ============================================================
+       ESTOQUE BADGE
+       ============================================================ */
+    .estoque-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 50px;
+    }
+    .estoque-badge.critico {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .estoque-badge.baixo {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .estoque-badge.ok {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    /* ============================================================
+       CART
+       ============================================================ */
     .cart-badge {
       background: var(--badge-bg);
       color: var(--badge-text);
@@ -832,7 +1058,6 @@
       display: inline-block;
     }
 
-    /* CART SIDEBAR */
     .cart-sidebar {
       width: 360px;
       flex-shrink: 0;
@@ -1072,6 +1297,14 @@
       resize: vertical;
     }
 
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+
     .name-preview {
       background: var(--name-preview-bg);
       padding: 10px 16px;
@@ -1246,6 +1479,16 @@
       .cart-sidebar {
         width: 320px;
       }
+      .estoque-table {
+        font-size: 0.8rem;
+      }
+      .estoque-table th,
+      .estoque-table td {
+        padding: 8px 10px;
+      }
+      .estoque-table .qtd-input {
+        width: 55px;
+      }
     }
 
     @media (max-width: 768px) {
@@ -1289,11 +1532,45 @@
       .content {
         padding: 20px 16px;
       }
+      .form-row {
+        flex-direction: column;
+      }
+      .estoque-filtros {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .estoque-filtros select,
+      .estoque-filtros input {
+        width: 100%;
+      }
+      .estoque-table {
+        font-size: 0.7rem;
+      }
+      .estoque-table th,
+      .estoque-table td {
+        padding: 6px 8px;
+      }
+      .estoque-table .qtd-input {
+        width: 45px;
+        font-size: 0.7rem;
+        padding: 4px 6px;
+      }
+      .estoque-table .btn-salvar-estoque {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+      }
     }
 
     @media (max-width: 480px) {
       .dashboard-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .dash-card {
+        padding: 14px 10px;
+      }
+      .dash-card .dash-number {
+        font-size: 1.5rem;
       }
       .page-header {
         flex-direction: column;
@@ -1311,7 +1588,11 @@
         align-items: stretch;
       }
       .modal {
-        padding: 24px 20px;
+        padding: 24px 16px;
+      }
+      .estoque-resumo {
+        font-size: 0.7rem;
+        gap: 12px;
       }
     }
   </style>
@@ -1374,13 +1655,14 @@
       <div class="sidebar-header"><i class="fas fa-compass"></i> Navegação</div>
       <div class="sidebar-nav">
         <a class="active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a data-page="estoque"><i class="fas fa-boxes"></i> 📦 Estoque</a>
         <a data-page="retentores"><i class="fas fa-oil-can"></i> Retentores</a>
         <a data-page="rolamentos"><i class="fas fa-cog"></i> Rolamentos</a>
         <a data-page="redutores"><i class="fas fa-gear"></i> Redutores</a>
         <a data-page="carrinho"><i class="fas fa-shopping-cart"></i> Carrinho</a>
         <a data-page="admin" id="sidebarAdmin"><i class="fas fa-users-cog"></i> Administração</a>
       </div>
-      <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.2 • Auto-sync ativo</div>
+      <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.4 • Auto-sync ativo</div>
     </div>
 
     <!-- Conteúdo -->
@@ -1389,31 +1671,102 @@
       <div class="page active" id="page-dashboard">
         <h2><i class="fas fa-chart-line" style="color: var(--primary);"></i> Dashboard</h2>
         <div class="dashboard-grid" id="dashboardGrid">
-          <div class="dash-card">
+          <div class="dash-card" data-filter="todos">
+            <div class="dash-icon"><i class="fas fa-warehouse"></i></div>
+            <div class="dash-number" id="dashTotal">0</div>
+            <div class="dash-label">Total em Estoque</div>
+          </div>
+          <div class="dash-card" data-filter="retentores">
             <div class="dash-icon"><i class="fas fa-oil-can"></i></div>
             <div class="dash-number" id="dashRetentores">0</div>
             <div class="dash-label">Retentores</div>
           </div>
-          <div class="dash-card">
+          <div class="dash-card" data-filter="rolamentos">
             <div class="dash-icon"><i class="fas fa-cog"></i></div>
             <div class="dash-number" id="dashRolamentos">0</div>
             <div class="dash-label">Rolamentos</div>
           </div>
-          <div class="dash-card">
+          <div class="dash-card" data-filter="redutores">
             <div class="dash-icon"><i class="fas fa-gear"></i></div>
             <div class="dash-number" id="dashRedutores">0</div>
             <div class="dash-label">Redutores</div>
           </div>
-          <div class="dash-card">
-            <div class="dash-icon"><i class="fas fa-shopping-cart"></i></div>
-            <div class="dash-number" id="dashCarrinho">0</div>
-            <div class="dash-label">Itens no carrinho</div>
+          <div class="dash-card alert-baixo" data-filter="baixo">
+            <div class="dash-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="dash-number" id="dashBaixoEstoque">0</div>
+            <div class="dash-label">⚠️ Estoque Baixo</div>
+            <span class="dash-badge" id="badgeBaixo">0</span>
+          </div>
+          <div class="dash-card alert-critico" data-filter="critico">
+            <div class="dash-icon"><i class="fas fa-skull-crossbones"></i></div>
+            <div class="dash-number" id="dashEstoqueCritico">0</div>
+            <div class="dash-label">🚨 Estoque Crítico</div>
+            <span class="dash-badge" id="badgeCritico">0</span>
           </div>
         </div>
         <div style="background: var(--card-bg); backdrop-filter: blur(8px); border-radius: var(--radius); padding: 24px; border: 1px solid var(--card-border); box-shadow: var(--shadow-sm);">
           <p style="color: var(--text-secondary);"><i class="fas fa-check-circle" style="color: var(--success);"></i> Sistema conectado ao Google Sheets. Todos os dados são sincronizados automaticamente.</p>
-          <p style="margin-top: 10px; font-size: 0.9rem;"><i class="fas fa-arrow-right" style="color: var(--primary);"></i> Use o menu lateral para navegar entre as categorias.</p>
-          <p style="margin-top: 6px; font-size: 0.9rem;"><i class="fas fa-sync-alt" style="color: var(--primary);"></i> Clique em <strong>"Sync"</strong> na barra superior para forçar uma sincronização manual.</p>
+          <p style="margin-top: 10px; font-size: 0.9rem;"><i class="fas fa-arrow-right" style="color: var(--primary);"></i> <strong>Clique nos cards</strong> para filtrar os itens correspondentes.</p>
+          <p style="margin-top: 6px; font-size: 0.9rem;"><i class="fas fa-boxes" style="color: var(--primary);"></i> Acesse a aba <strong>"📦 Estoque"</strong> para gerenciar todas as quantidades.</p>
+        </div>
+        <div id="dashboardFilteredItems" class="items-grid" style="margin-top: 20px; display: none;"></div>
+      </div>
+
+      <!-- ESTOQUE -->
+      <div class="page" id="page-estoque">
+        <div class="page-header">
+          <h2><i class="fas fa-boxes"></i> 📦 Gerenciar Estoque</h2>
+          <div class="search-box">
+            <input type="text" id="searchEstoque" placeholder="Pesquisar item..." />
+            <button class="btn-add" id="btnAtualizarTodosEstoque" style="background: var(--success);"><i class="fas fa-save"></i> Salvar Todos</button>
+          </div>
+        </div>
+
+        <div class="estoque-container">
+          <!-- Filtros -->
+          <div class="estoque-filtros">
+            <select id="filtroTipoEstoque">
+              <option value="todos">📋 Todos os tipos</option>
+              <option value="retentor">🔧 Retentores</option>
+              <option value="rolamento">⚙️ Rolamentos</option>
+              <option value="redutor">🔩 Redutores</option>
+            </select>
+            <select id="filtroStatusEstoque">
+              <option value="todos">📊 Todos os status</option>
+              <option value="critico">🚨 Crítico (0)</option>
+              <option value="baixo">⚠️ Baixo (≤ mínimo)</option>
+              <option value="ok">✅ Ok</option>
+            </select>
+            <span style="font-size:0.85rem; color: var(--text-light); margin-left: auto;">
+              <i class="fas fa-info-circle"></i> Clique em Salvar para atualizar
+            </span>
+          </div>
+
+          <!-- Resumo -->
+          <div class="estoque-resumo" id="estoqueResumo">
+            <span class="total"><i class="fas fa-boxes"></i> Total: <strong id="resumoTotal">0</strong></span>
+            <span class="critico"><i class="fas fa-skull-crossbones"></i> Crítico: <strong id="resumoCritico">0</strong></span>
+            <span class="baixo"><i class="fas fa-exclamation-triangle"></i> Baixo: <strong id="resumoBaixo">0</strong></span>
+            <span class="ok"><i class="fas fa-check-circle"></i> Ok: <strong id="resumoOk">0</strong></span>
+          </div>
+
+          <!-- Tabela -->
+          <div style="overflow-x: auto; max-height: 60vh; overflow-y: auto;">
+            <table class="estoque-table" id="tabelaEstoque">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Tipo</th>
+                  <th>Medidas</th>
+                  <th style="text-align: center;">Estoque</th>
+                  <th style="text-align: center;">Mínimo</th>
+                  <th style="text-align: center;">Status</th>
+                  <th style="text-align: center;">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="corpoTabelaEstoque"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -1522,7 +1875,7 @@
 </div>
 
 <!-- ============================================================
-     JAVASCRIPT (com ordenação crescente)
+     JAVASCRIPT
      ============================================================ -->
 <script>
 (function() {
@@ -1652,7 +2005,7 @@
   }
 
   // ============================================================
-  // REFRESH / SYNC MANUAL (COM ORDENAÇÃO)
+  // REFRESH / SYNC MANUAL
   // ============================================================
   async function refreshData() {
     if (isSyncing) return;
@@ -1665,7 +2018,6 @@
     try {
       const data = await loadDataFromSheet();
       if (data) {
-        // ORDENAÇÃO CRESCENTE POR ID
         retainers = (data.retainers || []).sort((a, b) => a.id - b.id);
         bearings = (data.bearings || []).sort((a, b) => a.id - b.id);
         reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
@@ -1675,6 +2027,7 @@
         nextReducerId = data.nextReducerId || 1;
         renderAllLists();
         renderAllCarts();
+        renderTabelaEstoque();
         updateDashboard();
         if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Sincronizado';
         setTimeout(() => { if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizado'; }, 2000);
@@ -1693,83 +2046,33 @@
   }
 
   // ============================================================
-  // DADOS PADRÃO (já ordenados)
+  // DADOS PADRÃO
   // ============================================================
   const defaultData = {
     retainers: [
-      { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm' },
-      { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm' },
-      { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm' },
-      { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm' },
-      { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm' },
-      { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm' },
-      { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm' },
-      { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm' },
-      { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm' },
-      { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm' },
-      { id:11, name:'Retentor 30x45x8', measures:'30 x 45 x 8 mm' },
-      { id:12, name:'Retentor 32x47x8', measures:'32 x 47 x 8 mm' },
-      { id:13, name:'Retentor 35x50x10', measures:'35 x 50 x 10 mm' },
-      { id:14, name:'Retentor 38x55x10', measures:'38 x 55 x 10 mm' },
-      { id:15, name:'Retentor 40x55x10', measures:'40 x 55 x 10 mm' },
-      { id:16, name:'Retentor 42x62x10', measures:'42 x 62 x 10 mm' },
-      { id:17, name:'Retentor 45x60x10', measures:'45 x 60 x 10 mm' },
-      { id:18, name:'Retentor 48x65x10', measures:'48 x 65 x 10 mm' },
-      { id:19, name:'Retentor 50x65x10', measures:'50 x 65 x 10 mm' },
-      { id:20, name:'Retentor 55x70x10', measures:'55 x 70 x 10 mm' },
-      { id:21, name:'Retentor 60x80x12', measures:'60 x 80 x 12 mm' },
-      { id:22, name:'Retentor 65x85x12', measures:'65 x 85 x 12 mm' },
-      { id:23, name:'Retentor 70x90x12', measures:'70 x 90 x 12 mm' },
-      { id:24, name:'Retentor 75x95x12', measures:'75 x 95 x 12 mm' },
-      { id:25, name:'Retentor 80x100x12', measures:'80 x 100 x 12 mm' },
-      { id:26, name:'Retentor 85x110x12', measures:'85 x 110 x 12 mm' },
-      { id:27, name:'Retentor 90x110x12', measures:'90 x 110 x 12 mm' },
-      { id:28, name:'Retentor 100x120x12', measures:'100 x 120 x 12 mm' },
-      { id:29, name:'Retentor 110x130x12', measures:'110 x 130 x 12 mm' },
-      { id:30, name:'Retentor 120x140x13', measures:'120 x 140 x 13 mm' }
+      { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm', estoque: 15, estoque_minimo: 5 },
+      { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm', estoque: 8, estoque_minimo: 5 },
+      { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm', estoque: 3, estoque_minimo: 5 },
+      { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm', estoque: 0, estoque_minimo: 5 },
+      { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm', estoque: 10, estoque_minimo: 5 },
+      { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm', estoque: 2, estoque_minimo: 5 },
+      { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm', estoque: 12, estoque_minimo: 5 },
+      { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm', estoque: 6, estoque_minimo: 5 },
+      { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm', estoque: 0, estoque_minimo: 5 },
+      { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm', estoque: 4, estoque_minimo: 5 }
     ],
     bearings: [
-      { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm' },
-      { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm' },
-      { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm' },
-      { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm' },
-      { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm' },
-      { id:6, name:'Rolamento 6005', measures:'47 x 25 x 12 mm' },
-      { id:7, name:'Rolamento 6006', measures:'55 x 30 x 13 mm' },
-      { id:8, name:'Rolamento 6007', measures:'62 x 35 x 14 mm' },
-      { id:9, name:'Rolamento 6008', measures:'68 x 40 x 15 mm' },
-      { id:10, name:'Rolamento 6009', measures:'75 x 45 x 16 mm' },
-      { id:11, name:'Rolamento 6010', measures:'80 x 50 x 16 mm' },
-      { id:12, name:'Rolamento 6200', measures:'30 x 10 x 9 mm' },
-      { id:13, name:'Rolamento 6201', measures:'32 x 12 x 10 mm' },
-      { id:14, name:'Rolamento 6202', measures:'35 x 15 x 11 mm' },
-      { id:15, name:'Rolamento 6203', measures:'40 x 17 x 12 mm' },
-      { id:16, name:'Rolamento 6204', measures:'47 x 20 x 14 mm' },
-      { id:17, name:'Rolamento 6205', measures:'52 x 25 x 15 mm' },
-      { id:18, name:'Rolamento 6206', measures:'62 x 30 x 16 mm' },
-      { id:19, name:'Rolamento 6207', measures:'72 x 35 x 17 mm' },
-      { id:20, name:'Rolamento 6208', measures:'80 x 40 x 18 mm' },
-      { id:21, name:'Rolamento 6300', measures:'35 x 10 x 11 mm' },
-      { id:22, name:'Rolamento 6301', measures:'37 x 12 x 12 mm' },
-      { id:23, name:'Rolamento 6302', measures:'42 x 15 x 13 mm' },
-      { id:24, name:'Rolamento 6303', measures:'47 x 17 x 14 mm' },
-      { id:25, name:'Rolamento 6304', measures:'52 x 20 x 15 mm' },
-      { id:26, name:'Rolamento 6305', measures:'62 x 25 x 17 mm' },
-      { id:27, name:'Rolamento 6306', measures:'72 x 30 x 19 mm' },
-      { id:28, name:'Rolamento 6307', measures:'80 x 35 x 21 mm' },
-      { id:29, name:'Rolamento 30203', measures:'40 x 17 x 13.25 mm' },
-      { id:30, name:'Rolamento 30204', measures:'47 x 20 x 14 mm' },
-      { id:31, name:'Rolamento 30205', measures:'52 x 25 x 15 mm' },
-      { id:32, name:'Rolamento 30206', measures:'62 x 30 x 16 mm' }
+      { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm', estoque: 20, estoque_minimo: 5 },
+      { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm', estoque: 1, estoque_minimo: 5 },
+      { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm', estoque: 7, estoque_minimo: 5 },
+      { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm', estoque: 0, estoque_minimo: 5 },
+      { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm', estoque: 3, estoque_minimo: 5 }
     ],
     reducers: [
       { id:1, name:'Redutor Planetário A10', manufacturer:'SEW', location:'Esteira Transportadora', bearings:['Rolamento 6001','Rolamento 6203'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
-      { id:2, name:'Redutor WEG Cestari C06', manufacturer:'WEG Cestari', location:'Transportador de Correia', bearings:['Rolamento 6204','Rolamento 6205'], retainers:['Retentor 25x40x7','Retentor 35x50x10'] },
-      { id:3, name:'Redutor WEG Cestari C05', manufacturer:'WEG Cestari', location:'Elevador de Canecas', bearings:['Rolamento 6203','Rolamento 6204'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
-      { id:4, name:'Redutor Geremia GO34', manufacturer:'Geremia', location:'Moinho de Martelo', bearings:['Rolamento 6305','Rolamento 6306'], retainers:['Retentor 35x50x10','Retentor 40x55x10'] },
-      { id:5, name:'Redutor Geremia GO29', manufacturer:'Geremia', location:'Agitador Industrial', bearings:['Rolamento 6304','Rolamento 6206'], retainers:['Retentor 25x40x7'] }
+      { id:2, name:'Redutor WEG Cestari C06', manufacturer:'WEG Cestari', location:'Transportador de Correia', bearings:['Rolamento 6204','Rolamento 6205'], retainers:['Retentor 25x40x7','Retentor 35x50x10'] }
     ],
-    nextRetainerId: 31, nextBearingId: 33, nextReducerId: 6
+    nextRetainerId: 11, nextBearingId: 6, nextReducerId: 3
   };
 
   // ============================================================
@@ -1805,7 +2108,230 @@
   }
 
   // ============================================================
-  // RENDERIZAÇÃO
+  // FUNÇÕES DE ESTOQUE
+  // ============================================================
+  function getEstoqueStatus(item) {
+    const estoque = item.estoque || 0;
+    const minimo = item.estoque_minimo || 5;
+    if (estoque === 0) return { status: 'critico', label: '🚨 Crítico', cor: 'var(--danger)' };
+    if (estoque <= minimo) return { status: 'baixo', label: '⚠️ Baixo', cor: 'var(--warning)' };
+    return { status: 'ok', label: '✅ Ok', cor: 'var(--success)' };
+  }
+
+  function calcularEstatisticasEstoque() {
+    const todosItens = [
+      ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
+      ...bearings.map(b => ({ ...b, tipo: 'rolamento' })),
+      ...reducers.map(r => ({ ...r, tipo: 'redutor' }))
+    ];
+
+    let total = 0;
+    let baixo = 0;
+    let critico = 0;
+    let retentores = 0, rolamentos = 0, redutores = 0;
+
+    todosItens.forEach(item => {
+      const estoque = item.estoque || 0;
+      const minimo = item.estoque_minimo || 5;
+      total += estoque;
+
+      if (item.tipo === 'retentor') retentores += estoque;
+      else if (item.tipo === 'rolamento') rolamentos += estoque;
+      else if (item.tipo === 'redutor') redutores += estoque;
+
+      if (estoque === 0) critico++;
+      else if (estoque <= minimo) baixo++;
+    });
+
+    return { total, retentores, rolamentos, redutores, baixo, critico };
+  }
+
+  // ============================================================
+  // RENDERIZAÇÃO - ESTOQUE
+  // ============================================================
+  function renderTabelaEstoque() {
+    const tbody = document.getElementById('corpoTabelaEstoque');
+    if (!tbody) return;
+
+    const search = document.getElementById('searchEstoque');
+    const filtroTipo = document.getElementById('filtroTipoEstoque');
+    const filtroStatus = document.getElementById('filtroStatusEstoque');
+
+    const q = search ? search.value.toLowerCase() : '';
+    const tipo = filtroTipo ? filtroTipo.value : 'todos';
+    const status = filtroStatus ? filtroStatus.value : 'todos';
+
+    // Junta todos os itens
+    let todosItens = [
+      ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
+      ...bearings.map(b => ({ ...b, tipo: 'rolamento' })),
+      ...reducers.map(r => ({ ...r, tipo: 'redutor' }))
+    ];
+
+    // Aplica filtros
+    todosItens = todosItens.filter(item => {
+      // Filtro de busca
+      if (q && !String(item.name).toLowerCase().includes(q) && 
+          !String(item.measures || '').toLowerCase().includes(q)) {
+        return false;
+      }
+      // Filtro de tipo
+      if (tipo !== 'todos' && item.tipo !== tipo) return false;
+      // Filtro de status
+      if (status !== 'todos') {
+        const st = getEstoqueStatus(item).status;
+        if (st !== status) return false;
+      }
+      return true;
+    });
+
+    // Ordena por nome
+    todosItens.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+
+    // Atualiza resumo
+    const total = todosItens.length;
+    const critico = todosItens.filter(i => getEstoqueStatus(i).status === 'critico').length;
+    const baixo = todosItens.filter(i => getEstoqueStatus(i).status === 'baixo').length;
+    const ok = todosItens.filter(i => getEstoqueStatus(i).status === 'ok').length;
+
+    document.getElementById('resumoTotal').textContent = total;
+    document.getElementById('resumoCritico').textContent = critico;
+    document.getElementById('resumoBaixo').textContent = baixo;
+    document.getElementById('resumoOk').textContent = ok;
+
+    if (!todosItens.length) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color: var(--text-light);">
+        <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:10px;"></i>
+        Nenhum item encontrado com os filtros atuais.
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = todosItens.map(item => {
+      const statusEstoque = getEstoqueStatus(item);
+      const estoque = item.estoque || 0;
+      const minimo = item.estoque_minimo || 5;
+      const medidas = item.measures || (item.tipo === 'redutor' ? '—' : '');
+      
+      let classeInput = 'qtd-input';
+      if (statusEstoque.status === 'critico') classeInput += ' estoque-critico';
+      else if (statusEstoque.status === 'baixo') classeInput += ' estoque-baixo';
+      else classeInput += ' estoque-ok';
+
+      return `<tr data-id="${item.id}" data-tipo="${item.tipo}">
+        <td><strong>${escapeHtml(item.name)}</strong></td>
+        <td><span style="font-size:0.75rem; background:var(--bg); padding:2px 10px; border-radius:50px;">${escapeHtml(item.tipo)}</span></td>
+        <td>${escapeHtml(medidas)}</td>
+        <td style="text-align: center;">
+          <input type="number" class="${classeInput}" value="${estoque}" min="0" 
+                 data-id="${item.id}" data-tipo="${item.tipo}" />
+        </td>
+        <td style="text-align: center;">${minimo}</td>
+        <td style="text-align: center;">
+          <span class="estoque-status-badge ${statusEstoque.status}">${statusEstoque.label}</span>
+        </td>
+        <td style="text-align: center;">
+          <button class="btn-salvar-estoque" data-id="${item.id}" data-tipo="${item.tipo}">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    // Eventos dos botões Salvar
+    tbody.querySelectorAll('.btn-salvar-estoque').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = parseInt(this.dataset.id);
+        const tipo = this.dataset.tipo;
+        const input = this.closest('tr').querySelector('.qtd-input');
+        const novoEstoque = parseInt(input.value) || 0;
+        atualizarEstoqueItem(id, tipo, novoEstoque);
+      });
+    });
+
+    // Eventos de Enter nos inputs
+    tbody.querySelectorAll('.qtd-input').forEach(inp => {
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          const btn = this.closest('tr').querySelector('.btn-salvar-estoque');
+          if (btn) btn.click();
+        }
+      });
+    });
+  }
+
+  // ============================================================
+  // FUNÇÃO PARA ATUALIZAR ESTOQUE DE UM ITEM
+  // ============================================================
+  async function atualizarEstoqueItem(id, tipo, novoEstoque) {
+    let lista, nextId;
+    if (tipo === 'retentor') { lista = retainers; }
+    else if (tipo === 'rolamento') { lista = bearings; }
+    else { lista = reducers; }
+
+    const item = lista.find(i => i.id === id);
+    if (!item) { alert('Item não encontrado!'); return; }
+
+    item.estoque = novoEstoque;
+    
+    // Atualiza visualização
+    renderTabelaEstoque();
+    renderAllLists();
+    updateDashboard();
+    await saveData();
+    
+    // Feedback visual
+    const inputs = document.querySelectorAll('.qtd-input');
+    inputs.forEach(inp => {
+      if (parseInt(inp.dataset.id) === id && inp.dataset.tipo === tipo) {
+        inp.style.borderColor = 'var(--success)';
+        inp.style.background = '#dcfce7';
+        setTimeout(() => {
+          inp.style.borderColor = '';
+          inp.style.background = '';
+        }, 1500);
+      }
+    });
+  }
+
+  // ============================================================
+  // FUNÇÃO PARA SALVAR TODOS OS ESTOQUES
+  // ============================================================
+  async function salvarTodosEstoques() {
+    const inputs = document.querySelectorAll('#corpoTabelaEstoque .qtd-input');
+    let alterados = 0;
+
+    inputs.forEach(inp => {
+      const id = parseInt(inp.dataset.id);
+      const tipo = inp.dataset.tipo;
+      const novoEstoque = parseInt(inp.value) || 0;
+      
+      let lista;
+      if (tipo === 'retentor') lista = retainers;
+      else if (tipo === 'rolamento') lista = bearings;
+      else lista = reducers;
+
+      const item = lista.find(i => i.id === id);
+      if (item && item.estoque !== novoEstoque) {
+        item.estoque = novoEstoque;
+        alterados++;
+      }
+    });
+
+    if (alterados === 0) {
+      alert('✅ Nenhuma alteração detectada!');
+      return;
+    }
+
+    renderTabelaEstoque();
+    renderAllLists();
+    updateDashboard();
+    await saveData();
+    alert(`✅ ${alterados} item(s) atualizado(s) com sucesso!`);
+  }
+
+  // ============================================================
+  // RENDERIZAÇÃO - LISTAS
   // ============================================================
   function renderList(containerId, list, type, searchInputId) {
     const container = document.getElementById(containerId);
@@ -1839,9 +2365,13 @@
           </div>
         </div>`;
       } else {
+        const status = getEstoqueStatus(item);
         return `<div class="item-card">
-          <div class="card-name">${escapeHtml(item.name)}</div>
+          <div class="card-name">${escapeHtml(item.name)} 
+            <span class="estoque-badge ${status.status}">${status.label}</span>
+          </div>
           <div class="card-info"><i class="fas fa-ruler"></i> ${escapeHtml(item.measures)}</div>
+          <div class="card-info"><i class="fas fa-boxes"></i> Estoque: ${item.estoque || 0} (Mín: ${item.estoque_minimo || 5})</div>
           <div class="card-actions">
             <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="${type}"><i class="fas fa-cart-plus"></i> Carrinho</button>
             ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="${type}"><i class="fas fa-edit"></i> Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="${type}"><i class="fas fa-trash-alt"></i> Remover</button>` : ''}
@@ -1923,11 +2453,86 @@
     renderCartItems('cartItemsSidebar');
   }
 
+  // ============================================================
+  // DASHBOARD
+  // ============================================================
   function updateDashboard() {
-    const el1 = document.getElementById('dashRetentores'); if (el1) el1.textContent = retainers.length;
-    const el2 = document.getElementById('dashRolamentos'); if (el2) el2.textContent = bearings.length;
-    const el3 = document.getElementById('dashRedutores'); if (el3) el3.textContent = reducers.length;
-    const el4 = document.getElementById('dashCarrinho'); if (el4) el4.textContent = cartTotalQty();
+    const stats = calcularEstatisticasEstoque();
+    
+    document.getElementById('dashTotal').textContent = stats.total;
+    document.getElementById('dashRetentores').textContent = stats.retentores;
+    document.getElementById('dashRolamentos').textContent = stats.rolamentos;
+    document.getElementById('dashRedutores').textContent = stats.redutores;
+    document.getElementById('dashBaixoEstoque').textContent = stats.baixo;
+    document.getElementById('dashEstoqueCritico').textContent = stats.critico;
+    document.getElementById('badgeBaixo').textContent = stats.baixo;
+    document.getElementById('badgeCritico').textContent = stats.critico;
+  }
+
+  function setupDashboardClicks() {
+    document.querySelectorAll('.dash-card[data-filter]').forEach(card => {
+      card.addEventListener('click', function() {
+        const filtro = this.dataset.filter;
+        const container = document.getElementById('dashboardFilteredItems');
+        container.style.display = 'grid';
+        
+        if (filtro === 'todos') {
+          const todosItens = [
+            ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
+            ...bearings.map(b => ({ ...b, tipo: 'rolamento' })),
+            ...reducers.map(r => ({ ...r, tipo: 'redutor' }))
+          ];
+          mostrarItensFiltrados(todosItens, 'Todos os Itens');
+        } else if (filtro === 'retentores') {
+          mostrarItensFiltrados(retainers.map(r => ({ ...r, tipo: 'retentor' })), 'Retentores');
+        } else if (filtro === 'rolamentos') {
+          mostrarItensFiltrados(bearings.map(b => ({ ...b, tipo: 'rolamento' })), 'Rolamentos');
+        } else if (filtro === 'redutores') {
+          mostrarItensFiltrados(reducers.map(r => ({ ...r, tipo: 'redutor' })), 'Redutores');
+        } else if (filtro === 'baixo') {
+          const itens = [
+            ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
+            ...bearings.map(b => ({ ...b, tipo: 'rolamento' }))
+          ].filter(item => {
+            const estoque = item.estoque || 0;
+            const minimo = item.estoque_minimo || 5;
+            return estoque <= minimo && estoque > 0;
+          });
+          mostrarItensFiltrados(itens, '⚠️ Estoque Baixo');
+        } else if (filtro === 'critico') {
+          const itens = [
+            ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
+            ...bearings.map(b => ({ ...b, tipo: 'rolamento' }))
+          ].filter(item => {
+            const estoque = item.estoque || 0;
+            return estoque === 0;
+          });
+          mostrarItensFiltrados(itens, '🚨 Estoque Crítico');
+        }
+      });
+    });
+  }
+
+  function mostrarItensFiltrados(itens, titulo) {
+    const container = document.getElementById('dashboardFilteredItems');
+    if (!itens.length) {
+      container.innerHTML = `<div class="no-results"><i class="fas fa-check-circle" style="font-size:2rem;color:var(--success);"></i> Nenhum item encontrado para "${titulo}"!</div>`;
+      return;
+    }
+
+    container.innerHTML = `<h3 style="grid-column:1/-1;margin-bottom:10px;">${titulo} (${itens.length} itens)</h3>` + 
+      itens.map(item => {
+        const status = getEstoqueStatus(item);
+        return `<div class="item-card" style="border-left: 4px solid ${status.cor};">
+          <div class="card-name">${escapeHtml(item.name)} 
+            <span class="estoque-badge ${status.status}">${status.label}</span>
+          </div>
+          ${item.measures ? `<div class="card-info"><i class="fas fa-ruler"></i> ${escapeHtml(item.measures)}</div>` : ''}
+          <div class="card-info"><i class="fas fa-boxes"></i> Estoque: ${item.estoque || 0} (Mín: ${item.estoque_minimo || 5})</div>
+          ${item.manufacturer ? `<div class="card-info"><i class="fas fa-industry"></i> ${escapeHtml(item.manufacturer)}</div>` : ''}
+          <div class="card-info"><i class="fas fa-tag"></i> ${escapeHtml(item.tipo)}</div>
+        </div>`;
+      }).join('');
   }
 
   // ============================================================
@@ -1960,6 +2565,7 @@
     cart = cart.filter(i => !(i.category === category && i.itemId === itemId));
     renderAllLists();
     renderAllCarts();
+    renderTabelaEstoque();
     updateDashboard();
     await saveData();
   }
@@ -1983,6 +2589,7 @@
         msg += `   Fabricante: ${item.manufacturer}\n   Local: ${item.location}\n   Rolamentos: ${(item.bearings||[]).join(', ')}\n   Retentores: ${(item.retainers||[]).join(', ')}\n`;
       } else {
         msg += `   Medidas: ${item.measures}\n`;
+        msg += `   Estoque: ${item.estoque || 0}\n`;
       }
       msg += `   Quantidade: ${ci.quantity}\n`;
       if (idx < cart.length - 1) msg += '\n';
@@ -1992,7 +2599,7 @@
   }
 
   // ============================================================
-  // MODAL ADICIONAR/EDITAR (COM ORDENAÇÃO)
+  // MODAL ADICIONAR/EDITAR
   // ============================================================
   let modalMode = 'add', editingItemId = null, editingCategory = null;
   const modalOverlay = document.getElementById('modalOverlay');
@@ -2000,6 +2607,7 @@
   let inputMeasuresRet, inputNameRol, inputMeasuresRol;
   let inputRedutorName, inputFabricante, inputLocal;
   let inputRolamentosAssoc, inputRetentoresAssoc, namePreviewText, btnSave, btnCancel;
+  let inputEstoque, inputEstoqueMinimo;
 
   function createModal(title, category, item) {
     modalOverlay.innerHTML = `<div class="modal"><h3><i class="fas fa-pen"></i> ${title}</h3>
@@ -2014,6 +2622,17 @@
       <div class="form-group"><label for="inputLocal"><i class="fas fa-map-marker-alt"></i> Local</label><input type="text" id="inputLocal"></div>
       <div class="form-group"><label for="inputRolamentosAssoc"><i class="fas fa-cog"></i> Rolamentos</label><textarea id="inputRolamentosAssoc" placeholder="Separe por vírgula"></textarea></div>
       <div class="form-group"><label for="inputRetentoresAssoc"><i class="fas fa-oil-can"></i> Retentores</label><textarea id="inputRetentoresAssoc" placeholder="Separe por vírgula"></textarea></div></div>
+      <hr style="margin: 16px 0; border-color: var(--border);">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="inputEstoque"><i class="fas fa-boxes"></i> Estoque</label>
+          <input type="number" id="inputEstoque" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label for="inputEstoqueMinimo"><i class="fas fa-exclamation-triangle"></i> Estoque Mínimo</label>
+          <input type="number" id="inputEstoqueMinimo" value="5" min="0" />
+        </div>
+      </div>
       <div class="modal-actions"><button class="btn-cancel" id="btnCancel"><i class="fas fa-times"></i> Cancelar</button><button class="btn-save" id="btnSave"><i class="fas fa-save"></i> Salvar</button></div></div>`;
 
     categorySelect = document.getElementById('categorySelect');
@@ -2028,6 +2647,8 @@
     inputLocal = document.getElementById('inputLocal');
     inputRolamentosAssoc = document.getElementById('inputRolamentosAssoc');
     inputRetentoresAssoc = document.getElementById('inputRetentoresAssoc');
+    inputEstoque = document.getElementById('inputEstoque');
+    inputEstoqueMinimo = document.getElementById('inputEstoqueMinimo');
     namePreviewText = document.getElementById('namePreviewText');
     btnSave = document.getElementById('btnSave');
     btnCancel = document.getElementById('btnCancel');
@@ -2036,9 +2657,17 @@
       categorySelect.value = category;
       categorySelect.disabled = true;
       toggleModalFields(category);
-      if (category === 'retentor' && item) { inputMeasuresRet.value = item.measures || ''; updateNamePreview(); }
-      else if (category === 'rolamento' && item) { inputNameRol.value = item.name || ''; inputMeasuresRol.value = item.measures || ''; }
-      else if (category === 'redutor' && item) {
+      if (category === 'retentor' && item) { 
+        inputMeasuresRet.value = item.measures || ''; 
+        inputEstoque.value = item.estoque || 0;
+        inputEstoqueMinimo.value = item.estoque_minimo || 5;
+        updateNamePreview(); 
+      } else if (category === 'rolamento' && item) { 
+        inputNameRol.value = item.name || ''; 
+        inputMeasuresRol.value = item.measures || '';
+        inputEstoque.value = item.estoque || 0;
+        inputEstoqueMinimo.value = item.estoque_minimo || 5;
+      } else if (category === 'redutor' && item) {
         inputRedutorName.value = item.name || '';
         inputFabricante.value = item.manufacturer || '';
         inputLocal.value = item.location || '';
@@ -2049,6 +2678,8 @@
       categorySelect.value = 'retentor';
       categorySelect.disabled = false;
       toggleModalFields('retentor');
+      inputEstoque.value = 0;
+      inputEstoqueMinimo.value = 5;
     }
 
     if (btnCancel) btnCancel.addEventListener('click', () => modalOverlay.style.display = 'none');
@@ -2060,7 +2691,7 @@
       });
     }
     if (inputMeasuresRet) inputMeasuresRet.addEventListener('input', updateNamePreview);
-    [inputMeasuresRet, inputNameRol, inputMeasuresRol, inputRedutorName, inputFabricante, inputLocal].forEach(inp => {
+    [inputMeasuresRet, inputNameRol, inputMeasuresRol, inputRedutorName, inputFabricante, inputLocal, inputEstoque, inputEstoqueMinimo].forEach(inp => {
       if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); if (btnSave) btnSave.click(); } });
     });
   }
@@ -2090,37 +2721,36 @@
   }
 
   // ============================================================
-  // SAVE MODAL COM ORDENAÇÃO CRESCENTE
+  // SAVE MODAL
   // ============================================================
   async function saveModal() {
     if (!isMaster()) return;
     const cat = categorySelect.value;
     try {
+      const estoque = parseInt(inputEstoque.value) || 0;
+      const estoqueMinimo = parseInt(inputEstoqueMinimo.value) || 5;
+
       if (cat === 'retentor') {
         const measures = inputMeasuresRet.value.trim();
         if (!measures) { alert('Informe a medida.'); return; }
         const name = generateRetentorName(measures);
         if (modalMode === 'add') {
-          retainers.push({ id: nextRetainerId++, name, measures });
-          // ORDENAÇÃO CRESCENTE POR ID
+          retainers.push({ id: nextRetainerId++, name, measures, estoque, estoque_minimo: estoqueMinimo });
           retainers.sort((a, b) => a.id - b.id);
         } else {
           const item = getItemById(editingItemId, cat);
-          if (item) { item.name = name; item.measures = measures; }
-          // ORDENAÇÃO CRESCENTE POR ID
+          if (item) { item.name = name; item.measures = measures; item.estoque = estoque; item.estoque_minimo = estoqueMinimo; }
           retainers.sort((a, b) => a.id - b.id);
         }
       } else if (cat === 'rolamento') {
         const name = inputNameRol.value.trim(), measures = inputMeasuresRol.value.trim();
         if (!name || !measures) { alert('Preencha todos os campos.'); return; }
         if (modalMode === 'add') {
-          bearings.push({ id: nextBearingId++, name, measures });
-          // ORDENAÇÃO CRESCENTE POR ID
+          bearings.push({ id: nextBearingId++, name, measures, estoque, estoque_minimo: estoqueMinimo });
           bearings.sort((a, b) => a.id - b.id);
         } else {
           const item = getItemById(editingItemId, cat);
-          if (item) { item.name = name; item.measures = measures; }
-          // ORDENAÇÃO CRESCENTE POR ID
+          if (item) { item.name = name; item.measures = measures; item.estoque = estoque; item.estoque_minimo = estoqueMinimo; }
           bearings.sort((a, b) => a.id - b.id);
         }
       } else {
@@ -2132,18 +2762,17 @@
         if (!name || !manufacturer || !location) { alert('Preencha todos os campos.'); return; }
         if (modalMode === 'add') {
           reducers.push({ id: nextReducerId++, name, manufacturer, location, bearings: blist, retainers: rlist });
-          // ORDENAÇÃO CRESCENTE POR ID
           reducers.sort((a, b) => a.id - b.id);
         } else {
           const item = getItemById(editingItemId, cat);
           if (item) { item.name = name; item.manufacturer = manufacturer; item.location = location; item.bearings = blist; item.retainers = rlist; }
-          // ORDENAÇÃO CRESCENTE POR ID
           reducers.sort((a, b) => a.id - b.id);
         }
       }
       modalOverlay.style.display = 'none';
       renderAllLists();
       renderAllCarts();
+      renderTabelaEstoque();
       updateDashboard();
       await saveData();
     } catch (e) {
@@ -2167,11 +2796,17 @@
     }
     if (page === 'admin') renderAdminPanelPage();
     if (page === 'carrinho') renderAllCarts();
-    if (page === 'dashboard') updateDashboard();
+    if (page === 'estoque') {
+      renderTabelaEstoque();
+    }
+    if (page === 'dashboard') {
+      updateDashboard();
+      document.getElementById('dashboardFilteredItems').style.display = 'none';
+    }
   }
 
   // ============================================================
-  // ADMIN (página)
+  // ADMIN
   // ============================================================
   function renderAdminPanelPage() {
     const container = document.getElementById('adminUserListPage');
@@ -2246,7 +2881,7 @@
   };
 
   // ============================================================
-  // STATUS DO SERVIDOR
+  // STATUS
   // ============================================================
   async function checkServerStatus() {
     const dot = document.getElementById('statusDot'), text = document.getElementById('statusText');
@@ -2264,7 +2899,7 @@
   }
 
   // ============================================================
-  // DETALHES DO REDUTOR
+  // DETALHES REDUTOR
   // ============================================================
   window._openReducerDetail = function(id) {
     const item = reducers.find(r => r.id === id);
@@ -2319,12 +2954,11 @@
   }
 
   // ============================================================
-  // INICIALIZAÇÃO (COM ORDENAÇÃO)
+  // INICIALIZAÇÃO
   // ============================================================
   async function initApp() {
     const data = await loadDataFromSheet();
     if (data) {
-      // ORDENAÇÃO CRESCENTE POR ID
       retainers = (data.retainers || []).sort((a, b) => a.id - b.id);
       bearings = (data.bearings || []).sort((a, b) => a.id - b.id);
       reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
@@ -2333,7 +2967,6 @@
       nextBearingId = data.nextBearingId || 1;
       nextReducerId = data.nextReducerId || 1;
     } else {
-      // DADOS PADRÃO JÁ ESTÃO ORDENADOS
       retainers = defaultData.retainers;
       bearings = defaultData.bearings;
       reducers = defaultData.reducers;
@@ -2345,7 +2978,9 @@
     }
     renderAllLists();
     renderAllCarts();
+    renderTabelaEstoque();
     updateDashboard();
+    setupDashboardClicks();
     navigateTo('dashboard');
     pollingEnabled = true;
     setInterval(checkForUpdates, POLL_INTERVAL);
@@ -2353,7 +2988,33 @@
   }
 
   // ============================================================
-  // EVENTOS
+  // SERVICE WORKER
+  // ============================================================
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/CONTROLE_CATALOGO/sw.js')
+        .then(function(registration) {
+          console.log('✅ Service Worker registrado com sucesso!');
+          registration.addEventListener('updatefound', function() {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                if (confirm('🔄 Nova versão disponível! Atualizar agora?')) {
+                  newWorker.postMessage('skipWaiting');
+                  window.location.reload();
+                }
+              }
+            });
+          });
+        })
+        .catch(function(error) {
+          console.log('❌ Erro:', error);
+        });
+    });
+  }
+
+  // ============================================================
+  // EVENTOS DOM
   // ============================================================
   document.addEventListener('DOMContentLoaded', function() {
     updateAppTitleUI(getAppTitle());
@@ -2370,10 +3031,7 @@
     const syncBtn = document.getElementById('btnManualSync');
     if (syncBtn) {
       syncBtn.addEventListener('click', function() {
-        if (!currentUser) {
-          alert('Faça login primeiro.');
-          return;
-        }
+        if (!currentUser) { alert('Faça login primeiro.'); return; }
         this.disabled = true;
         this.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sync';
         refreshData().finally(() => {
@@ -2429,6 +3087,26 @@
       });
     }
 
+    // ============================================================
+    // EVENTOS DA PÁGINA DE ESTOQUE
+    // ============================================================
+    const searchEstoque = document.getElementById('searchEstoque');
+    if (searchEstoque) searchEstoque.addEventListener('input', renderTabelaEstoque);
+
+    const filtroTipo = document.getElementById('filtroTipoEstoque');
+    if (filtroTipo) filtroTipo.addEventListener('change', renderTabelaEstoque);
+
+    const filtroStatus = document.getElementById('filtroStatusEstoque');
+    if (filtroStatus) filtroStatus.addEventListener('change', renderTabelaEstoque);
+
+    const btnSalvarTodos = document.getElementById('btnAtualizarTodosEstoque');
+    if (btnSalvarTodos) {
+      btnSalvarTodos.addEventListener('click', salvarTodosEstoques);
+    }
+
+    // ============================================================
+    // EVENTOS DAS LISTAS
+    // ============================================================
     ['searchRetentores', 'searchRolamentos', 'searchRedutores'].forEach(id => {
       const inp = document.getElementById(id);
       if (inp) inp.addEventListener('input', renderAllLists);
@@ -2505,34 +3183,6 @@
     }
   });
 })();
-</script>
-<!-- Service Worker -->
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/CONTROLE_CATALOGO/sw.js')
-      .then(function(registration) {
-        console.log('✅ Service Worker registrado com sucesso!');
-      })
-      .catch(function(error) {
-        console.log('❌ Erro:', error);
-      });
-  });
-}
-</script>
-  <!-- Service Worker -->
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/CONTROLE_CATALOGO/sw.js')
-      .then(function(registration) {
-        console.log('✅ Service Worker registrado com sucesso!');
-      })
-      .catch(function(error) {
-        console.log('❌ Erro:', error);
-      });
-  });
-}
 </script>
 </body>
 </html>
