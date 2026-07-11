@@ -683,171 +683,6 @@
     }
 
     /* ============================================================
-       ESTOQUE - TABELA
-       ============================================================ */
-    .estoque-container {
-      background: var(--card-bg);
-      backdrop-filter: blur(8px);
-      border-radius: var(--radius);
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-      margin-top: 16px;
-    }
-
-    .estoque-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-    .estoque-table th {
-      background: var(--panel-header-bg);
-      color: var(--text-secondary);
-      font-weight: 600;
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 2px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 5;
-    }
-    .estoque-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
-    .estoque-table tr:hover td {
-      background: var(--primary-light);
-      opacity: 0.5;
-    }
-
-    .estoque-table .qtd-input {
-      width: 70px;
-      padding: 6px 10px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-sm);
-      text-align: center;
-      font-size: 0.9rem;
-      font-weight: 600;
-      background: var(--input-bg);
-      color: var(--text);
-      transition: border var(--transition), box-shadow var(--transition);
-    }
-    .estoque-table .qtd-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px var(--input-focus-shadow);
-      outline: none;
-    }
-    .estoque-table .qtd-input.estoque-critico {
-      border-color: var(--danger);
-      background: #fee2e2;
-    }
-    .estoque-table .qtd-input.estoque-baixo {
-      border-color: var(--warning);
-      background: #fef3c7;
-    }
-    .estoque-table .qtd-input.estoque-ok {
-      border-color: var(--success);
-      background: #dcfce7;
-    }
-
-    .estoque-table .btn-salvar-estoque {
-      padding: 6px 16px;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      font-size: 0.75rem;
-      font-weight: 600;
-      transition: all var(--transition);
-    }
-    .estoque-table .btn-salvar-estoque:hover {
-      background: var(--primary-hover);
-      transform: scale(1.05);
-    }
-    .estoque-table .btn-salvar-estoque:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .estoque-status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 12px;
-      border-radius: 50px;
-    }
-    .estoque-status-badge.critico {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-    .estoque-status-badge.baixo {
-      background: #fef3c7;
-      color: #d97706;
-    }
-    .estoque-status-badge.ok {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    .estoque-filtros {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 16px 20px;
-      background: var(--panel-header-bg);
-      border-bottom: 1px solid var(--border);
-    }
-    .estoque-filtros select,
-    .estoque-filtros input {
-      padding: 8px 14px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      background: var(--input-bg);
-      color: var(--text);
-      outline: none;
-      transition: border var(--transition);
-    }
-    .estoque-filtros select:focus,
-    .estoque-filtros input:focus {
-      border-color: var(--primary);
-    }
-
-    .estoque-resumo {
-      display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
-      padding: 12px 20px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-    .estoque-resumo span {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .estoque-resumo .total {
-      color: var(--primary);
-    }
-    .estoque-resumo .critico {
-      color: var(--danger);
-    }
-    .estoque-resumo .baixo {
-      color: var(--warning);
-    }
-    .estoque-resumo .ok {
-      color: var(--success);
-    }
-
-    /* ============================================================
        PAGE HEADER
        ============================================================ */
     .page-header {
@@ -1479,16 +1314,6 @@
       .cart-sidebar {
         width: 320px;
       }
-      .estoque-table {
-        font-size: 0.8rem;
-      }
-      .estoque-table th,
-      .estoque-table td {
-        padding: 8px 10px;
-      }
-      .estoque-table .qtd-input {
-        width: 55px;
-      }
     }
 
     @media (max-width: 768px) {
@@ -1535,30 +1360,6 @@
       .form-row {
         flex-direction: column;
       }
-      .estoque-filtros {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .estoque-filtros select,
-      .estoque-filtros input {
-        width: 100%;
-      }
-      .estoque-table {
-        font-size: 0.7rem;
-      }
-      .estoque-table th,
-      .estoque-table td {
-        padding: 6px 8px;
-      }
-      .estoque-table .qtd-input {
-        width: 45px;
-        font-size: 0.7rem;
-        padding: 4px 6px;
-      }
-      .estoque-table .btn-salvar-estoque {
-        font-size: 0.65rem;
-        padding: 4px 10px;
-      }
     }
 
     @media (max-width: 480px) {
@@ -1589,10 +1390,6 @@
       }
       .modal {
         padding: 24px 16px;
-      }
-      .estoque-resumo {
-        font-size: 0.7rem;
-        gap: 12px;
       }
     }
   </style>
@@ -1655,14 +1452,13 @@
       <div class="sidebar-header"><i class="fas fa-compass"></i> Navegação</div>
       <div class="sidebar-nav">
         <a class="active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a>
-        <a data-page="estoque"><i class="fas fa-boxes"></i> 📦 Estoque</a>
         <a data-page="retentores"><i class="fas fa-oil-can"></i> Retentores</a>
         <a data-page="rolamentos"><i class="fas fa-cog"></i> Rolamentos</a>
         <a data-page="redutores"><i class="fas fa-gear"></i> Redutores</a>
         <a data-page="carrinho"><i class="fas fa-shopping-cart"></i> Carrinho</a>
         <a data-page="admin" id="sidebarAdmin"><i class="fas fa-users-cog"></i> Administração</a>
       </div>
-      <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.4 • Auto-sync ativo</div>
+      <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.3 • Auto-sync ativo</div>
     </div>
 
     <!-- Conteúdo -->
@@ -1707,67 +1503,9 @@
         <div style="background: var(--card-bg); backdrop-filter: blur(8px); border-radius: var(--radius); padding: 24px; border: 1px solid var(--card-border); box-shadow: var(--shadow-sm);">
           <p style="color: var(--text-secondary);"><i class="fas fa-check-circle" style="color: var(--success);"></i> Sistema conectado ao Google Sheets. Todos os dados são sincronizados automaticamente.</p>
           <p style="margin-top: 10px; font-size: 0.9rem;"><i class="fas fa-arrow-right" style="color: var(--primary);"></i> <strong>Clique nos cards</strong> para filtrar os itens correspondentes.</p>
-          <p style="margin-top: 6px; font-size: 0.9rem;"><i class="fas fa-boxes" style="color: var(--primary);"></i> Acesse a aba <strong>"📦 Estoque"</strong> para gerenciar todas as quantidades.</p>
+          <p style="margin-top: 6px; font-size: 0.9rem;"><i class="fas fa-sync-alt" style="color: var(--primary);"></i> Clique em <strong>"Sync"</strong> na barra superior para forçar uma sincronização manual.</p>
         </div>
         <div id="dashboardFilteredItems" class="items-grid" style="margin-top: 20px; display: none;"></div>
-      </div>
-
-      <!-- ESTOQUE -->
-      <div class="page" id="page-estoque">
-        <div class="page-header">
-          <h2><i class="fas fa-boxes"></i> 📦 Gerenciar Estoque</h2>
-          <div class="search-box">
-            <input type="text" id="searchEstoque" placeholder="Pesquisar item..." />
-            <button class="btn-add" id="btnAtualizarTodosEstoque" style="background: var(--success);"><i class="fas fa-save"></i> Salvar Todos</button>
-          </div>
-        </div>
-
-        <div class="estoque-container">
-          <!-- Filtros -->
-          <div class="estoque-filtros">
-            <select id="filtroTipoEstoque">
-              <option value="todos">📋 Todos os tipos</option>
-              <option value="retentor">🔧 Retentores</option>
-              <option value="rolamento">⚙️ Rolamentos</option>
-              <option value="redutor">🔩 Redutores</option>
-            </select>
-            <select id="filtroStatusEstoque">
-              <option value="todos">📊 Todos os status</option>
-              <option value="critico">🚨 Crítico (0)</option>
-              <option value="baixo">⚠️ Baixo (≤ mínimo)</option>
-              <option value="ok">✅ Ok</option>
-            </select>
-            <span style="font-size:0.85rem; color: var(--text-light); margin-left: auto;">
-              <i class="fas fa-info-circle"></i> Clique em Salvar para atualizar
-            </span>
-          </div>
-
-          <!-- Resumo -->
-          <div class="estoque-resumo" id="estoqueResumo">
-            <span class="total"><i class="fas fa-boxes"></i> Total: <strong id="resumoTotal">0</strong></span>
-            <span class="critico"><i class="fas fa-skull-crossbones"></i> Crítico: <strong id="resumoCritico">0</strong></span>
-            <span class="baixo"><i class="fas fa-exclamation-triangle"></i> Baixo: <strong id="resumoBaixo">0</strong></span>
-            <span class="ok"><i class="fas fa-check-circle"></i> Ok: <strong id="resumoOk">0</strong></span>
-          </div>
-
-          <!-- Tabela -->
-          <div style="overflow-x: auto; max-height: 60vh; overflow-y: auto;">
-            <table class="estoque-table" id="tabelaEstoque">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Tipo</th>
-                  <th>Medidas</th>
-                  <th style="text-align: center;">Estoque</th>
-                  <th style="text-align: center;">Mínimo</th>
-                  <th style="text-align: center;">Status</th>
-                  <th style="text-align: center;">Ação</th>
-                </tr>
-              </thead>
-              <tbody id="corpoTabelaEstoque"></tbody>
-            </table>
-          </div>
-        </div>
       </div>
 
       <!-- RETENTORES -->
@@ -1895,6 +1633,21 @@
   let currentUser = null, currentVersion = 0, pollingEnabled = true;
   let isSyncing = false;
 
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal, cache: 'no-store' });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function sortByMeasure(a, b) {
+    const number = value => Number(String(value || '').replace(',', '.').match(/\d+(?:\.\d+)?/)?.[0] || 0);
+    return number(a.measures) - number(b.measures) || String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR');
+  }
+
   // ============================================================
   // TÍTULO
   // ============================================================
@@ -1933,7 +1686,7 @@
   // ============================================================
   async function getVersionFromSheet() {
     try {
-      const resp = await fetch(`${APP_SCRIPT_URL}?action=version&sheetId=${SHEET_ID}&t=${Date.now()}`);
+      const resp = await fetchWithTimeout(`${APP_SCRIPT_URL}?action=version&sheetId=${SHEET_ID}&t=${Date.now()}`);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const result = await resp.json();
       return result.status === 'ok' ? (result.version || 0) : 0;
@@ -1942,7 +1695,7 @@
 
   async function loadDataFromSheet() {
     try {
-      const resp = await fetch(`${APP_SCRIPT_URL}?action=load&sheetId=${SHEET_ID}&t=${Date.now()}`);
+      const resp = await fetchWithTimeout(`${APP_SCRIPT_URL}?action=load&sheetId=${SHEET_ID}&t=${Date.now()}`);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const result = await resp.json();
       if (result.status === 'ok') {
@@ -1955,17 +1708,22 @@
 
   async function saveDataToSheet(data) {
     try {
-      const payload = { action: 'save', sheetId: SHEET_ID, data: JSON.stringify(data) };
+      const payload = { action: 'save', sheetId: SHEET_ID, expectedVersion: currentVersion, data: JSON.stringify(data) };
       const formData = new FormData();
       for (let k in payload) formData.append(k, payload[k]);
-      const resp = await fetch(APP_SCRIPT_URL, { method: 'POST', body: formData });
+      const resp = await fetchWithTimeout(APP_SCRIPT_URL, { method: 'POST', body: formData }, 30000);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const result = await resp.json();
       if (result.status === 'ok') {
         if (result.version) currentVersion = result.version;
         return true;
       }
-      throw new Error(result.message);
+      if (result.code === 'VERSION_CONFLICT') {
+        currentVersion = result.version || currentVersion;
+        await refreshData();
+        throw new Error('Outro usuário alterou os dados. A versão mais recente foi carregada; repita sua alteração.');
+      }
+      throw new Error(result.message || 'Não foi possível salvar os dados.');
     } catch (e) {
       console.error('Save error:', e);
       alert('Erro ao salvar: ' + e.message);
@@ -2018,8 +1776,8 @@
     try {
       const data = await loadDataFromSheet();
       if (data) {
-        retainers = (data.retainers || []).sort((a, b) => a.id - b.id);
-        bearings = (data.bearings || []).sort((a, b) => a.id - b.id);
+        retainers = (data.retainers || []).sort(sortByMeasure);
+        bearings = (data.bearings || []).sort(sortByMeasure);
         reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
         cart = data.cart || [];
         nextRetainerId = data.nextRetainerId || 1;
@@ -2027,7 +1785,6 @@
         nextReducerId = data.nextReducerId || 1;
         renderAllLists();
         renderAllCarts();
-        renderTabelaEstoque();
         updateDashboard();
         if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Sincronizado';
         setTimeout(() => { if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizado'; }, 2000);
@@ -2147,191 +1904,7 @@
   }
 
   // ============================================================
-  // RENDERIZAÇÃO - ESTOQUE
-  // ============================================================
-  function renderTabelaEstoque() {
-    const tbody = document.getElementById('corpoTabelaEstoque');
-    if (!tbody) return;
-
-    const search = document.getElementById('searchEstoque');
-    const filtroTipo = document.getElementById('filtroTipoEstoque');
-    const filtroStatus = document.getElementById('filtroStatusEstoque');
-
-    const q = search ? search.value.toLowerCase() : '';
-    const tipo = filtroTipo ? filtroTipo.value : 'todos';
-    const status = filtroStatus ? filtroStatus.value : 'todos';
-
-    // Junta todos os itens
-    let todosItens = [
-      ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
-      ...bearings.map(b => ({ ...b, tipo: 'rolamento' })),
-      ...reducers.map(r => ({ ...r, tipo: 'redutor' }))
-    ];
-
-    // Aplica filtros
-    todosItens = todosItens.filter(item => {
-      // Filtro de busca
-      if (q && !String(item.name).toLowerCase().includes(q) && 
-          !String(item.measures || '').toLowerCase().includes(q)) {
-        return false;
-      }
-      // Filtro de tipo
-      if (tipo !== 'todos' && item.tipo !== tipo) return false;
-      // Filtro de status
-      if (status !== 'todos') {
-        const st = getEstoqueStatus(item).status;
-        if (st !== status) return false;
-      }
-      return true;
-    });
-
-    // Ordena por nome
-    todosItens.sort((a, b) => String(a.name).localeCompare(String(b.name)));
-
-    // Atualiza resumo
-    const total = todosItens.length;
-    const critico = todosItens.filter(i => getEstoqueStatus(i).status === 'critico').length;
-    const baixo = todosItens.filter(i => getEstoqueStatus(i).status === 'baixo').length;
-    const ok = todosItens.filter(i => getEstoqueStatus(i).status === 'ok').length;
-
-    document.getElementById('resumoTotal').textContent = total;
-    document.getElementById('resumoCritico').textContent = critico;
-    document.getElementById('resumoBaixo').textContent = baixo;
-    document.getElementById('resumoOk').textContent = ok;
-
-    if (!todosItens.length) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color: var(--text-light);">
-        <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:10px;"></i>
-        Nenhum item encontrado com os filtros atuais.
-      </td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = todosItens.map(item => {
-      const statusEstoque = getEstoqueStatus(item);
-      const estoque = item.estoque || 0;
-      const minimo = item.estoque_minimo || 5;
-      const medidas = item.measures || (item.tipo === 'redutor' ? '—' : '');
-      
-      let classeInput = 'qtd-input';
-      if (statusEstoque.status === 'critico') classeInput += ' estoque-critico';
-      else if (statusEstoque.status === 'baixo') classeInput += ' estoque-baixo';
-      else classeInput += ' estoque-ok';
-
-      return `<tr data-id="${item.id}" data-tipo="${item.tipo}">
-        <td><strong>${escapeHtml(item.name)}</strong></td>
-        <td><span style="font-size:0.75rem; background:var(--bg); padding:2px 10px; border-radius:50px;">${escapeHtml(item.tipo)}</span></td>
-        <td>${escapeHtml(medidas)}</td>
-        <td style="text-align: center;">
-          <input type="number" class="${classeInput}" value="${estoque}" min="0" 
-                 data-id="${item.id}" data-tipo="${item.tipo}" />
-        </td>
-        <td style="text-align: center;">${minimo}</td>
-        <td style="text-align: center;">
-          <span class="estoque-status-badge ${statusEstoque.status}">${statusEstoque.label}</span>
-        </td>
-        <td style="text-align: center;">
-          <button class="btn-salvar-estoque" data-id="${item.id}" data-tipo="${item.tipo}">
-            <i class="fas fa-save"></i> Salvar
-          </button>
-        </td>
-      </tr>`;
-    }).join('');
-
-    // Eventos dos botões Salvar
-    tbody.querySelectorAll('.btn-salvar-estoque').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const id = parseInt(this.dataset.id);
-        const tipo = this.dataset.tipo;
-        const input = this.closest('tr').querySelector('.qtd-input');
-        const novoEstoque = parseInt(input.value) || 0;
-        atualizarEstoqueItem(id, tipo, novoEstoque);
-      });
-    });
-
-    // Eventos de Enter nos inputs
-    tbody.querySelectorAll('.qtd-input').forEach(inp => {
-      inp.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          const btn = this.closest('tr').querySelector('.btn-salvar-estoque');
-          if (btn) btn.click();
-        }
-      });
-    });
-  }
-
-  // ============================================================
-  // FUNÇÃO PARA ATUALIZAR ESTOQUE DE UM ITEM
-  // ============================================================
-  async function atualizarEstoqueItem(id, tipo, novoEstoque) {
-    let lista, nextId;
-    if (tipo === 'retentor') { lista = retainers; }
-    else if (tipo === 'rolamento') { lista = bearings; }
-    else { lista = reducers; }
-
-    const item = lista.find(i => i.id === id);
-    if (!item) { alert('Item não encontrado!'); return; }
-
-    item.estoque = novoEstoque;
-    
-    // Atualiza visualização
-    renderTabelaEstoque();
-    renderAllLists();
-    updateDashboard();
-    await saveData();
-    
-    // Feedback visual
-    const inputs = document.querySelectorAll('.qtd-input');
-    inputs.forEach(inp => {
-      if (parseInt(inp.dataset.id) === id && inp.dataset.tipo === tipo) {
-        inp.style.borderColor = 'var(--success)';
-        inp.style.background = '#dcfce7';
-        setTimeout(() => {
-          inp.style.borderColor = '';
-          inp.style.background = '';
-        }, 1500);
-      }
-    });
-  }
-
-  // ============================================================
-  // FUNÇÃO PARA SALVAR TODOS OS ESTOQUES
-  // ============================================================
-  async function salvarTodosEstoques() {
-    const inputs = document.querySelectorAll('#corpoTabelaEstoque .qtd-input');
-    let alterados = 0;
-
-    inputs.forEach(inp => {
-      const id = parseInt(inp.dataset.id);
-      const tipo = inp.dataset.tipo;
-      const novoEstoque = parseInt(inp.value) || 0;
-      
-      let lista;
-      if (tipo === 'retentor') lista = retainers;
-      else if (tipo === 'rolamento') lista = bearings;
-      else lista = reducers;
-
-      const item = lista.find(i => i.id === id);
-      if (item && item.estoque !== novoEstoque) {
-        item.estoque = novoEstoque;
-        alterados++;
-      }
-    });
-
-    if (alterados === 0) {
-      alert('✅ Nenhuma alteração detectada!');
-      return;
-    }
-
-    renderTabelaEstoque();
-    renderAllLists();
-    updateDashboard();
-    await saveData();
-    alert(`✅ ${alterados} item(s) atualizado(s) com sucesso!`);
-  }
-
-  // ============================================================
-  // RENDERIZAÇÃO - LISTAS
+  // RENDERIZAÇÃO
   // ============================================================
   function renderList(containerId, list, type, searchInputId) {
     const container = document.getElementById(containerId);
@@ -2421,7 +1994,7 @@
         if (ci.category === 'retentor' || ci.category === 'rolamento') {
           measuresText = `<i class="fas fa-ruler"></i> ${escapeHtml(item.measures)}`;
         } else {
-          measuresText = `<i class="fas fa-industry"></i> ${escapeHtml(item.manufacturer)} | <i class="fas fa-map-marker-alt"></i> ${escapeHtml(item.location)}<br><i class="fas fa-cog"></i> ${(item.bearings||[]).join(', ')}<br><i class="fas fa-oil-can"></i> ${(item.retainers||[]).join(', ')}`;
+          measuresText = `<i class="fas fa-industry"></i> ${escapeHtml(item.manufacturer)} | <i class="fas fa-map-marker-alt"></i> ${escapeHtml(item.location)}<br><i class="fas fa-cog"></i> ${escapeHtml((item.bearings||[]).join(', '))}<br><i class="fas fa-oil-can"></i> ${escapeHtml((item.retainers||[]).join(', '))}`;
         }
         return `<div class="cart-item">
           <div class="cart-item-name">${escapeHtml(item.name)}</div>
@@ -2565,7 +2138,6 @@
     cart = cart.filter(i => !(i.category === category && i.itemId === itemId));
     renderAllLists();
     renderAllCarts();
-    renderTabelaEstoque();
     updateDashboard();
     await saveData();
   }
@@ -2727,8 +2299,8 @@
     if (!isMaster()) return;
     const cat = categorySelect.value;
     try {
-      const estoque = parseInt(inputEstoque.value) || 0;
-      const estoqueMinimo = parseInt(inputEstoqueMinimo.value) || 5;
+      const estoque = Math.max(0, parseInt(inputEstoque.value, 10) || 0);
+      const estoqueMinimo = Math.max(0, parseInt(inputEstoqueMinimo.value, 10) || 0);
 
       if (cat === 'retentor') {
         const measures = inputMeasuresRet.value.trim();
@@ -2772,7 +2344,6 @@
       modalOverlay.style.display = 'none';
       renderAllLists();
       renderAllCarts();
-      renderTabelaEstoque();
       updateDashboard();
       await saveData();
     } catch (e) {
@@ -2796,9 +2367,6 @@
     }
     if (page === 'admin') renderAdminPanelPage();
     if (page === 'carrinho') renderAllCarts();
-    if (page === 'estoque') {
-      renderTabelaEstoque();
-    }
     if (page === 'dashboard') {
       updateDashboard();
       document.getElementById('dashboardFilteredItems').style.display = 'none';
@@ -2887,7 +2455,7 @@
     const dot = document.getElementById('statusDot'), text = document.getElementById('statusText');
     if (!dot || !text) { setTimeout(checkServerStatus, 2000); return; }
     try {
-      const resp = await fetch(`${APP_SCRIPT_URL}?action=ping&t=${Date.now()}`);
+      const resp = await fetchWithTimeout(`${APP_SCRIPT_URL}?action=ping&t=${Date.now()}`, {}, 8000);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const data = await resp.json();
       if (data.status === 'ok') { dot.className = 'status-dot online'; text.textContent = 'Online'; }
@@ -2959,8 +2527,8 @@
   async function initApp() {
     const data = await loadDataFromSheet();
     if (data) {
-      retainers = (data.retainers || []).sort((a, b) => a.id - b.id);
-      bearings = (data.bearings || []).sort((a, b) => a.id - b.id);
+      retainers = (data.retainers || []).sort(sortByMeasure);
+      bearings = (data.bearings || []).sort(sortByMeasure);
       reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
       cart = data.cart || [];
       nextRetainerId = data.nextRetainerId || 1;
@@ -2978,7 +2546,6 @@
     }
     renderAllLists();
     renderAllCarts();
-    renderTabelaEstoque();
     updateDashboard();
     setupDashboardClicks();
     navigateTo('dashboard');
@@ -3087,26 +2654,6 @@
       });
     }
 
-    // ============================================================
-    // EVENTOS DA PÁGINA DE ESTOQUE
-    // ============================================================
-    const searchEstoque = document.getElementById('searchEstoque');
-    if (searchEstoque) searchEstoque.addEventListener('input', renderTabelaEstoque);
-
-    const filtroTipo = document.getElementById('filtroTipoEstoque');
-    if (filtroTipo) filtroTipo.addEventListener('change', renderTabelaEstoque);
-
-    const filtroStatus = document.getElementById('filtroStatusEstoque');
-    if (filtroStatus) filtroStatus.addEventListener('change', renderTabelaEstoque);
-
-    const btnSalvarTodos = document.getElementById('btnAtualizarTodosEstoque');
-    if (btnSalvarTodos) {
-      btnSalvarTodos.addEventListener('click', salvarTodosEstoques);
-    }
-
-    // ============================================================
-    // EVENTOS DAS LISTAS
-    // ============================================================
     ['searchRetentores', 'searchRolamentos', 'searchRedutores'].forEach(id => {
       const inp = document.getElementById(id);
       if (inp) inp.addEventListener('input', renderAllLists);
