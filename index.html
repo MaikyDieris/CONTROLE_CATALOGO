@@ -1,0 +1,3190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Gerenciador • Retentores, Rolamentos, Redutores</title>
+
+  <!-- PWA Configuração -->
+  <link rel="manifest" href="/CONTROLE_CATALOGO/manifest.json" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Gerenciador" />
+  <link rel="apple-touch-icon" href="/CONTROLE_CATALOGO/icons/icon-192.png" />
+
+  <!-- Google Fonts (Inter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 (ícones) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    /* ============================================================
+       RESET E VARIÁVEIS
+       ============================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f4f7fc;
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(255, 255, 255, 0.3);
+      --sidebar-bg: #1e293b;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-light: #94a3b8;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #dbeafe;
+      --success: #22c55e;
+      --success-hover: #16a34a;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --warning: #f59e0b;
+      --warning-hover: #d97706;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.10);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
+      --header-bg: rgba(255, 255, 255, 0.85);
+      --input-bg: #ffffff;
+      --badge-bg: #2563eb;
+      --badge-text: #ffffff;
+      --cart-item-bg: #ffffff;
+      --btn-cart-bg: #e0f2fe;
+      --btn-cart-color: #0369a1;
+      --btn-edit-bg: #fef3c7;
+      --btn-edit-color: #92400e;
+      --btn-remove-bg: #fee2e2;
+      --btn-remove-color: #991b1b;
+      --modal-overlay: rgba(15, 23, 42, 0.6);
+      --name-preview-bg: #f1f5f9;
+      --center-placeholder: #94a3b8;
+      --input-focus-shadow: rgba(37, 99, 235, 0.25);
+      --panel-header-bg: #f8fafc;
+      --cart-footer-bg: #f8fafc;
+      --whatsapp-shadow: rgba(34, 197, 94, 0.3);
+      --status-online: #22c55e;
+      --status-offline: #ef4444;
+      --sidebar-width: 260px;
+      --header-height: 68px;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.dark {
+      --bg: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-border: rgba(51, 65, 85, 0.5);
+      --sidebar-bg: #0f172a;
+      --text: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-light: #64748b;
+      --border: #334155;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --primary-light: #1e3a5f;
+      --danger: #f87171;
+      --danger-hover: #ef4444;
+      --warning: #fbbf24;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
+      --header-bg: rgba(30, 41, 59, 0.9);
+      --input-bg: #1e293b;
+      --badge-bg: #3b82f6;
+      --badge-text: #0f172a;
+      --cart-item-bg: #1e293b;
+      --btn-cart-bg: #1e3a5f;
+      --btn-cart-color: #60a5fa;
+      --btn-edit-bg: #4a3a1a;
+      --btn-edit-color: #fbbf24;
+      --btn-remove-bg: #4a1e1e;
+      --btn-remove-color: #f87171;
+      --modal-overlay: rgba(0, 0, 0, 0.7);
+      --name-preview-bg: #1e293b;
+      --center-placeholder: #64748b;
+      --input-focus-shadow: rgba(59, 130, 246, 0.25);
+      --panel-header-bg: #1e293b;
+      --cart-footer-bg: #1e293b;
+      --whatsapp-shadow: rgba(34, 197, 94, 0.15);
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background var(--transition), color var(--transition);
+      overflow: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--text-light);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+
+    /* ============================================================
+       LOGIN
+       ============================================================ */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 40%, #1a3a5c 0%, #0b1a2f 100%);
+      overflow: hidden;
+    }
+
+    .login-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.4;
+    }
+
+    .gear-container {
+      position: relative;
+      width: 450px;
+      height: 450px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gear {
+      position: absolute;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #2c5f8a, #4a90c2, #2c5f8a, #1e4a6e, #2c5f8a);
+      box-shadow: 0 0 40px rgba(74, 144, 194, 0.3);
+      animation: spin 20s linear infinite;
+    }
+    .gear1 { width: 280px; height: 280px; animation-duration: 25s; }
+    .gear2 { width: 200px; height: 200px; top: 20px; left: 180px; animation-duration: 18s; animation-direction: reverse; }
+    .gear3 { width: 150px; height: 150px; top: 180px; left: 30px; animation-duration: 15s; }
+
+    .bearing {
+      position: absolute;
+      border: 6px solid rgba(74, 144, 194, 0.6);
+      border-radius: 50%;
+      animation: spin 12s linear infinite;
+      box-shadow: 0 0 20px rgba(74, 144, 194, 0.2);
+    }
+    .bearing1 { width: 100px; height: 100px; top: 60px; left: 250px; }
+    .bearing2 { width: 70px; height: 70px; top: 250px; left: 80px; animation-direction: reverse; }
+
+    .retainer-ring {
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border: 3px dashed rgba(74, 144, 194, 0.6);
+      border-radius: 50%;
+      top: 120px;
+      left: 200px;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.9; }
+    }
+
+    .login-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 40px 32px;
+      width: 90%;
+      max-width: 380px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      animation: fadeInUp 0.7s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .login-card h2 {
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 1.7rem;
+      letter-spacing: -0.5px;
+    }
+    .login-card .subtitle {
+      color: #3b82f6;
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    .login-card .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    .login-card .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      color: #1e293b;
+    }
+    .login-card .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: #f8fafc;
+      transition: border var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .login-card .form-group input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    }
+
+    .login-card .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.3s;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      margin-top: 8px;
+    }
+    .login-card .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+    }
+    .login-card .btn-login:active {
+      transform: scale(0.97);
+    }
+
+    .login-error {
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    .admin-link {
+      display: inline-block;
+      margin-top: 14px;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color var(--transition);
+    }
+    .admin-link:hover {
+      color: #2563eb;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       APP LAYOUT
+       ============================================================ */
+    #app {
+      display: none;
+      height: 100vh;
+      flex-direction: column;
+      background: var(--bg);
+    }
+
+    .top-bar {
+      height: var(--header-height);
+      background: var(--header-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 20;
+      box-shadow: var(--shadow-sm);
+      transition: background var(--transition), border var(--transition);
+    }
+
+    .top-bar .left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .top-bar .left .menu-toggle {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      transition: background var(--transition);
+    }
+    .top-bar .left .menu-toggle:hover {
+      background: var(--border);
+    }
+    .top-bar .left .app-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .top-bar .left .app-title i {
+      color: var(--primary);
+    }
+
+    .top-bar .right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .top-bar .right .user-info {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 6px 14px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .top-bar .right .user-info i {
+      font-size: 0.9rem;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 50px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      transition: background var(--transition), border var(--transition);
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .status-dot.online {
+      background: var(--status-online);
+      box-shadow: 0 0 8px var(--status-online);
+    }
+    .status-dot.offline {
+      background: var(--status-offline);
+      box-shadow: 0 0 8px var(--status-offline);
+    }
+    #syncStatus {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-sync {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
+    .btn-sync:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    }
+    .btn-sync:active {
+      transform: scale(0.95);
+    }
+    .btn-sync:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: all var(--transition);
+    }
+    .theme-toggle:hover {
+      background: var(--border);
+      transform: rotate(20deg);
+    }
+
+    .btn-logout {
+      padding: 6px 18px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-logout:hover {
+      background: var(--danger-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .app-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--sidebar-bg);
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.3s, transform 0.3s;
+      overflow: hidden;
+      z-index: 10;
+      border-right: 1px solid var(--border);
+    }
+    .sidebar.collapsed {
+      width: 0;
+      border-right: none;
+    }
+
+    .sidebar .sidebar-header {
+      padding: 22px 20px 14px;
+      font-weight: 700;
+      font-size: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .sidebar .sidebar-header i {
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .sidebar .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 0;
+    }
+    .sidebar .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 20px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+    .sidebar .sidebar-nav a i {
+      font-size: 1.1rem;
+      width: 22px;
+      text-align: center;
+      color: #94a3b8;
+      transition: color 0.2s;
+    }
+    .sidebar .sidebar-nav a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+    .sidebar .sidebar-nav a:hover i {
+      color: #fff;
+    }
+    .sidebar .sidebar-nav a.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-left-color: var(--primary);
+    }
+    .sidebar .sidebar-nav a.active i {
+      color: var(--primary);
+    }
+
+    .sidebar .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.75rem;
+      color: #94a3b8;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px;
+      background: var(--bg);
+      transition: background var(--transition);
+    }
+
+    .content .page {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .content .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       DASHBOARD
+       ============================================================ */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .dash-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      border: 2px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .dash-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+    .dash-card:active {
+      transform: scale(0.96);
+    }
+    .dash-card .dash-icon {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .dash-card .dash-number {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .dash-card .dash-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       ESTOQUE - TABELA
+       ============================================================ */
+    .estoque-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-top: 16px;
+    }
+
+    .estoque-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .estoque-table th {
+      background: var(--panel-header-bg);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .estoque-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .estoque-table tr:hover td {
+      background: var(--primary-light);
+      opacity: 0.5;
+    }
+
+    .estoque-table .qtd-input {
+      width: 70px;
+      padding: 6px 10px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: var(--input-bg);
+      color: var(--text);
+      transition: border var(--transition), box-shadow var(--transition);
+    }
+    .estoque-table .qtd-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--input-focus-shadow);
+      outline: none;
+    }
+
+    .estoque-table .btn-salvar-estoque {
+      padding: 6px 16px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .estoque-table .btn-salvar-estoque:hover {
+      background: var(--primary-hover);
+      transform: scale(1.05);
+    }
+    .estoque-table .btn-salvar-estoque:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .estoque-table .btn-sem-estoque {
+      padding: 6px 16px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .estoque-table .btn-sem-estoque:hover {
+      background: var(--danger-hover);
+      transform: scale(1.05);
+    }
+    .estoque-table .btn-sem-estoque.ativo {
+      background: var(--success);
+    }
+    .estoque-table .btn-sem-estoque.ativo:hover {
+      background: var(--success-hover);
+    }
+
+    .estoque-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 50px;
+    }
+    .estoque-status-badge.disponivel {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    .estoque-status-badge.sem-estoque {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .estoque-filtros {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 16px 20px;
+      background: var(--panel-header-bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .estoque-filtros select,
+    .estoque-filtros input {
+      padding: 8px 14px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      background: var(--input-bg);
+      color: var(--text);
+      outline: none;
+      transition: border var(--transition);
+    }
+    .estoque-filtros select:focus,
+    .estoque-filtros input:focus {
+      border-color: var(--primary);
+    }
+
+    .estoque-resumo {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding: 12px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .estoque-resumo span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .estoque-resumo .total {
+      color: var(--primary);
+    }
+    .estoque-resumo .sem-estoque {
+      color: var(--danger);
+    }
+    .estoque-resumo .disponivel {
+      color: var(--success);
+    }
+
+    /* ============================================================
+       PAGE HEADER
+       ============================================================ */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .page-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.3px;
+    }
+    .page-header h2 i {
+      color: var(--primary);
+    }
+
+    .page-header .search-box {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .page-header .search-box input {
+      padding: 10px 18px;
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.9rem;
+      background: var(--input-bg);
+      color: var(--text);
+      outline: none;
+      min-width: 220px;
+      transition: all var(--transition);
+    }
+    .page-header .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--input-focus-shadow);
+    }
+
+    .btn-add {
+      padding: 10px 22px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.25);
+    }
+    .btn-add:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+    .btn-add:active {
+      transform: scale(0.95);
+    }
+    .btn-add:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ============================================================
+       ITEMS GRID
+       ============================================================ */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition);
+    }
+    .item-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+    .item-card .card-name {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .item-card .card-name-clickable {
+      cursor: pointer;
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .item-card .card-info {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: var(--bg);
+      padding: 3px 12px;
+      border-radius: 50px;
+      display: inline-block;
+      margin: 4px 4px 2px 0;
+    }
+    .item-card .card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .item-card .btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .item-card .btn:active {
+      transform: scale(0.94);
+    }
+    .item-card .btn-cart {
+      background: var(--btn-cart-bg);
+      color: var(--btn-cart-color);
+    }
+    .item-card .btn-cart:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+    .item-card .btn-edit {
+      background: var(--btn-edit-bg);
+      color: var(--btn-edit-color);
+    }
+    .item-card .btn-edit:hover {
+      background: var(--warning);
+      color: #fff;
+    }
+    .item-card .btn-remove {
+      background: var(--btn-remove-bg);
+      color: var(--btn-remove-color);
+    }
+    .item-card .btn-remove:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+    .item-card .btn-sem-estoque {
+      background: var(--danger);
+      color: #fff;
+    }
+    .item-card .btn-sem-estoque:hover {
+      background: var(--danger-hover);
+    }
+    .item-card .btn-sem-estoque.ativo {
+      background: var(--success);
+    }
+    .item-card .btn-sem-estoque.ativo:hover {
+      background: var(--success-hover);
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-light);
+      font-size: 1rem;
+      grid-column: 1 / -1;
+    }
+
+    /* ============================================================
+       ESTOQUE BADGE
+       ============================================================ */
+    .estoque-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 50px;
+    }
+    .estoque-badge.disponivel {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    .estoque-badge.sem-estoque {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    /* ============================================================
+       CART
+       ============================================================ */
+    .cart-badge {
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      padding: 2px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+
+    .cart-sidebar {
+      width: 360px;
+      flex-shrink: 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .cart-sidebar .cart-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-sidebar .cart-header h3 {
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+    .cart-sidebar .cart-header h3 i {
+      color: var(--primary);
+    }
+    .cart-sidebar .cart-header button {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text);
+      transition: color var(--transition);
+    }
+    .cart-sidebar .cart-header button:hover {
+      color: var(--danger);
+    }
+
+    .cart-sidebar .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+    }
+    .cart-sidebar .cart-empty {
+      text-align: center;
+      color: var(--text-light);
+      padding: 30px 0;
+      font-size: 0.95rem;
+    }
+    .cart-sidebar .cart-empty i {
+      font-size: 2.2rem;
+      display: block;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .cart-item {
+      background: var(--cart-item-bg);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+      transition: all var(--transition);
+    }
+    .cart-item:hover {
+      border-color: var(--primary);
+    }
+    .cart-item .cart-item-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .cart-item .cart-item-measures {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin: 4px 0 8px;
+    }
+    .cart-item .cart-item-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .cart-item .qty-input {
+      width: 64px;
+      padding: 6px 8px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+      background: var(--input-bg);
+      color: var(--text);
+      font-weight: 600;
+      transition: border var(--transition);
+    }
+    .cart-item .qty-input:focus {
+      border-color: var(--primary);
+    }
+    .btn-remove-cart {
+      padding: 4px 14px;
+      background: var(--btn-remove-bg);
+      color: var(--btn-remove-color);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .btn-remove-cart:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .cart-sidebar .cart-footer {
+      padding: 18px 22px;
+      border-top: 1px solid var(--border);
+      background: var(--cart-footer-bg);
+    }
+    .cart-sidebar .cart-footer .cart-total {
+      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .btn-whatsapp {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--success), var(--success-hover));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px var(--whatsapp-shadow);
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--whatsapp-shadow);
+    }
+    .btn-whatsapp:active {
+      transform: scale(0.96);
+    }
+    .btn-whatsapp:disabled {
+      background: #a3a3a3;
+      cursor: not-allowed;
+      opacity: 0.6;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* ============================================================
+       MODAL
+       ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: modalFade 0.25s ease;
+    }
+    @keyframes modalFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      padding: 32px 34px;
+      width: 90%;
+      max-width: 520px;
+      box-shadow: var(--shadow-lg);
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      animation: modalZoom 0.3s ease;
+    }
+    @keyframes modalZoom {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal h3 i {
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      outline: none;
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      transition: border var(--transition), box-shadow var(--transition);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--input-focus-shadow);
+    }
+    .form-group textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .name-preview {
+      background: var(--name-preview-bg);
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      margin-bottom: 14px;
+      border: 1px dashed var(--border);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+    .btn-save {
+      padding: 10px 28px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all var(--transition);
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.25);
+    }
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+    .btn-save:active {
+      transform: scale(0.95);
+    }
+
+    .btn-cancel {
+      padding: 10px 28px;
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .btn-cancel:hover {
+      background: var(--border);
+    }
+
+    /* ============================================================
+       ADMIN
+       ============================================================ */
+    .config-block {
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .config-block h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .config-block .form-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .config-block .form-row input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      background: var(--input-bg);
+      color: var(--text);
+      outline: none;
+      transition: all var(--transition);
+    }
+    .config-block .form-row input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--input-focus-shadow);
+    }
+    .btn-save-config {
+      padding: 10px 24px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .btn-save-config:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .btn-save-config:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .user-table th,
+    .user-table td {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .user-table th {
+      background: var(--panel-header-bg);
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .btn-small {
+      padding: 4px 14px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin: 0 4px;
+      transition: all var(--transition);
+    }
+    .btn-small.btn-edit {
+      background: var(--btn-edit-bg);
+      color: var(--btn-edit-color);
+    }
+    .btn-small.btn-edit:hover {
+      background: var(--warning);
+      color: #fff;
+    }
+    .btn-small.btn-remove {
+      background: var(--btn-remove-bg);
+      color: var(--btn-remove-color);
+    }
+    .btn-small.btn-remove:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* ============================================================
+       REDUTOR DETAIL MODAL
+       ============================================================ */
+    #reducerDetailModal .modal {
+      max-width: 500px;
+    }
+    #reducerDetailModal ul {
+      margin: 8px 0 12px 24px;
+    }
+    #reducerDetailModal ul li {
+      margin-bottom: 4px;
+    }
+
+    /* ============================================================
+       RESPONSIVIDADE
+       ============================================================ */
+    @media (max-width: 1024px) {
+      .cart-sidebar {
+        width: 320px;
+      }
+      .estoque-table {
+        font-size: 0.8rem;
+      }
+      .estoque-table th,
+      .estoque-table td {
+        padding: 8px 10px;
+      }
+      .estoque-table .qtd-input {
+        width: 55px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 260px;
+        transform: translateX(-100%);
+        z-index: 30;
+        border-right: none;
+        box-shadow: var(--shadow-lg);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .cart-sidebar {
+        width: 100%;
+        max-height: 45vh;
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .app-body {
+        flex-direction: column;
+      }
+      .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .items-grid {
+        grid-template-columns: 1fr;
+      }
+      .top-bar .left .app-title {
+        display: none;
+      }
+      .top-bar .right .btn-sync {
+        font-size: 0.7rem;
+        padding: 4px 12px;
+      }
+      .content {
+        padding: 20px 16px;
+      }
+      .form-row {
+        flex-direction: column;
+      }
+      .estoque-filtros {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .estoque-filtros select,
+      .estoque-filtros input {
+        width: 100%;
+      }
+      .estoque-table {
+        font-size: 0.7rem;
+      }
+      .estoque-table th,
+      .estoque-table td {
+        padding: 6px 8px;
+      }
+      .estoque-table .qtd-input {
+        width: 45px;
+        font-size: 0.7rem;
+        padding: 4px 6px;
+      }
+      .estoque-table .btn-salvar-estoque,
+      .estoque-table .btn-sem-estoque {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .dash-card {
+        padding: 14px 10px;
+      }
+      .dash-card .dash-number {
+        font-size: 1.5rem;
+      }
+      .page-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .page-header .search-box input {
+        width: 100%;
+        min-width: unset;
+      }
+      .top-bar .right .user-info {
+        display: none;
+      }
+      .config-block .form-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .modal {
+        padding: 24px 16px;
+      }
+      .estoque-resumo {
+        font-size: 0.7rem;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-bg">
+    <div class="gear-container">
+      <div class="gear gear1"></div>
+      <div class="gear gear2"></div>
+      <div class="gear gear3"></div>
+      <div class="bearing bearing1"></div>
+      <div class="bearing bearing2"></div>
+      <div class="retainer-ring"></div>
+    </div>
+  </div>
+  <div class="login-card">
+    <h2><i class="fas fa-cogs" style="color:#2563eb; margin-right: 8px;"></i>Bem‑vindo</h2>
+    <div class="subtitle">Gerenciador de Retentores, Rolamentos e Redutores</div>
+    <div class="form-group">
+      <label for="loginUser"><i class="fas fa-user"></i> Usuário</label>
+      <input type="text" id="loginUser" placeholder="Digite seu usuário" autocomplete="off" />
+    </div>
+    <div class="form-group">
+      <label for="loginPass"><i class="fas fa-lock"></i> Senha</label>
+      <input type="password" id="loginPass" placeholder="Digite sua senha" />
+    </div>
+    <button class="btn-login" id="btnLogin"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+    <div class="login-error" id="loginError"></div>
+    <span class="admin-link" id="adminLinkFromLogin"><i class="fas fa-user-cog"></i> Gerenciar usuários</span>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+  <!-- Top bar -->
+  <div class="top-bar">
+    <div class="left">
+      <button class="menu-toggle" id="menuToggle" title="Menu"><i class="fas fa-bars"></i></button>
+      <span class="app-title" id="appTitleDisplay"><i class="fas fa-tools"></i> Gerenciador</span>
+    </div>
+    <div class="right">
+      <span class="user-info" id="userInfo"><i class="fas fa-user-circle"></i> </span>
+      <div class="status-indicator">
+        <span class="status-dot offline" id="statusDot"></span>
+        <span id="statusText">Verificando...</span>
+      </div>
+      <span id="syncStatus"><i class="fas fa-sync-alt"></i> Sincronizado</span>
+      <button class="btn-sync" id="btnManualSync" title="Sincronizar com a planilha agora"><i class="fas fa-cloud-upload-alt"></i> Sync</button>
+      <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+      <button class="btn-logout" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    </div>
+  </div>
+
+  <div class="app-body">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header"><i class="fas fa-compass"></i> Navegação</div>
+      <div class="sidebar-nav">
+        <a class="active" data-page="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a data-page="estoque"><i class="fas fa-boxes"></i> 📦 Estoque</a>
+        <a data-page="retentores"><i class="fas fa-oil-can"></i> Retentores</a>
+        <a data-page="rolamentos"><i class="fas fa-cog"></i> Rolamentos</a>
+        <a data-page="redutores"><i class="fas fa-gear"></i> Redutores</a>
+        <a data-page="carrinho"><i class="fas fa-shopping-cart"></i> Carrinho</a>
+        <a data-page="admin" id="sidebarAdmin"><i class="fas fa-users-cog"></i> Administração</a>
+      </div>
+      <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.5 • Auto-sync ativo</div>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="content" id="contentArea">
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <h2><i class="fas fa-chart-line" style="color: var(--primary);"></i> Dashboard</h2>
+        <div class="dashboard-grid" id="dashboardGrid">
+          <div class="dash-card" data-filter="todos">
+            <div class="dash-icon"><i class="fas fa-warehouse"></i></div>
+            <div class="dash-number" id="dashTotal">0</div>
+            <div class="dash-label">Total em Estoque</div>
+          </div>
+          <div class="dash-card" data-filter="retentores">
+            <div class="dash-icon"><i class="fas fa-oil-can"></i></div>
+            <div class="dash-number" id="dashRetentores">0</div>
+            <div class="dash-label">Retentores</div>
+          </div>
+          <div class="dash-card" data-filter="rolamentos">
+            <div class="dash-icon"><i class="fas fa-cog"></i></div>
+            <div class="dash-number" id="dashRolamentos">0</div>
+            <div class="dash-label">Rolamentos</div>
+          </div>
+          <div class="dash-card" data-filter="redutores">
+            <div class="dash-icon"><i class="fas fa-gear"></i></div>
+            <div class="dash-number" id="dashRedutores">0</div>
+            <div class="dash-label">Redutores</div>
+          </div>
+        </div>
+        <div style="background: var(--card-bg); backdrop-filter: blur(8px); border-radius: var(--radius); padding: 24px; border: 1px solid var(--card-border); box-shadow: var(--shadow-sm);">
+          <p style="color: var(--text-secondary);"><i class="fas fa-check-circle" style="color: var(--success);"></i> Sistema conectado ao Google Sheets. Todos os dados são sincronizados automaticamente.</p>
+          <p style="margin-top: 10px; font-size: 0.9rem;"><i class="fas fa-arrow-right" style="color: var(--primary);"></i> <strong>Clique nos cards</strong> para filtrar os itens correspondentes.</p>
+          <p style="margin-top: 6px; font-size: 0.9rem;"><i class="fas fa-boxes" style="color: var(--primary);"></i> Acesse a aba <strong>"📦 Estoque"</strong> para gerenciar todas as quantidades.</p>
+        </div>
+        <div id="dashboardFilteredItems" class="items-grid" style="margin-top: 20px; display: none;"></div>
+      </div>
+
+      <!-- ESTOQUE -->
+      <div class="page" id="page-estoque">
+        <div class="page-header">
+          <h2><i class="fas fa-boxes"></i> 📦 Gerenciar Estoque</h2>
+          <div class="search-box">
+            <input type="text" id="searchEstoque" placeholder="Pesquisar item..." />
+            <button class="btn-add" id="btnAtualizarTodosEstoque" style="background: var(--success);"><i class="fas fa-save"></i> Salvar Todos</button>
+          </div>
+        </div>
+
+        <div class="estoque-container">
+          <!-- Filtros -->
+          <div class="estoque-filtros">
+            <select id="filtroTipoEstoque">
+              <option value="todos">📋 Todos os tipos</option>
+              <option value="retentor">🔧 Retentores</option>
+              <option value="rolamento">⚙️ Rolamentos</option>
+              <option value="redutor">🔩 Redutores</option>
+            </select>
+            <select id="filtroStatusEstoque">
+              <option value="todos">📊 Todos</option>
+              <option value="disponivel">✅ Disponível</option>
+              <option value="sem-estoque">⚠️ Sem Estoque</option>
+            </select>
+            <span style="font-size:0.85rem; color: var(--text-light); margin-left: auto;">
+              <i class="fas fa-info-circle"></i> Clique em Salvar para atualizar
+            </span>
+          </div>
+
+          <!-- Resumo -->
+          <div class="estoque-resumo" id="estoqueResumo">
+            <span class="total"><i class="fas fa-boxes"></i> Total: <strong id="resumoTotal">0</strong></span>
+            <span class="sem-estoque"><i class="fas fa-exclamation-circle"></i> Sem Estoque: <strong id="resumoSemEstoque">0</strong></span>
+            <span class="disponivel"><i class="fas fa-check-circle"></i> Disponível: <strong id="resumoDisponivel">0</strong></span>
+          </div>
+
+          <!-- Tabela -->
+          <div style="overflow-x: auto; max-height: 60vh; overflow-y: auto;">
+            <table class="estoque-table" id="tabelaEstoque">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Tipo</th>
+                  <th>Medidas</th>
+                  <th style="text-align: center;">Estoque</th>
+                  <th style="text-align: center;">Status</th>
+                  <th style="text-align: center;">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="corpoTabelaEstoque"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RETENTORES -->
+      <div class="page" id="page-retentores">
+        <div class="page-header">
+          <h2><i class="fas fa-oil-can"></i> Retentores</h2>
+          <div class="search-box">
+            <input type="text" id="searchRetentores" placeholder="Pesquisar retentor..." />
+            <button class="btn-add" id="btnAddRetentor"><i class="fas fa-plus"></i> Adicionar</button>
+          </div>
+        </div>
+        <div class="items-grid" id="listRetentores"></div>
+      </div>
+
+      <!-- ROLAMENTOS -->
+      <div class="page" id="page-rolamentos">
+        <div class="page-header">
+          <h2><i class="fas fa-cog"></i> Rolamentos</h2>
+          <div class="search-box">
+            <input type="text" id="searchRolamentos" placeholder="Pesquisar rolamento..." />
+            <button class="btn-add" id="btnAddRolamento"><i class="fas fa-plus"></i> Adicionar</button>
+          </div>
+        </div>
+        <div class="items-grid" id="listRolamentos"></div>
+      </div>
+
+      <!-- REDUTORES -->
+      <div class="page" id="page-redutores">
+        <div class="page-header">
+          <h2><i class="fas fa-gear"></i> Redutores</h2>
+          <div class="search-box">
+            <input type="text" id="searchRedutores" placeholder="Pesquisar redutor..." />
+            <button class="btn-add" id="btnAddRedutor"><i class="fas fa-plus"></i> Adicionar</button>
+          </div>
+        </div>
+        <div class="items-grid" id="listRedutores"></div>
+      </div>
+
+      <!-- CARRINHO (página) -->
+      <div class="page" id="page-carrinho">
+        <div class="page-header">
+          <h2><i class="fas fa-shopping-cart"></i> Carrinho <span class="cart-badge" id="cartBadgePage">0</span></h2>
+          <button class="btn-add" id="btnWhatsAppPage" disabled><i class="fab fa-whatsapp"></i> Enviar via WhatsApp</button>
+        </div>
+        <div id="cartItemsPage"></div>
+        <div style="margin-top: 18px; font-weight: 700; font-size: 1.1rem;" id="cartTotalPage">Total de itens: 0</div>
+      </div>
+
+      <!-- ADMIN (página) -->
+      <div class="page" id="page-admin">
+        <div class="page-header">
+          <h2><i class="fas fa-users-cog"></i> Administração</h2>
+        </div>
+
+        <!-- CONFIGURAÇÃO DO TÍTULO -->
+        <div class="config-block">
+          <h4><i class="fas fa-sliders-h"></i> Configurações do Sistema</h4>
+          <div class="form-row">
+            <input type="text" id="inputAppTitle" placeholder="Digite o novo título do sistema" value="🔩 Gerenciador" />
+            <button class="btn-save-config" id="btnSaveTitle"><i class="fas fa-save"></i> Salvar título</button>
+          </div>
+          <p style="font-size:0.8rem; color: var(--text-secondary); margin-top: 10px;">
+            O título aparece na barra superior e na aba do navegador.
+          </p>
+        </div>
+
+        <!-- GERENCIAR USUÁRIOS -->
+        <h3 style="margin-top: 24px; font-weight: 700;"><i class="fas fa-users"></i> Gerenciar Usuários</h3>
+        <div id="adminUserListPage"></div>
+        <div style="display:flex; gap:12px; margin-top:18px; flex-wrap:wrap; align-items: center;">
+          <input type="text" id="newUserPage" placeholder="Novo usuário" style="flex:1; min-width:160px; padding:10px 16px; border:2px solid var(--border); border-radius:var(--radius-sm); background:var(--input-bg); color:var(--text);" />
+          <input type="password" id="newPassPage" placeholder="Senha" style="flex:1; min-width:160px; padding:10px 16px; border:2px solid var(--border); border-radius:var(--radius-sm); background:var(--input-bg); color:var(--text);" />
+          <button class="btn-save" id="btnAddUserPage"><i class="fas fa-user-plus"></i> Adicionar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carrinho sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+      <div class="cart-header">
+        <h3><i class="fas fa-shopping-cart"></i> Carrinho <span class="cart-badge" id="cartBadge">0</span></h3>
+        <button id="closeCartSidebar"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="cart-items" id="cartItemsSidebar">
+        <div class="cart-empty"><i class="fas fa-box-open"></i> Seu carrinho está vazio</div>
+      </div>
+      <div class="cart-footer">
+        <div class="cart-total" id="cartTotalSidebar">Total: 0</div>
+        <button class="btn-whatsapp" id="btnWhatsAppSidebar" disabled><i class="fab fa-whatsapp"></i> Enviar via WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAIS ===== -->
+<div class="modal-overlay" id="modalOverlay"><div class="modal"></div></div>
+<div class="modal-overlay" id="reducerDetailModal">
+  <div class="modal">
+    <h3 id="reducerDetailTitle"><i class="fas fa-info-circle"></i> Detalhes</h3>
+    <div id="reducerDetailContent"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btnCloseReducerDetail">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+(function() {
+  // ============================================================
+  // CONFIGURAÇÃO
+  // ============================================================
+  const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvyfBtZ2VN6w_xJL2BHEUNHfXiESTGlM-pPHpvx8RgP8scaAO_E76FwGJMzXG2aHgd/exec';
+  const SHEET_ID = '1MEghTuBZnbkddvgNsJ2Mi2DwebHyMmGG-Xir4TGtQm0';
+  const POLL_INTERVAL = 10000;
+  const DEFAULT_TITLE = '🔩 Gerenciador';
+
+  // ============================================================
+  // ESTADO GLOBAL
+  // ============================================================
+  let retainers = [], bearings = [], reducers = [], cart = [];
+  let nextRetainerId = 1, nextBearingId = 1, nextReducerId = 1;
+  let currentUser = null, currentVersion = 0, pollingEnabled = true;
+  let isSyncing = false;
+
+  // ============================================================
+  // TÍTULO
+  // ============================================================
+  function getAppTitle() {
+    return localStorage.getItem('appTitle') || DEFAULT_TITLE;
+  }
+  function setAppTitle(newTitle) {
+    localStorage.setItem('appTitle', newTitle);
+    updateAppTitleUI(newTitle);
+  }
+  function updateAppTitleUI(title) {
+    document.title = title + ' • Gerenciador de Retentores, Rolamentos e Redutores';
+    const displayEl = document.getElementById('appTitleDisplay');
+    if (displayEl) displayEl.textContent = title;
+    const inputEl = document.getElementById('inputAppTitle');
+    if (inputEl) inputEl.value = title;
+  }
+
+  // ============================================================
+  // USUÁRIOS
+  // ============================================================
+  const MASTER_USER = 'Maiky', MASTER_PASS = 'Dieris';
+  function loadUsers() {
+    let saved = localStorage.getItem('app_users');
+    let users = saved ? JSON.parse(saved) : [];
+    if (!users.find(u => u.username === MASTER_USER)) users.push({ username: MASTER_USER, password: MASTER_PASS, level: 'master' });
+    else { const m = users.find(u => u.username === MASTER_USER); m.password = MASTER_PASS; m.level = 'master'; }
+    if (!users.find(u => u.username === 'visitante')) users.push({ username: 'visitante', password: 'visitante123', level: 'user' });
+    localStorage.setItem('app_users', JSON.stringify(users));
+    return users;
+  }
+  let users = loadUsers();
+
+  // ============================================================
+  // PERSISTÊNCIA
+  // ============================================================
+  async function getVersionFromSheet() {
+    try {
+      const resp = await fetch(`${APP_SCRIPT_URL}?action=version&sheetId=${SHEET_ID}&t=${Date.now()}`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const result = await resp.json();
+      return result.status === 'ok' ? (result.version || 0) : 0;
+    } catch { return currentVersion; }
+  }
+
+  async function loadDataFromSheet() {
+    try {
+      const resp = await fetch(`${APP_SCRIPT_URL}?action=load&sheetId=${SHEET_ID}&t=${Date.now()}`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const result = await resp.json();
+      if (result.status === 'ok') {
+        currentVersion = result.version || 0;
+        return result.data;
+      }
+      throw new Error(result.message);
+    } catch (e) { console.error('Load error:', e); return null; }
+  }
+
+  async function saveDataToSheet(data) {
+    try {
+      const payload = { action: 'save', sheetId: SHEET_ID, data: JSON.stringify(data) };
+      const formData = new FormData();
+      for (let k in payload) formData.append(k, payload[k]);
+      const resp = await fetch(APP_SCRIPT_URL, { method: 'POST', body: formData });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const result = await resp.json();
+      if (result.status === 'ok') {
+        if (result.version) currentVersion = result.version;
+        return true;
+      }
+      throw new Error(result.message);
+    } catch (e) {
+      console.error('Save error:', e);
+      alert('Erro ao salvar: ' + e.message);
+      return false;
+    }
+  }
+
+  async function saveData() {
+    const ok = await saveDataToSheet({ retainers, bearings, reducers, cart, nextRetainerId, nextBearingId, nextReducerId });
+    if (ok) {
+      const syncEl = document.getElementById('syncStatus');
+      if (syncEl) {
+        syncEl.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Sincronizado';
+        setTimeout(() => { if (syncEl) syncEl.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizado'; }, 2000);
+      }
+    }
+    return ok;
+  }
+
+  // ============================================================
+  // AUTO-SYNC
+  // ============================================================
+  async function checkForUpdates() {
+    if (!pollingEnabled || !currentUser) return;
+    try {
+      const remoteVersion = await getVersionFromSheet();
+      if (remoteVersion !== currentVersion) {
+        const syncEl = document.getElementById('syncStatus');
+        if (syncEl) syncEl.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Atualizando...';
+        await refreshData();
+        if (syncEl) {
+          syncEl.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Atualizado';
+          setTimeout(() => { if (syncEl) syncEl.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizado'; }, 2000);
+        }
+      }
+    } catch (e) { console.warn('Polling error:', e); }
+  }
+
+  // ============================================================
+  // REFRESH / SYNC MANUAL
+  // ============================================================
+  async function refreshData() {
+    if (isSyncing) return;
+    isSyncing = true;
+    const syncBtn = document.getElementById('btnManualSync');
+    const syncStatus = document.getElementById('syncStatus');
+    if (syncBtn) { syncBtn.disabled = true; syncBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sync'; }
+    if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sincronizando...';
+
+    try {
+      const data = await loadDataFromSheet();
+      if (data) {
+        retainers = (data.retainers || []).sort((a, b) => a.id - b.id);
+        bearings = (data.bearings || []).sort((a, b) => a.id - b.id);
+        reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
+        cart = data.cart || [];
+        nextRetainerId = data.nextRetainerId || 1;
+        nextBearingId = data.nextBearingId || 1;
+        nextReducerId = data.nextReducerId || 1;
+        renderAllLists();
+        renderAllCarts();
+        renderTabelaEstoque();
+        updateDashboard();
+        if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Sincronizado';
+        setTimeout(() => { if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizado'; }, 2000);
+      } else {
+        if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-times-circle" style="color: var(--danger);"></i> Falha';
+        setTimeout(() => { if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizado'; }, 3000);
+      }
+    } catch (e) {
+      console.error('Erro na sincronização manual:', e);
+      if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-times-circle" style="color: var(--danger);"></i> Erro';
+      setTimeout(() => { if (syncStatus) syncStatus.innerHTML = '<i class="fas fa-sync-alt"></i> Sincronizado'; }, 3000);
+    } finally {
+      isSyncing = false;
+      if (syncBtn) { syncBtn.disabled = false; syncBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Sync'; }
+    }
+  }
+
+  // ============================================================
+  // DADOS PADRÃO
+  // ============================================================
+  const defaultData = {
+    retainers: [
+      { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm', estoque: 15, sem_estoque: false },
+      { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm', estoque: 8, sem_estoque: false },
+      { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm', estoque: 3, sem_estoque: false },
+      { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm', estoque: 0, sem_estoque: true },
+      { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm', estoque: 10, sem_estoque: false },
+      { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm', estoque: 2, sem_estoque: false },
+      { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm', estoque: 12, sem_estoque: false },
+      { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm', estoque: 6, sem_estoque: false },
+      { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm', estoque: 0, sem_estoque: true },
+      { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm', estoque: 4, sem_estoque: false }
+    ],
+    bearings: [
+      { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm', estoque: 20, sem_estoque: false },
+      { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm', estoque: 1, sem_estoque: false },
+      { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm', estoque: 7, sem_estoque: false },
+      { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm', estoque: 0, sem_estoque: true },
+      { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm', estoque: 3, sem_estoque: false }
+    ],
+    reducers: [
+      { id:1, name:'Redutor Planetário A10', manufacturer:'SEW', location:'Esteira Transportadora', bearings:['Rolamento 6001','Rolamento 6203'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
+      { id:2, name:'Redutor WEG Cestari C06', manufacturer:'WEG Cestari', location:'Transportador de Correia', bearings:['Rolamento 6204','Rolamento 6205'], retainers:['Retentor 25x40x7','Retentor 35x50x10'] }
+    ],
+    nextRetainerId: 11, nextBearingId: 6, nextReducerId: 3
+  };
+
+  // ============================================================
+  // AUXILIARES
+  // ============================================================
+  function escapeHtml(s) { if (!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+  function generateRetentorName(m) { if (!m) return 'Retentor sem medida'; let c=String(m).replace(/mm/gi,'').trim().replace(/\s*x\s*/g,'x').replace(/\s+/g,''); return 'Retentor '+(c||'sem medida'); }
+  function isMaster() { return currentUser && currentUser.level === 'master'; }
+  function cartTotalQty() { return cart.reduce((s,i) => s + i.quantity, 0); }
+  function cleanCart() {
+    cart = cart.filter(i => {
+      if (i.category === 'retentor') return retainers.some(r => r.id === i.itemId);
+      if (i.category === 'rolamento') return bearings.some(b => b.id === i.itemId);
+      if (i.category === 'redutor') return reducers.some(rd => rd.id === i.itemId);
+      return false;
+    });
+  }
+  function getCurrentList(cat) {
+    if (cat === 'retentor') return retainers;
+    if (cat === 'rolamento') return bearings;
+    if (cat === 'redutor') return reducers;
+    return [];
+  }
+  function getItemById(id, cat) { return getCurrentList(cat).find(i => i.id === id); }
+  function activeCategory() {
+    const active = document.querySelector('.page.active');
+    if (!active) return 'retentor';
+    const id = active.id;
+    if (id === 'page-retentores') return 'retentor';
+    if (id === 'page-rolamentos') return 'rolamento';
+    if (id === 'page-redutores') return 'redutor';
+    return 'retentor';
+  }
+
+  // ============================================================
+  // FUNÇÕES DE ESTOQUE
+  // ============================================================
+  function getEstoqueStatus(item) {
+    if (item.sem_estoque) return { status: 'sem-estoque', label: '⚠️ SEM ESTOQUE', cor: 'var(--danger)' };
+    const estoque = item.estoque || 0;
+    if (estoque <= 0) return { status: 'sem-estoque', label: '⚠️ SEM ESTOQUE', cor: 'var(--danger)' };
+    return { status: 'disponivel', label: '✅ Disponível', cor: 'var(--success)' };
+  }
+
+  function calcularEstatisticasEstoque() {
+    const todosItens = [
+      ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
+      ...bearings.map(b => ({ ...b, tipo: 'rolamento' })),
+      ...reducers.map(r => ({ ...r, tipo: 'redutor' }))
+    ];
+
+    let total = 0;
+    let semEstoque = 0;
+    let disponivel = 0;
+    let retentores = 0, rolamentos = 0, redutores = 0;
+
+    todosItens.forEach(item => {
+      const estoque = item.estoque || 0;
+      total += estoque;
+
+      if (item.tipo === 'retentor') retentores += estoque;
+      else if (item.tipo === 'rolamento') rolamentos += estoque;
+      else if (item.tipo === 'redutor') redutores += estoque;
+
+      if (item.sem_estoque || estoque === 0) semEstoque++;
+      else disponivel++;
+    });
+
+    return { total, retentores, rolamentos, redutores, semEstoque, disponivel };
+  }
+
+  // ============================================================
+  // RENDERIZAÇÃO - ESTOQUE
+  // ============================================================
+  function renderTabelaEstoque() {
+    const tbody = document.getElementById('corpoTabelaEstoque');
+    if (!tbody) return;
+
+    const search = document.getElementById('searchEstoque');
+    const filtroTipo = document.getElementById('filtroTipoEstoque');
+    const filtroStatus = document.getElementById('filtroStatusEstoque');
+
+    const q = search ? search.value.toLowerCase() : '';
+    const tipo = filtroTipo ? filtroTipo.value : 'todos';
+    const status = filtroStatus ? filtroStatus.value : 'todos';
+
+    // Junta todos os itens
+    let todosItens = [
+      ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
+      ...bearings.map(b => ({ ...b, tipo: 'rolamento' })),
+      ...reducers.map(r => ({ ...r, tipo: 'redutor' }))
+    ];
+
+    // Aplica filtros
+    todosItens = todosItens.filter(item => {
+      // Filtro de busca
+      if (q && !String(item.name).toLowerCase().includes(q) && 
+          !String(item.measures || '').toLowerCase().includes(q)) {
+        return false;
+      }
+      // Filtro de tipo
+      if (tipo !== 'todos' && item.tipo !== tipo) return false;
+      // Filtro de status
+      if (status !== 'todos') {
+        const st = getEstoqueStatus(item).status;
+        if (st !== status) return false;
+      }
+      return true;
+    });
+
+    // Ordena por nome
+    todosItens.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+
+    // Atualiza resumo
+    const total = todosItens.length;
+    const semEstoque = todosItens.filter(i => getEstoqueStatus(i).status === 'sem-estoque').length;
+    const disponivel = todosItens.filter(i => getEstoqueStatus(i).status === 'disponivel').length;
+
+    document.getElementById('resumoTotal').textContent = total;
+    document.getElementById('resumoSemEstoque').textContent = semEstoque;
+    document.getElementById('resumoDisponivel').textContent = disponivel;
+
+    if (!todosItens.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color: var(--text-light);">
+        <i class="fas fa-search" style="font-size:2rem; display:block; margin-bottom:10px;"></i>
+        Nenhum item encontrado com os filtros atuais.
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = todosItens.map(item => {
+      const statusEstoque = getEstoqueStatus(item);
+      const estoque = item.estoque || 0;
+      const medidas = item.measures || (item.tipo === 'redutor' ? '—' : '');
+      const semEstoque = item.sem_estoque || estoque === 0;
+      
+      return `<tr data-id="${item.id}" data-tipo="${item.tipo}">
+        <td><strong>${escapeHtml(item.name)}</strong></td>
+        <td><span style="font-size:0.75rem; background:var(--bg); padding:2px 10px; border-radius:50px;">${escapeHtml(item.tipo)}</span></td>
+        <td>${escapeHtml(medidas)}</td>
+        <td style="text-align: center;">
+          <input type="number" class="qtd-input" value="${estoque}" min="0" 
+                 data-id="${item.id}" data-tipo="${item.tipo}" />
+        </td>
+        <td style="text-align: center;">
+          <span class="estoque-status-badge ${statusEstoque.status}">${statusEstoque.label}</span>
+        </td>
+        <td style="text-align: center;">
+          <button class="btn-salvar-estoque" data-id="${item.id}" data-tipo="${item.tipo}">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+          <button class="btn-sem-estoque ${semEstoque ? 'ativo' : ''}" data-id="${item.id}" data-tipo="${item.tipo}">
+            <i class="fas ${semEstoque ? 'fa-check' : 'fa-times'}"></i> ${semEstoque ? 'Disponível' : 'Sem Estoque'}
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    // Eventos dos botões Salvar
+    tbody.querySelectorAll('.btn-salvar-estoque').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = parseInt(this.dataset.id);
+        const tipo = this.dataset.tipo;
+        const input = this.closest('tr').querySelector('.qtd-input');
+        const novoEstoque = parseInt(input.value) || 0;
+        atualizarEstoqueItem(id, tipo, novoEstoque);
+      });
+    });
+
+    // Eventos dos botões Sem Estoque
+    tbody.querySelectorAll('.btn-sem-estoque').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const id = parseInt(this.dataset.id);
+        const tipo = this.dataset.tipo;
+        const atualmenteSemEstoque = this.classList.contains('ativo');
+        alternarSemEstoque(id, tipo, !atualmenteSemEstoque);
+      });
+    });
+
+    // Eventos de Enter nos inputs
+    tbody.querySelectorAll('.qtd-input').forEach(inp => {
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          const btn = this.closest('tr').querySelector('.btn-salvar-estoque');
+          if (btn) btn.click();
+        }
+      });
+    });
+  }
+
+  // ============================================================
+  // FUNÇÃO PARA ATUALIZAR ESTOQUE DE UM ITEM
+  // ============================================================
+  async function atualizarEstoqueItem(id, tipo, novoEstoque) {
+    let lista;
+    if (tipo === 'retentor') { lista = retainers; }
+    else if (tipo === 'rolamento') { lista = bearings; }
+    else { lista = reducers; }
+
+    const item = lista.find(i => i.id === id);
+    if (!item) { alert('Item não encontrado!'); return; }
+
+    item.estoque = novoEstoque;
+    // Se colocou estoque > 0, remove a flag sem_estoque
+    if (novoEstoque > 0) {
+      item.sem_estoque = false;
+    }
+    
+    // Atualiza visualização
+    renderTabelaEstoque();
+    renderAllLists();
+    updateDashboard();
+    await saveData();
+    
+    // Feedback visual
+    const inputs = document.querySelectorAll('.qtd-input');
+    inputs.forEach(inp => {
+      if (parseInt(inp.dataset.id) === id && inp.dataset.tipo === tipo) {
+        inp.style.borderColor = 'var(--success)';
+        inp.style.background = '#dcfce7';
+        setTimeout(() => {
+          inp.style.borderColor = '';
+          inp.style.background = '';
+        }, 1500);
+      }
+    });
+  }
+
+  // ============================================================
+  // FUNÇÃO PARA ALTERNAR SEM ESTOQUE
+  // ============================================================
+  async function alternarSemEstoque(id, tipo, semEstoque) {
+    let lista;
+    if (tipo === 'retentor') { lista = retainers; }
+    else if (tipo === 'rolamento') { lista = bearings; }
+    else { lista = reducers; }
+
+    const item = lista.find(i => i.id === id);
+    if (!item) { alert('Item não encontrado!'); return; }
+
+    item.sem_estoque = semEstoque;
+    if (semEstoque) {
+      item.estoque = 0;
+    }
+    
+    renderTabelaEstoque();
+    renderAllLists();
+    updateDashboard();
+    await saveData();
+  }
+
+  // ============================================================
+  // FUNÇÃO PARA SALVAR TODOS OS ESTOQUES
+  // ============================================================
+  async function salvarTodosEstoques() {
+    const inputs = document.querySelectorAll('#corpoTabelaEstoque .qtd-input');
+    let alterados = 0;
+
+    inputs.forEach(inp => {
+      const id = parseInt(inp.dataset.id);
+      const tipo = inp.dataset.tipo;
+      const novoEstoque = parseInt(inp.value) || 0;
+      
+      let lista;
+      if (tipo === 'retentor') lista = retainers;
+      else if (tipo === 'rolamento') lista = bearings;
+      else lista = reducers;
+
+      const item = lista.find(i => i.id === id);
+      if (item && item.estoque !== novoEstoque) {
+        item.estoque = novoEstoque;
+        if (novoEstoque > 0) {
+          item.sem_estoque = false;
+        }
+        alterados++;
+      }
+    });
+
+    if (alterados === 0) {
+      alert('✅ Nenhuma alteração detectada!');
+      return;
+    }
+
+    renderTabelaEstoque();
+    renderAllLists();
+    updateDashboard();
+    await saveData();
+    alert(`✅ ${alterados} item(s) atualizado(s) com sucesso!`);
+  }
+
+  // ============================================================
+  // RENDERIZAÇÃO - LISTAS
+  // ============================================================
+  function renderList(containerId, list, type, searchInputId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const search = document.getElementById(searchInputId);
+    const q = search ? search.value.toLowerCase() : '';
+    const master = isMaster();
+    const filtered = list.filter(item => {
+      if (!item) return false;
+      const name = String(item.name || '').toLowerCase();
+      const measures = String(item.measures || '').toLowerCase();
+      if (type === 'redutor') {
+        const mf = String(item.manufacturer || '').toLowerCase();
+        const loc = String(item.location || '').toLowerCase();
+        const bs = (item.bearings || []).join(' ').toLowerCase();
+        const rs = (item.retainers || []).join(' ').toLowerCase();
+        return name.includes(q) || mf.includes(q) || loc.includes(q) || bs.includes(q) || rs.includes(q);
+      }
+      return name.includes(q) || measures.includes(q);
+    });
+    if (!filtered.length) { container.innerHTML = '<div class="no-results"><i class="fas fa-search" style="display:block;font-size:2rem;margin-bottom:8px;opacity:0.5;"></i> Nenhum resultado encontrado.</div>'; return; }
+    container.innerHTML = filtered.map(item => {
+      if (type === 'redutor') {
+        return `<div class="item-card">
+          <div class="card-name card-name-clickable" onclick="window._openReducerDetail(${item.id})">${escapeHtml(item.name)} <i class="fas fa-external-link-alt" style="font-size:0.7rem;"></i></div>
+          <div class="card-info"><i class="fas fa-industry"></i> ${escapeHtml(item.manufacturer)}</div>
+          <div class="card-info"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(item.location)}</div>
+          <div class="card-actions">
+            <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="redutor"><i class="fas fa-cart-plus"></i> Carrinho</button>
+            ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="redutor"><i class="fas fa-edit"></i> Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="redutor"><i class="fas fa-trash-alt"></i> Remover</button>` : ''}
+          </div>
+        </div>`;
+      } else {
+        const status = getEstoqueStatus(item);
+        return `<div class="item-card">
+          <div class="card-name">${escapeHtml(item.name)} 
+            <span class="estoque-badge ${status.status}">${status.label}</span>
+          </div>
+          <div class="card-info"><i class="fas fa-ruler"></i> ${escapeHtml(item.measures)}</div>
+          <div class="card-info"><i class="fas fa-boxes"></i> Estoque: ${item.estoque || 0}</div>
+          <div class="card-actions">
+            <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="${type}"><i class="fas fa-cart-plus"></i> Carrinho</button>
+            ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="${type}"><i class="fas fa-edit"></i> Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="${type}"><i class="fas fa-trash-alt"></i> Remover</button>` : ''}
+            ${master ? `<button class="btn btn-sem-estoque ${item.sem_estoque ? 'ativo' : ''}" data-action="toggle-estoque" data-id="${item.id}" data-category="${type}"><i class="fas ${item.sem_estoque ? 'fa-check' : 'fa-times'}"></i> ${item.sem_estoque ? 'Disponível' : 'Sem Estoque'}</button>` : ''}
+          </div>
+        </div>`;
+      }
+    }).join('');
+    container.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const action = this.dataset.action;
+        const id = parseInt(this.dataset.id);
+        const cat = this.dataset.category || activeCategory();
+        if (action === 'add') addToCart(id, cat);
+        else if (action === 'edit') openEditModal(id, cat);
+        else if (action === 'remove') removeItem(id, cat);
+        else if (action === 'toggle-estoque') toggleSemEstoque(id, cat);
+      });
+    });
+  }
+
+  function renderAllLists() {
+    renderList('listRetentores', retainers, 'retentor', 'searchRetentores');
+    renderList('listRolamentos', bearings, 'rolamento', 'searchRolamentos');
+    renderList('listRedutores', reducers, 'redutor', 'searchRedutores');
+  }
+
+  function renderAllCarts() {
+    cleanCart();
+    const total = cartTotalQty();
+    document.querySelectorAll('.cart-badge').forEach(el => el.textContent = total);
+    const cartTotalPage = document.getElementById('cartTotalPage');
+    if (cartTotalPage) cartTotalPage.textContent = `Total de itens: ${total}`;
+    const cartTotalSidebar = document.getElementById('cartTotalSidebar');
+    if (cartTotalSidebar) cartTotalSidebar.textContent = `Total: ${total}`;
+    const btnWhatsAppPage = document.getElementById('btnWhatsAppPage');
+    if (btnWhatsAppPage) btnWhatsAppPage.disabled = total === 0;
+    const btnWhatsAppSidebar = document.getElementById('btnWhatsAppSidebar');
+    if (btnWhatsAppSidebar) btnWhatsAppSidebar.disabled = total === 0;
+
+    const renderCartItems = (containerId) => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      if (!cart.length) { container.innerHTML = '<div class="cart-empty"><i class="fas fa-box-open"></i> Seu carrinho está vazio</div>'; return; }
+      container.innerHTML = cart.map(ci => {
+        const item = getItemById(ci.itemId, ci.category);
+        if (!item) return '';
+        let measuresText = '';
+        if (ci.category === 'retentor' || ci.category === 'rolamento') {
+          measuresText = `<i class="fas fa-ruler"></i> ${escapeHtml(item.measures)}`;
+        } else {
+          measuresText = `<i class="fas fa-industry"></i> ${escapeHtml(item.manufacturer)} | <i class="fas fa-map-marker-alt"></i> ${escapeHtml(item.location)}<br><i class="fas fa-cog"></i> ${(item.bearings||[]).join(', ')}<br><i class="fas fa-oil-can"></i> ${(item.retainers||[]).join(', ')}`;
+        }
+        return `<div class="cart-item">
+          <div class="cart-item-name">${escapeHtml(item.name)}</div>
+          <div class="cart-item-measures">${measuresText}</div>
+          <div class="cart-item-controls">
+            <input type="number" class="qty-input" value="${ci.quantity}" min="1" data-category="${ci.category}" data-id="${ci.itemId}">
+            <button class="btn-remove-cart" data-category="${ci.category}" data-id="${ci.itemId}"><i class="fas fa-trash-alt"></i> Remover</button>
+          </div>
+        </div>`;
+      }).join('');
+      container.querySelectorAll('.qty-input').forEach(inp => {
+        inp.addEventListener('change', function() {
+          const cat = this.dataset.category, id = parseInt(this.dataset.id);
+          let qty = parseInt(this.value);
+          if (isNaN(qty) || qty < 1) { qty = 1; this.value = 1; }
+          updateCartQty(cat, id, qty);
+        });
+      });
+      container.querySelectorAll('.btn-remove-cart').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const cat = this.dataset.category, id = parseInt(this.dataset.id);
+          cart = cart.filter(i => !(i.category === cat && i.itemId === id));
+          renderAllCarts();
+          saveData();
+        });
+      });
+    };
+    renderCartItems('cartItemsPage');
+    renderCartItems('cartItemsSidebar');
+  }
+
+  // ============================================================
+  // DASHBOARD
+  // ============================================================
+  function updateDashboard() {
+    const stats = calcularEstatisticasEstoque();
+    
+    document.getElementById('dashTotal').textContent = stats.total;
+    document.getElementById('dashRetentores').textContent = stats.retentores;
+    document.getElementById('dashRolamentos').textContent = stats.rolamentos;
+    document.getElementById('dashRedutores').textContent = stats.redutores;
+  }
+
+  // ============================================================
+  // TOGGLE SEM ESTOQUE
+  // ============================================================
+  async function toggleSemEstoque(id, category) {
+    if (!isMaster()) return;
+    const list = getCurrentList(category);
+    const item = list.find(i => i.id === id);
+    if (!item) return;
+    
+    item.sem_estoque = !item.sem_estoque;
+    if (item.sem_estoque) {
+      item.estoque = 0;
+    }
+    
+    renderAllLists();
+    renderTabelaEstoque();
+    updateDashboard();
+    await saveData();
+  }
+
+  function setupDashboardClicks() {
+    document.querySelectorAll('.dash-card[data-filter]').forEach(card => {
+      card.addEventListener('click', function() {
+        const filtro = this.dataset.filter;
+        const container = document.getElementById('dashboardFilteredItems');
+        container.style.display = 'grid';
+        
+        if (filtro === 'todos') {
+          const todosItens = [
+            ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
+            ...bearings.map(b => ({ ...b, tipo: 'rolamento' })),
+            ...reducers.map(r => ({ ...r, tipo: 'redutor' }))
+          ];
+          mostrarItensFiltrados(todosItens, 'Todos os Itens');
+        } else if (filtro === 'retentores') {
+          mostrarItensFiltrados(retainers.map(r => ({ ...r, tipo: 'retentor' })), 'Retentores');
+        } else if (filtro === 'rolamentos') {
+          mostrarItensFiltrados(bearings.map(b => ({ ...b, tipo: 'rolamento' })), 'Rolamentos');
+        } else if (filtro === 'redutores') {
+          mostrarItensFiltrados(reducers.map(r => ({ ...r, tipo: 'redutor' })), 'Redutores');
+        }
+      });
+    });
+  }
+
+  function mostrarItensFiltrados(itens, titulo) {
+    const container = document.getElementById('dashboardFilteredItems');
+    if (!itens.length) {
+      container.innerHTML = `<div class="no-results"><i class="fas fa-check-circle" style="font-size:2rem;color:var(--success);"></i> Nenhum item encontrado para "${titulo}"!</div>`;
+      return;
+    }
+
+    container.innerHTML = `<h3 style="grid-column:1/-1;margin-bottom:10px;">${titulo} (${itens.length} itens)</h3>` + 
+      itens.map(item => {
+        const status = getEstoqueStatus(item);
+        return `<div class="item-card" style="border-left: 4px solid ${status.cor};">
+          <div class="card-name">${escapeHtml(item.name)} 
+            <span class="estoque-badge ${status.status}">${status.label}</span>
+          </div>
+          ${item.measures ? `<div class="card-info"><i class="fas fa-ruler"></i> ${escapeHtml(item.measures)}</div>` : ''}
+          <div class="card-info"><i class="fas fa-boxes"></i> Estoque: ${item.estoque || 0}</div>
+          ${item.manufacturer ? `<div class="card-info"><i class="fas fa-industry"></i> ${escapeHtml(item.manufacturer)}</div>` : ''}
+          <div class="card-info"><i class="fas fa-tag"></i> ${escapeHtml(item.tipo)}</div>
+        </div>`;
+      }).join('');
+  }
+
+  // ============================================================
+  // AÇÕES
+  // ============================================================
+  async function addToCart(itemId, category) {
+    const existing = cart.find(i => i.itemId === itemId && i.category === category);
+    if (existing) existing.quantity++;
+    else cart.push({ category, itemId, quantity: 1 });
+    renderAllCarts();
+    await saveData();
+    pulseBadge();
+  }
+
+  async function updateCartQty(cat, id, qty) {
+    const item = cart.find(i => i.category === cat && i.itemId === id);
+    if (item) item.quantity = Math.max(1, qty);
+    renderAllCarts();
+    await saveData();
+  }
+
+  async function removeItem(itemId, category) {
+    if (!isMaster()) return;
+    const list = getCurrentList(category);
+    const item = list.find(i => i.id === itemId);
+    if (!item || !confirm(`Remover "${item.name}"?`)) return;
+    if (category === 'retentor') retainers = retainers.filter(i => i.id !== itemId);
+    else if (category === 'rolamento') bearings = bearings.filter(i => i.id !== itemId);
+    else if (category === 'redutor') reducers = reducers.filter(i => i.id !== itemId);
+    cart = cart.filter(i => !(i.category === category && i.itemId === itemId));
+    renderAllLists();
+    renderAllCarts();
+    renderTabelaEstoque();
+    updateDashboard();
+    await saveData();
+  }
+
+  function pulseBadge() {
+    document.querySelectorAll('.cart-badge').forEach(el => {
+      el.style.transform = 'scale(1.3)';
+      setTimeout(() => el.style.transform = '', 150);
+    });
+  }
+
+  function sendWhatsApp() {
+    cleanCart();
+    if (!cart.length) { alert('Carrinho vazio.'); return; }
+    let msg = '🛒 *Carrinho de Itens*\n\n';
+    cart.forEach((ci, idx) => {
+      const item = getItemById(ci.itemId, ci.category);
+      if (!item) return;
+      msg += `📦 *${item.name}*\n`;
+      if (ci.category === 'redutor') {
+        msg += `   Fabricante: ${item.manufacturer}\n   Local: ${item.location}\n   Rolamentos: ${(item.bearings||[]).join(', ')}\n   Retentores: ${(item.retainers||[]).join(', ')}\n`;
+      } else {
+        msg += `   Medidas: ${item.measures}\n`;
+        msg += `   Estoque: ${item.estoque || 0}\n`;
+      }
+      msg += `   Quantidade: ${ci.quantity}\n`;
+      if (idx < cart.length - 1) msg += '\n';
+    });
+    msg += `\n📊 *Total de itens: ${cartTotalQty()}*`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  // ============================================================
+  // MODAL ADICIONAR/EDITAR
+  // ============================================================
+  let modalMode = 'add', editingItemId = null, editingCategory = null;
+  const modalOverlay = document.getElementById('modalOverlay');
+  let categorySelect, retentorFields, rolamentoFields, redutorFields;
+  let inputMeasuresRet, inputNameRol, inputMeasuresRol;
+  let inputRedutorName, inputFabricante, inputLocal;
+  let inputRolamentosAssoc, inputRetentoresAssoc, namePreviewText, btnSave, btnCancel;
+  let inputEstoque, inputEstoqueMinimo;
+
+  function createModal(title, category, item) {
+    modalOverlay.innerHTML = `<div class="modal"><h3><i class="fas fa-pen"></i> ${title}</h3>
+      <div class="form-group"><label for="categorySelect"><i class="fas fa-tag"></i> Tipo</label>
+      <select id="categorySelect"><option value="retentor">Retentor</option><option value="rolamento">Rolamento</option><option value="redutor">Redutor</option></select></div>
+      <div id="retentorFields"><div class="name-preview"><i class="fas fa-info-circle"></i> Nome gerado: <strong id="namePreviewText">Retentor ...</strong></div>
+      <div class="form-group"><label for="inputMeasuresRet"><i class="fas fa-ruler"></i> Medida</label><input type="text" id="inputMeasuresRet" placeholder="Ex: 20 x 35 x 7 mm"></div></div>
+      <div id="rolamentoFields" style="display:none;"><div class="form-group"><label for="inputNameRol"><i class="fas fa-tag"></i> Nome</label><input type="text" id="inputNameRol"></div>
+      <div class="form-group"><label for="inputMeasuresRol"><i class="fas fa-ruler"></i> Medidas</label><input type="text" id="inputMeasuresRol"></div></div>
+      <div id="redutorFields" style="display:none;"><div class="form-group"><label for="inputRedutorName"><i class="fas fa-tag"></i> Nome</label><input type="text" id="inputRedutorName"></div>
+      <div class="form-group"><label for="inputFabricante"><i class="fas fa-industry"></i> Fabricante</label><input type="text" id="inputFabricante"></div>
+      <div class="form-group"><label for="inputLocal"><i class="fas fa-map-marker-alt"></i> Local</label><input type="text" id="inputLocal"></div>
+      <div class="form-group"><label for="inputRolamentosAssoc"><i class="fas fa-cog"></i> Rolamentos</label><textarea id="inputRolamentosAssoc" placeholder="Separe por vírgula"></textarea></div>
+      <div class="form-group"><label for="inputRetentoresAssoc"><i class="fas fa-oil-can"></i> Retentores</label><textarea id="inputRetentoresAssoc" placeholder="Separe por vírgula"></textarea></div></div>
+      <hr style="margin: 16px 0; border-color: var(--border);">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="inputEstoque"><i class="fas fa-boxes"></i> Estoque</label>
+          <input type="number" id="inputEstoque" value="0" min="0" />
+        </div>
+      </div>
+      <div class="modal-actions"><button class="btn-cancel" id="btnCancel"><i class="fas fa-times"></i> Cancelar</button><button class="btn-save" id="btnSave"><i class="fas fa-save"></i> Salvar</button></div></div>`;
+
+    categorySelect = document.getElementById('categorySelect');
+    retentorFields = document.getElementById('retentorFields');
+    rolamentoFields = document.getElementById('rolamentoFields');
+    redutorFields = document.getElementById('redutorFields');
+    inputMeasuresRet = document.getElementById('inputMeasuresRet');
+    inputNameRol = document.getElementById('inputNameRol');
+    inputMeasuresRol = document.getElementById('inputMeasuresRol');
+    inputRedutorName = document.getElementById('inputRedutorName');
+    inputFabricante = document.getElementById('inputFabricante');
+    inputLocal = document.getElementById('inputLocal');
+    inputRolamentosAssoc = document.getElementById('inputRolamentosAssoc');
+    inputRetentoresAssoc = document.getElementById('inputRetentoresAssoc');
+    inputEstoque = document.getElementById('inputEstoque');
+    namePreviewText = document.getElementById('namePreviewText');
+    btnSave = document.getElementById('btnSave');
+    btnCancel = document.getElementById('btnCancel');
+
+    if (category) {
+      categorySelect.value = category;
+      categorySelect.disabled = true;
+      toggleModalFields(category);
+      if (category === 'retentor' && item) { 
+        inputMeasuresRet.value = item.measures || ''; 
+        inputEstoque.value = item.estoque || 0;
+        updateNamePreview(); 
+      } else if (category === 'rolamento' && item) { 
+        inputNameRol.value = item.name || ''; 
+        inputMeasuresRol.value = item.measures || '';
+        inputEstoque.value = item.estoque || 0;
+      } else if (category === 'redutor' && item) {
+        inputRedutorName.value = item.name || '';
+        inputFabricante.value = item.manufacturer || '';
+        inputLocal.value = item.location || '';
+        inputRolamentosAssoc.value = (item.bearings||[]).join(', ');
+        inputRetentoresAssoc.value = (item.retainers||[]).join(', ');
+      }
+    } else {
+      categorySelect.value = 'retentor';
+      categorySelect.disabled = false;
+      toggleModalFields('retentor');
+      inputEstoque.value = 0;
+    }
+
+    if (btnCancel) btnCancel.addEventListener('click', () => modalOverlay.style.display = 'none');
+    if (btnSave) btnSave.addEventListener('click', saveModal);
+    if (categorySelect) {
+      categorySelect.addEventListener('change', function() {
+        toggleModalFields(this.value);
+        if (this.value === 'retentor') updateNamePreview();
+      });
+    }
+    if (inputMeasuresRet) inputMeasuresRet.addEventListener('input', updateNamePreview);
+    [inputMeasuresRet, inputNameRol, inputMeasuresRol, inputRedutorName, inputFabricante, inputLocal, inputEstoque].forEach(inp => {
+      if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); if (btnSave) btnSave.click(); } });
+    });
+  }
+
+  function toggleModalFields(cat) {
+    if (retentorFields) retentorFields.style.display = cat === 'retentor' ? 'block' : 'none';
+    if (rolamentoFields) rolamentoFields.style.display = cat === 'rolamento' ? 'block' : 'none';
+    if (redutorFields) redutorFields.style.display = cat === 'redutor' ? 'block' : 'none';
+  }
+
+  function updateNamePreview() {
+    if (namePreviewText) {
+      const m = inputMeasuresRet ? inputMeasuresRet.value.trim() : '';
+      namePreviewText.textContent = m ? generateRetentorName(m) : 'Retentor ...';
+    }
+  }
+
+  function openEditModal(itemId, category) {
+    if (!isMaster()) return;
+    const item = getItemById(itemId, category);
+    if (!item) return;
+    modalMode = 'edit';
+    editingItemId = itemId;
+    editingCategory = category;
+    createModal('Editar Item', category, item);
+    modalOverlay.style.display = 'flex';
+  }
+
+  // ============================================================
+  // SAVE MODAL
+  // ============================================================
+  async function saveModal() {
+    if (!isMaster()) return;
+    const cat = categorySelect.value;
+    try {
+      const estoque = parseInt(inputEstoque.value) || 0;
+
+      if (cat === 'retentor') {
+        const measures = inputMeasuresRet.value.trim();
+        if (!measures) { alert('Informe a medida.'); return; }
+        const name = generateRetentorName(measures);
+        const semEstoque = estoque === 0;
+        if (modalMode === 'add') {
+          retainers.push({ id: nextRetainerId++, name, measures, estoque, sem_estoque: semEstoque });
+          retainers.sort((a, b) => a.id - b.id);
+        } else {
+          const item = getItemById(editingItemId, cat);
+          if (item) { item.name = name; item.measures = measures; item.estoque = estoque; item.sem_estoque = semEstoque; }
+          retainers.sort((a, b) => a.id - b.id);
+        }
+      } else if (cat === 'rolamento') {
+        const name = inputNameRol.value.trim(), measures = inputMeasuresRol.value.trim();
+        if (!name || !measures) { alert('Preencha todos os campos.'); return; }
+        const semEstoque = estoque === 0;
+        if (modalMode === 'add') {
+          bearings.push({ id: nextBearingId++, name, measures, estoque, sem_estoque: semEstoque });
+          bearings.sort((a, b) => a.id - b.id);
+        } else {
+          const item = getItemById(editingItemId, cat);
+          if (item) { item.name = name; item.measures = measures; item.estoque = estoque; item.sem_estoque = semEstoque; }
+          bearings.sort((a, b) => a.id - b.id);
+        }
+      } else {
+        const name = inputRedutorName.value.trim();
+        const manufacturer = inputFabricante.value.trim();
+        const location = inputLocal.value.trim();
+        const blist = inputRolamentosAssoc.value.split(',').map(s=>s.trim()).filter(Boolean);
+        const rlist = inputRetentoresAssoc.value.split(',').map(s=>s.trim()).filter(Boolean);
+        if (!name || !manufacturer || !location) { alert('Preencha todos os campos.'); return; }
+        if (modalMode === 'add') {
+          reducers.push({ id: nextReducerId++, name, manufacturer, location, bearings: blist, retainers: rlist });
+          reducers.sort((a, b) => a.id - b.id);
+        } else {
+          const item = getItemById(editingItemId, cat);
+          if (item) { item.name = name; item.manufacturer = manufacturer; item.location = location; item.bearings = blist; item.retainers = rlist; }
+          reducers.sort((a, b) => a.id - b.id);
+        }
+      }
+      modalOverlay.style.display = 'none';
+      renderAllLists();
+      renderAllCarts();
+      renderTabelaEstoque();
+      updateDashboard();
+      await saveData();
+    } catch (e) {
+      alert('Erro ao salvar: ' + e.message);
+    }
+  }
+
+  // ============================================================
+  // NAVEGAÇÃO
+  // ============================================================
+  function navigateTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+    const link = document.querySelector(`.sidebar-nav a[data-page="${page}"]`);
+    if (link) link.classList.add('active');
+    if (window.innerWidth <= 768) {
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) sidebar.classList.remove('open');
+    }
+    if (page === 'admin') renderAdminPanelPage();
+    if (page === 'carrinho') renderAllCarts();
+    if (page === 'estoque') {
+      renderTabelaEstoque();
+    }
+    if (page === 'dashboard') {
+      updateDashboard();
+      document.getElementById('dashboardFilteredItems').style.display = 'none';
+    }
+  }
+
+  // ============================================================
+  // ADMIN
+  // ============================================================
+  function renderAdminPanelPage() {
+    const container = document.getElementById('adminUserListPage');
+    if (!container) return;
+    users = loadUsers();
+    let html = `<table class="user-table"><tr><th>Usuário</th><th>Nível</th><th>Ações</th></tr>`;
+    users.forEach(u => {
+      const isMasterUser = (u.username === MASTER_USER);
+      html += `<tr><td><i class="fas fa-user"></i> ${escapeHtml(u.username)}</td><td>${u.level === 'master' ? 'Mestre' : 'Usuário'}</td>
+      <td>
+        <button class="btn-small btn-edit" onclick="window._renameUserPage('${escapeHtml(u.username)}')"><i class="fas fa-user-edit"></i> Alterar nome</button>
+        <button class="btn-small btn-edit" onclick="window._resetPassPage('${escapeHtml(u.username)}')"><i class="fas fa-key"></i> Redefinir senha</button>
+        ${!isMasterUser ? `<button class="btn-small btn-remove" onclick="window._deleteUserPage('${escapeHtml(u.username)}')"><i class="fas fa-user-minus"></i> Excluir</button>` : ''}
+      </td></tr>`;
+    });
+    html += '</table>';
+    container.innerHTML = html;
+
+    const btnAdd = document.getElementById('btnAddUserPage');
+    if (btnAdd) {
+      btnAdd.onclick = () => {
+        const u = document.getElementById('newUserPage').value.trim();
+        const p = document.getElementById('newPassPage').value.trim();
+        if (!u || !p) { alert('Preencha usuário e senha.'); return; }
+        users = loadUsers();
+        if (users.some(user => user.username === u)) { alert('Usuário já existe.'); return; }
+        users.push({ username: u, password: p, level: 'user' });
+        localStorage.setItem('app_users', JSON.stringify(users));
+        document.getElementById('newUserPage').value = '';
+        document.getElementById('newPassPage').value = '';
+        renderAdminPanelPage();
+      };
+    }
+
+    const inputTitle = document.getElementById('inputAppTitle');
+    if (inputTitle) {
+      inputTitle.value = getAppTitle();
+      const btnSaveTitle = document.getElementById('btnSaveTitle');
+      if (btnSaveTitle) {
+        btnSaveTitle.onclick = function() {
+          const newTitle = inputTitle.value.trim() || DEFAULT_TITLE;
+          setAppTitle(newTitle);
+          alert('Título atualizado com sucesso!');
+        };
+      }
+    }
+  }
+
+  window._renameUserPage = function(username) {
+    const newName = prompt(`Novo nome para ${username}:`, username);
+    if (newName && newName.trim()) {
+      users = loadUsers();
+      const user = users.find(u => u.username === username);
+      if (user) { user.username = newName.trim(); localStorage.setItem('app_users', JSON.stringify(users)); renderAdminPanelPage(); }
+    }
+  };
+  window._resetPassPage = function(username) {
+    const newPwd = prompt(`Nova senha para ${username}:`);
+    if (newPwd) {
+      users = loadUsers();
+      const user = users.find(u => u.username === username);
+      if (user) { user.password = newPwd; localStorage.setItem('app_users', JSON.stringify(users)); alert('Senha redefinida.'); renderAdminPanelPage(); }
+    }
+  };
+  window._deleteUserPage = function(username) {
+    if (confirm(`Excluir usuário ${username}?`)) {
+      users = loadUsers();
+      users = users.filter(u => u.username !== username);
+      localStorage.setItem('app_users', JSON.stringify(users));
+      renderAdminPanelPage();
+    }
+  };
+
+  // ============================================================
+  // STATUS
+  // ============================================================
+  async function checkServerStatus() {
+    const dot = document.getElementById('statusDot'), text = document.getElementById('statusText');
+    if (!dot || !text) { setTimeout(checkServerStatus, 2000); return; }
+    try {
+      const resp = await fetch(`${APP_SCRIPT_URL}?action=ping&t=${Date.now()}`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      if (data.status === 'ok') { dot.className = 'status-dot online'; text.textContent = 'Online'; }
+      else throw new Error('Resposta inválida');
+    } catch {
+      dot.className = 'status-dot offline';
+      text.textContent = 'Offline';
+    }
+  }
+
+  // ============================================================
+  // DETALHES REDUTOR
+  // ============================================================
+  window._openReducerDetail = function(id) {
+    const item = reducers.find(r => r.id === id);
+    if (!item) return;
+    const title = document.getElementById('reducerDetailTitle');
+    const content = document.getElementById('reducerDetailContent');
+    if (title) title.innerHTML = `<i class="fas fa-info-circle"></i> ${item.name}`;
+    if (content) {
+      content.innerHTML = `
+        <p><strong><i class="fas fa-industry"></i> Fabricante:</strong> ${escapeHtml(item.manufacturer)}</p>
+        <p><strong><i class="fas fa-map-marker-alt"></i> Local:</strong> ${escapeHtml(item.location)}</p>
+        <h4 style="margin-top:18px;"><i class="fas fa-cog"></i> Rolamentos (${(item.bearings||[]).length})</h4>
+        <ul>${(item.bearings||[]).map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>
+        <h4 style="margin-top:12px;"><i class="fas fa-oil-can"></i> Retentores (${(item.retainers||[]).length})</h4>
+        <ul>${(item.retainers||[]).map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+      `;
+    }
+    document.getElementById('reducerDetailModal').style.display = 'flex';
+  };
+
+  // ============================================================
+  // LOGIN / LOGOUT
+  // ============================================================
+  function doLogin() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
+    if (!u || !p) { document.getElementById('loginError').textContent = 'Preencha usuário e senha.'; return; }
+    users = loadUsers();
+    const found = users.find(user => user.username === u && user.password === p);
+    if (!found) { document.getElementById('loginError').textContent = 'Usuário ou senha inválidos.'; return; }
+    currentUser = { username: found.username, level: found.level };
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('userInfo').innerHTML = `<i class="fas fa-user-circle"></i> ${currentUser.username} (${currentUser.level === 'master' ? 'Mestre' : 'Usuário'})`;
+    const sidebarAdmin = document.getElementById('sidebarAdmin');
+    if (sidebarAdmin) sidebarAdmin.style.display = isMaster() ? 'flex' : 'none';
+    updateAppTitleUI(getAppTitle());
+    checkServerStatus();
+    initApp();
+  }
+
+  function doLogout() {
+    currentUser = null;
+    pollingEnabled = false;
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginError').textContent = '';
+    cart = [];
+    renderAllCarts();
+  }
+
+  // ============================================================
+  // INICIALIZAÇÃO
+  // ============================================================
+  async function initApp() {
+    const data = await loadDataFromSheet();
+    if (data) {
+      retainers = (data.retainers || []).sort((a, b) => a.id - b.id);
+      bearings = (data.bearings || []).sort((a, b) => a.id - b.id);
+      reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
+      cart = data.cart || [];
+      nextRetainerId = data.nextRetainerId || 1;
+      nextBearingId = data.nextBearingId || 1;
+      nextReducerId = data.nextReducerId || 1;
+    } else {
+      retainers = defaultData.retainers;
+      bearings = defaultData.bearings;
+      reducers = defaultData.reducers;
+      cart = defaultData.cart || [];
+      nextRetainerId = defaultData.nextRetainerId;
+      nextBearingId = defaultData.nextBearingId;
+      nextReducerId = defaultData.nextReducerId;
+      await saveData();
+    }
+    renderAllLists();
+    renderAllCarts();
+    renderTabelaEstoque();
+    updateDashboard();
+    setupDashboardClicks();
+    navigateTo('dashboard');
+    pollingEnabled = true;
+    setInterval(checkForUpdates, POLL_INTERVAL);
+    console.log('✅ Auto-sync ativado (polling a cada', POLL_INTERVAL/1000, 's)');
+  }
+
+  // ============================================================
+  // SERVICE WORKER
+  // ============================================================
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/CONTROLE_CATALOGO/sw.js')
+        .then(function(registration) {
+          console.log('✅ Service Worker registrado com sucesso!');
+          registration.addEventListener('updatefound', function() {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                if (confirm('🔄 Nova versão disponível! Atualizar agora?')) {
+                  newWorker.postMessage('skipWaiting');
+                  window.location.reload();
+                }
+              }
+            });
+          });
+        })
+        .catch(function(error) {
+          console.log('❌ Erro:', error);
+        });
+    });
+  }
+
+  // ============================================================
+  // EVENTOS DOM
+  // ============================================================
+  document.addEventListener('DOMContentLoaded', function() {
+    updateAppTitleUI(getAppTitle());
+
+    const btnLogin = document.getElementById('btnLogin');
+    if (btnLogin) btnLogin.addEventListener('click', doLogin);
+    const loginPass = document.getElementById('loginPass');
+    if (loginPass) loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    const loginUser = document.getElementById('loginUser');
+    if (loginUser) loginUser.addEventListener('keydown', e => { if (e.key === 'Enter') { const pass = document.getElementById('loginPass'); if (pass) pass.focus(); } });
+    const btnLogout = document.getElementById('btnLogout');
+    if (btnLogout) btnLogout.addEventListener('click', doLogout);
+
+    const syncBtn = document.getElementById('btnManualSync');
+    if (syncBtn) {
+      syncBtn.addEventListener('click', function() {
+        if (!currentUser) { alert('Faça login primeiro.'); return; }
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sync';
+        refreshData().finally(() => {
+          this.disabled = false;
+          this.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Sync';
+        });
+      });
+    }
+
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function() {
+        const dark = document.body.classList.toggle('dark');
+        document.body.classList.toggle('light');
+        this.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+      });
+    }
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      document.body.classList.remove('light');
+      const toggle = document.getElementById('themeToggle');
+      if (toggle) toggle.innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+      document.body.classList.add('light');
+      document.body.classList.remove('dark');
+      const toggle = document.getElementById('themeToggle');
+      if (toggle) toggle.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) sidebar.classList.toggle('open');
+      });
+    }
+
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const page = this.dataset.page;
+        if (page) navigateTo(page);
+      });
+    });
+
+    const closeCart = document.getElementById('closeCartSidebar');
+    if (closeCart) {
+      closeCart.addEventListener('click', function() {
+        const sidebar = document.getElementById('cartSidebar');
+        if (sidebar) sidebar.style.display = 'none';
+      });
+    }
+
+    // ============================================================
+    // EVENTOS DA PÁGINA DE ESTOQUE
+    // ============================================================
+    const searchEstoque = document.getElementById('searchEstoque');
+    if (searchEstoque) searchEstoque.addEventListener('input', renderTabelaEstoque);
+
+    const filtroTipo = document.getElementById('filtroTipoEstoque');
+    if (filtroTipo) filtroTipo.addEventListener('change', renderTabelaEstoque);
+
+    const filtroStatus = document.getElementById('filtroStatusEstoque');
+    if (filtroStatus) filtroStatus.addEventListener('change', renderTabelaEstoque);
+
+    const btnSalvarTodos = document.getElementById('btnAtualizarTodosEstoque');
+    if (btnSalvarTodos) {
+      btnSalvarTodos.addEventListener('click', salvarTodosEstoques);
+    }
+
+    // ============================================================
+    // EVENTOS DAS LISTAS
+    // ============================================================
+    ['searchRetentores', 'searchRolamentos', 'searchRedutores'].forEach(id => {
+      const inp = document.getElementById(id);
+      if (inp) inp.addEventListener('input', renderAllLists);
+    });
+
+    const btnAddRet = document.getElementById('btnAddRetentor');
+    if (btnAddRet) {
+      btnAddRet.addEventListener('click', () => {
+        modalMode = 'add'; editingItemId = null; editingCategory = null;
+        createModal('Adicionar Retentor', 'retentor');
+        modalOverlay.style.display = 'flex';
+      });
+    }
+    const btnAddRol = document.getElementById('btnAddRolamento');
+    if (btnAddRol) {
+      btnAddRol.addEventListener('click', () => {
+        modalMode = 'add'; editingItemId = null; editingCategory = null;
+        createModal('Adicionar Rolamento', 'rolamento');
+        modalOverlay.style.display = 'flex';
+      });
+    }
+    const btnAddRed = document.getElementById('btnAddRedutor');
+    if (btnAddRed) {
+      btnAddRed.addEventListener('click', () => {
+        modalMode = 'add'; editingItemId = null; editingCategory = null;
+        createModal('Adicionar Redutor', 'redutor');
+        modalOverlay.style.display = 'flex';
+      });
+    }
+
+    const btnWhatsappPage = document.getElementById('btnWhatsAppPage');
+    if (btnWhatsappPage) btnWhatsappPage.addEventListener('click', sendWhatsApp);
+    const btnWhatsappSidebar = document.getElementById('btnWhatsAppSidebar');
+    if (btnWhatsappSidebar) btnWhatsappSidebar.addEventListener('click', sendWhatsApp);
+
+    const adminLink = document.getElementById('adminLinkFromLogin');
+    if (adminLink) {
+      adminLink.addEventListener('click', () => {
+        const user = prompt('Usuário mestre:');
+        if (!user) return;
+        const pass = prompt('Senha mestre:');
+        if (!pass) return;
+        users = loadUsers();
+        const master = users.find(u => u.username === user && u.password === pass && u.level === 'master');
+        if (!master) { alert('Acesso negado.'); return; }
+        currentUser = { username: master.username, level: 'master' };
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        document.getElementById('userInfo').innerHTML = `<i class="fas fa-user-circle"></i> ${currentUser.username} (Mestre)`;
+        const sidebarAdmin = document.getElementById('sidebarAdmin');
+        if (sidebarAdmin) sidebarAdmin.style.display = 'flex';
+        checkServerStatus();
+        initApp();
+      });
+    }
+
+    if (modalOverlay) {
+      modalOverlay.addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+      });
+    }
+
+    const btnCloseDetail = document.getElementById('btnCloseReducerDetail');
+    if (btnCloseDetail) {
+      btnCloseDetail.addEventListener('click', () => {
+        document.getElementById('reducerDetailModal').style.display = 'none';
+      });
+    }
+    const reducerModal = document.getElementById('reducerDetailModal');
+    if (reducerModal) {
+      reducerModal.addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
