@@ -618,7 +618,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
-      margin-bottom: 32px;
+      margin-bottom: 16px;
     }
     .dash-card {
       background: var(--card-bg);
@@ -657,6 +657,45 @@
       color: var(--text-secondary);
       margin-top: 4px;
       font-weight: 500;
+    }
+
+    /* ============================================================
+       MENSAGEM RODAPÉ - DISCRETA
+       ============================================================ */
+    .footer-info {
+      margin-top: 24px;
+      padding: 12px 16px;
+      background: var(--card-bg);
+      backdrop-filter: blur(4px);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      opacity: 0.8;
+      transition: opacity var(--transition);
+    }
+    .footer-info:hover {
+      opacity: 1;
+    }
+    .footer-info i {
+      font-size: 0.85rem;
+    }
+    .footer-info .sep {
+      opacity: 0.3;
+    }
+    .footer-info .link {
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .footer-info .link:hover {
+      color: var(--primary-hover);
     }
 
     /* ============================================================
@@ -1551,6 +1590,11 @@
         font-size: 0.65rem;
         padding: 4px 10px;
       }
+      .footer-info {
+        font-size: 0.65rem;
+        padding: 8px 12px;
+        gap: 8px;
+      }
     }
 
     @media (max-width: 480px) {
@@ -1585,6 +1629,12 @@
       .estoque-resumo {
         font-size: 0.7rem;
         gap: 12px;
+      }
+      .footer-info {
+        font-size: 0.6rem;
+        padding: 6px 10px;
+        flex-direction: column;
+        gap: 4px;
       }
     }
   </style>
@@ -1684,12 +1734,19 @@
             <div class="dash-label">Redutores</div>
           </div>
         </div>
-        <div style="background: var(--card-bg); backdrop-filter: blur(8px); border-radius: var(--radius); padding: 24px; border: 1px solid var(--card-border); box-shadow: var(--shadow-sm);">
-          <p style="color: var(--text-secondary);"><i class="fas fa-check-circle" style="color: var(--success);"></i> Sistema conectado ao Google Sheets. Todos os dados são sincronizados automaticamente.</p>
-          <p style="margin-top: 10px; font-size: 0.9rem;"><i class="fas fa-arrow-right" style="color: var(--primary);"></i> <strong>Clique nos cards</strong> para filtrar os itens correspondentes.</p>
-          <p style="margin-top: 6px; font-size: 0.9rem;"><i class="fas fa-boxes" style="color: var(--primary);"></i> Acesse a aba <strong>"📦 Estoque"</strong> para gerenciar todas as quantidades.</p>
+        <div id="dashboardFilteredItems" class="items-grid" style="margin-top: 16px; display: none;"></div>
+
+        <!-- ===== MENSAGEM DISCRETA NO RODAPÉ ===== -->
+        <div class="footer-info">
+          <i class="fas fa-check-circle" style="color: var(--success);"></i>
+          <span>Sistema conectado ao Google Sheets</span>
+          <span class="sep">|</span>
+          <i class="fas fa-arrow-right" style="color: var(--primary);"></i>
+          <span>Clique nos cards para filtrar</span>
+          <span class="sep">|</span>
+          <i class="fas fa-boxes" style="color: var(--primary);"></i>
+          <span>Acesse <span class="link" onclick="navigateTo('estoque')">📦 Estoque</span> para gerenciar</span>
         </div>
-        <div id="dashboardFilteredItems" class="items-grid" style="margin-top: 20px; display: none;"></div>
       </div>
 
       <!-- ESTOQUE -->
