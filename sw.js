@@ -41,14 +41,16 @@ self.addEventListener('fetch', event => {
   const url = request.url;
 
   // ============================================================
-  // IGNORA REQUISIÇÕES DE EXTENSÕES E OUTROS ESQUEMAS
+  // IGNORA TODAS AS EXTENSÕES E REQUISIÇÕES NÃO SUPORTADAS
   // ============================================================
   if (url.startsWith('chrome-extension://') || 
       url.startsWith('moz-extension://') ||
       url.startsWith('chrome://') ||
       url.startsWith('about:') ||
       url.startsWith('data:') ||
-      url.startsWith('blob:')) {
+      url.startsWith('blob:') ||
+      url.includes('quillbot') ||
+      url.includes('chrome-extension')) {
     return;
   }
 
@@ -68,13 +70,14 @@ self.addEventListener('fetch', event => {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
             .then(cache => {
-              // NÃO CACHEIA REQUISIÇÕES DA API
+              // NÃO CACHEIA REQUISIÇÕES DA API E EXTENSÕES
               if (!url.includes('script.google.com') && 
                   !url.includes('googleapis.com') &&
-                  !url.startsWith('chrome-extension://')) {
+                  !url.includes('chrome-extension') &&
+                  !url.includes('quillbot')) {
                 cache.put(request, responseToCache).catch(err => {
-                  // Ignora erros de cache de extensões
-                  console.debug('Cache ignorado:', url);
+                  // Ignora silenciosamente erros de cache
+                  console.debug('Cache ignorado para:', url);
                 });
               }
             });
