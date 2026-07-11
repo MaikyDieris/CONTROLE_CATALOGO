@@ -6,7 +6,7 @@
 // VERSÃO - MUDE ESTE NÚMERO SEMPRE QUE ALTERAR O SITE
 // ============================================================
 const APP_VERSION = '2.6.0'; // <-- MUDE ISSO SEMPRE QUE ATUALIZAR
-const gerenciador-v2 = `gerenciador-${APP_VERSION}`;
+const CACHE_NAME = `gerenciador-${APP_VERSION}`;
 
 // ============================================================
 // ARQUIVOS PARA CACHE
