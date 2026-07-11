@@ -1392,6 +1392,207 @@
         padding: 24px 16px;
       }
     }
+
+    /* ============================================================
+       INTERFACE 2026 — MODERNA, PROFISSIONAL E RESPONSIVA
+       ============================================================ */
+    :root {
+      --bg: #f1f5f9;
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --card-border: #e2e8f0;
+      --sidebar-bg: #0b1220;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --header-height: 76px;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 3px 10px rgba(15, 23, 42, .04);
+      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+      --shadow-md: 0 18px 45px rgba(15, 23, 42, .12);
+    }
+    body.dark {
+      --bg: #070d19;
+      --card-bg: rgba(15, 23, 42, .96);
+      --card-border: #243248;
+      --sidebar-bg: #050a13;
+      --header-bg: rgba(8, 15, 28, .9);
+    }
+    body {
+      background:
+        radial-gradient(circle at 85% 0, rgba(37, 99, 235, .09), transparent 28rem),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select { font: inherit; }
+    button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, .28);
+      outline-offset: 2px;
+    }
+    .top-bar {
+      padding: 0 clamp(14px, 2.4vw, 34px);
+      background: rgba(255, 255, 255, .88);
+      border-bottom: 1px solid rgba(148, 163, 184, .2);
+      box-shadow: 0 1px 12px rgba(15, 23, 42, .05);
+    }
+    body.dark .top-bar { background: rgba(8, 15, 28, .9); }
+    .top-bar .left .app-title { font-size: 1.08rem; letter-spacing: -.02em; }
+    .top-bar .left .app-title i {
+      display: grid; place-items: center; width: 38px; height: 38px;
+      color: #fff; border-radius: 11px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, .25);
+    }
+    .top-bar .right { gap: 10px; flex-wrap: nowrap; }
+    .status-indicator, .top-bar .right .user-info {
+      height: 36px; border: 1px solid var(--border); background: var(--card-bg);
+    }
+    #syncStatus { white-space: nowrap; }
+    .btn-sync, .btn-logout { height: 38px; padding-inline: 15px; }
+    .theme-toggle { width: 38px; height: 38px; flex: 0 0 38px; }
+    .sidebar {
+      background:
+        radial-gradient(circle at 30% 0, rgba(59, 130, 246, .22), transparent 18rem),
+        var(--sidebar-bg);
+      border-right: 1px solid rgba(148, 163, 184, .12);
+      box-shadow: 12px 0 35px rgba(15, 23, 42, .06);
+    }
+    .sidebar .sidebar-header {
+      min-height: 70px; padding: 21px 22px; text-transform: uppercase;
+      letter-spacing: .11em; font-size: .72rem; color: #94a3b8;
+    }
+    .sidebar .sidebar-nav { padding: 14px 12px; }
+    .sidebar .sidebar-nav a {
+      margin: 5px 0; padding: 13px 14px; border: 0; border-radius: 12px;
+      color: #aab8cc; font-size: .87rem;
+    }
+    .sidebar .sidebar-nav a:hover { background: rgba(255,255,255,.07); transform: translateX(2px); }
+    .sidebar .sidebar-nav a.active {
+      color: #fff; background: linear-gradient(135deg, rgba(37,99,235,.95), rgba(29,78,216,.9));
+      box-shadow: 0 9px 22px rgba(37, 99, 235, .24);
+    }
+    .sidebar .sidebar-nav a.active i { color: #fff; }
+    .sidebar .sidebar-footer { padding: 18px 22px; background: rgba(0,0,0,.12); }
+    .sidebar-backdrop { display: none; }
+    .content {
+      padding: clamp(22px, 3vw, 42px);
+      background: transparent;
+      scroll-behavior: smooth;
+    }
+    .content .page { max-width: 1500px; margin: 0 auto; }
+    .content .page > h2, .page-header h2 {
+      font-size: clamp(1.45rem, 2vw, 2rem); letter-spacing: -.04em; margin-bottom: 22px;
+    }
+    .page-header { margin-bottom: 24px; gap: 18px; }
+    .page-header .search-box { gap: 10px; flex: 1; justify-content: flex-end; }
+    .page-header .search-box input {
+      width: min(100%, 360px); height: 44px; border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm); padding-left: 17px;
+    }
+    .page-header .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,.12); }
+    .btn-add, .btn-save, .btn-save-config {
+      min-height: 44px; border-radius: 12px; box-shadow: 0 8px 18px rgba(37,99,235,.18);
+    }
+    .dashboard-grid {
+      grid-template-columns: repeat(6, minmax(150px, 1fr));
+      gap: clamp(12px, 1.5vw, 20px); margin-bottom: 28px;
+    }
+    .dash-card {
+      min-height: 154px; padding: 22px 18px; text-align: left;
+      border: 1px solid var(--card-border); background: var(--card-bg);
+      box-shadow: var(--shadow-sm); isolation: isolate;
+    }
+    .dash-card::after {
+      content: ''; position: absolute; width: 90px; height: 90px; right: -34px; bottom: -36px;
+      border-radius: 50%; background: var(--primary); opacity: .055; z-index: -1;
+    }
+    .dash-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: rgba(37,99,235,.38); }
+    .dash-card .dash-icon {
+      width: 42px; height: 42px; display: grid; place-items: center; margin: 0 0 17px;
+      font-size: 1.1rem; border-radius: 12px; background: var(--primary-light);
+    }
+    .dash-card .dash-number { font-size: 1.85rem; }
+    .dash-card .dash-label { font-size: .76rem; margin-top: 3px; }
+    .dash-card.alert-baixo { border-color: rgba(245,158,11,.36); }
+    .dash-card.alert-critico { border-color: rgba(239,68,68,.36); }
+    .items-grid { grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 18px; }
+    .item-card {
+      padding: 20px; border: 1px solid var(--card-border); background: var(--card-bg);
+      box-shadow: var(--shadow-sm); border-radius: 16px;
+    }
+    .item-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(37,99,235,.38); }
+    .item-card .card-name { font-size: 1rem; gap: 10px; }
+    .item-card .card-info { line-height: 1.55; }
+    .item-card .card-actions { padding-top: 14px; margin-top: 14px; border-top: 1px solid var(--border); }
+    .item-card .btn { min-height: 36px; border-radius: 10px; }
+    .estoque-badge { border-radius: 999px; padding: 5px 9px; font-size: .67rem; white-space: nowrap; }
+    .estoque-badge.baixo { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+    .estoque-badge.critico { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+    body.dark .estoque-badge.baixo { background: #431407; color: #fdba74; border-color: #7c2d12; }
+    body.dark .estoque-badge.critico { background: #4c0519; color: #fda4af; border-color: #881337; }
+    .cart-item, .config-block, #page-dashboard > div[style*="background"] {
+      border: 1px solid var(--card-border); background: var(--card-bg); box-shadow: var(--shadow-sm); border-radius: 16px;
+    }
+    .modal-overlay { padding: 20px; backdrop-filter: blur(8px); }
+    .modal { width: min(100%, 620px); max-height: min(88vh, 850px); overflow-y: auto; border: 1px solid var(--card-border); }
+    .user-table { border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-sm); }
+
+    @media (max-width: 1280px) {
+      .dashboard-grid { grid-template-columns: repeat(3, minmax(170px, 1fr)); }
+      #syncStatus { display: none; }
+    }
+    @media (max-width: 900px) {
+      :root { --header-height: 68px; }
+      .top-bar .left .app-title { display: flex; }
+      .top-bar .right .user-info, .status-indicator { display: none; }
+      .sidebar { top: var(--header-height); z-index: 60; width: min(82vw, 290px); }
+      .sidebar-backdrop {
+        display: block; position: fixed; inset: var(--header-height) 0 0; z-index: 59;
+        background: rgba(2, 6, 23, .52); backdrop-filter: blur(2px);
+        opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
+      }
+      .sidebar.open + .sidebar-backdrop { opacity: 1; visibility: visible; }
+      .content { padding: 24px 18px 90px; }
+      .cart-sidebar { position: fixed; inset: auto 0 0; z-index: 55; width: 100%; max-height: 55vh; box-shadow: 0 -18px 42px rgba(15,23,42,.18); }
+    }
+    @media (max-width: 640px) {
+      .top-bar { padding: 0 12px; }
+      .top-bar .left { gap: 7px; min-width: 0; }
+      .top-bar .left .app-title { font-size: .92rem; max-width: 145px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+      .top-bar .left .app-title i { width: 34px; height: 34px; flex: 0 0 34px; }
+      .top-bar .right { gap: 7px; }
+      .btn-sync { width: 38px; padding: 0; justify-content: center; font-size: 0; }
+      .btn-sync i { font-size: .9rem; }
+      .btn-logout { width: 38px; padding: 0; justify-content: center; font-size: 0; }
+      .btn-logout i { font-size: .9rem; }
+      .theme-toggle { width: 36px; height: 36px; flex-basis: 36px; }
+      .content { padding: 21px 14px 80px; }
+      .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .dash-card { min-height: 137px; padding: 16px 14px; }
+      .dash-card .dash-icon { width: 36px; height: 36px; margin-bottom: 12px; }
+      .dash-card .dash-number { font-size: 1.55rem; }
+      .dash-card .dash-label { font-size: .7rem; }
+      .page-header { align-items: stretch; }
+      .page-header .search-box { display: grid; grid-template-columns: 1fr auto; width: 100%; }
+      .page-header .search-box input { width: 100%; min-width: 0; }
+      .page-header .search-box .btn-add { padding-inline: 14px; }
+      .items-grid { grid-template-columns: 1fr; }
+      .item-card { padding: 17px; }
+      .item-card .card-actions { display: grid; grid-template-columns: repeat(2, 1fr); }
+      .item-card .btn-cart { grid-column: 1 / -1; }
+      .modal-overlay { align-items: flex-end; padding: 0; }
+      .modal { max-width: none; width: 100%; max-height: 92vh; border-radius: 22px 22px 0 0; padding: 24px 18px max(24px, env(safe-area-inset-bottom)); }
+      .user-table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+    @media (max-width: 380px) {
+      .top-bar .left .app-title { display: none; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .dash-card { min-height: 118px; }
+      .page-header .search-box { grid-template-columns: 1fr; }
+      .page-header .search-box .btn-add { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -1430,7 +1631,7 @@
   <!-- Top bar -->
   <div class="top-bar">
     <div class="left">
-      <button class="menu-toggle" id="menuToggle" title="Menu"><i class="fas fa-bars"></i></button>
+      <button class="menu-toggle" id="menuToggle" title="Menu" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false"><i class="fas fa-bars"></i></button>
       <span class="app-title" id="appTitleDisplay"><i class="fas fa-tools"></i> Gerenciador</span>
     </div>
     <div class="right">
@@ -1441,7 +1642,7 @@
       </div>
       <span id="syncStatus"><i class="fas fa-sync-alt"></i> Sincronizado</span>
       <button class="btn-sync" id="btnManualSync" title="Sincronizar com a planilha agora"><i class="fas fa-cloud-upload-alt"></i> Sync</button>
-      <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro e escuro"><i class="fas fa-moon"></i></button>
       <button class="btn-logout" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Sair</button>
     </div>
   </div>
@@ -1460,6 +1661,7 @@
       </div>
       <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.3 • Auto-sync ativo</div>
     </div>
+    <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Fechar menu"></button>
 
     <!-- Conteúdo -->
     <div class="content" id="contentArea">
@@ -1490,13 +1692,13 @@
           <div class="dash-card alert-baixo" data-filter="baixo">
             <div class="dash-icon"><i class="fas fa-exclamation-triangle"></i></div>
             <div class="dash-number" id="dashBaixoEstoque">0</div>
-            <div class="dash-label">⚠️ Estoque Baixo</div>
+            <div class="dash-label">Não Cadastrado</div>
             <span class="dash-badge" id="badgeBaixo">0</span>
           </div>
           <div class="dash-card alert-critico" data-filter="critico">
-            <div class="dash-icon"><i class="fas fa-skull-crossbones"></i></div>
+            <div class="dash-icon"><i class="fas fa-box-open"></i></div>
             <div class="dash-number" id="dashEstoqueCritico">0</div>
-            <div class="dash-label">🚨 Estoque Crítico</div>
+            <div class="dash-label">Sem Estoque</div>
             <span class="dash-badge" id="badgeCritico">0</span>
           </div>
         </div>
@@ -1870,8 +2072,8 @@
   function getEstoqueStatus(item) {
     const estoque = item.estoque || 0;
     const minimo = item.estoque_minimo || 5;
-    if (estoque === 0) return { status: 'critico', label: '🚨 Crítico', cor: 'var(--danger)' };
-    if (estoque <= minimo) return { status: 'baixo', label: '⚠️ Baixo', cor: 'var(--warning)' };
+    if (estoque === 0) return { status: 'critico', label: 'Sem Estoque', cor: 'var(--danger)' };
+    if (estoque <= minimo) return { status: 'baixo', label: 'Não Cadastrado', cor: 'var(--warning)' };
     return { status: 'ok', label: '✅ Ok', cor: 'var(--success)' };
   }
 
@@ -2071,7 +2273,7 @@
             const minimo = item.estoque_minimo || 5;
             return estoque <= minimo && estoque > 0;
           });
-          mostrarItensFiltrados(itens, '⚠️ Estoque Baixo');
+          mostrarItensFiltrados(itens, 'Não Cadastrado');
         } else if (filtro === 'critico') {
           const itens = [
             ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
@@ -2080,7 +2282,7 @@
             const estoque = item.estoque || 0;
             return estoque === 0;
           });
-          mostrarItensFiltrados(itens, '🚨 Estoque Crítico');
+          mostrarItensFiltrados(itens, 'Sem Estoque');
         }
       });
     });
@@ -2634,7 +2836,18 @@
     if (menuToggle) {
       menuToggle.addEventListener('click', function() {
         const sidebar = document.getElementById('sidebar');
-        if (sidebar) sidebar.classList.toggle('open');
+        if (sidebar) {
+          const isOpen = sidebar.classList.toggle('open');
+          this.setAttribute('aria-expanded', String(isOpen));
+        }
+      });
+    }
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    if (sidebarBackdrop) {
+      sidebarBackdrop.addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) sidebar.classList.remove('open');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
       });
     }
 
@@ -2643,6 +2856,7 @@
         e.preventDefault();
         const page = this.dataset.page;
         if (page) navigateTo(page);
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
       });
     });
 
