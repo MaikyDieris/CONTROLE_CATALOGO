@@ -1515,7 +1515,7 @@
 </div>
 
 <!-- ============================================================
-     JAVASCRIPT (mantido com melhorias pontuais)
+     JAVASCRIPT (com ordenação crescente)
      ============================================================ -->
 <script>
 (function() {
@@ -1645,7 +1645,7 @@
   }
 
   // ============================================================
-  // REFRESH / SYNC MANUAL
+  // REFRESH / SYNC MANUAL (COM ORDENAÇÃO)
   // ============================================================
   async function refreshData() {
     if (isSyncing) return;
@@ -1658,9 +1658,10 @@
     try {
       const data = await loadDataFromSheet();
       if (data) {
-        retainers = data.retainers || [];
-        bearings = data.bearings || [];
-        reducers = data.reducers || [];
+        // ORDENAÇÃO CRESCENTE POR ID
+        retainers = (data.retainers || []).sort((a, b) => a.id - b.id);
+        bearings = (data.bearings || []).sort((a, b) => a.id - b.id);
+        reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
         cart = data.cart || [];
         nextRetainerId = data.nextRetainerId || 1;
         nextBearingId = data.nextBearingId || 1;
@@ -1685,7 +1686,7 @@
   }
 
   // ============================================================
-  // DADOS PADRÃO
+  // DADOS PADRÃO (já ordenados)
   // ============================================================
   const defaultData = {
     retainers: [
@@ -1984,7 +1985,7 @@
   }
 
   // ============================================================
-  // MODAL ADICIONAR/EDITAR
+  // MODAL ADICIONAR/EDITAR (COM ORDENAÇÃO)
   // ============================================================
   let modalMode = 'add', editingItemId = null, editingCategory = null;
   const modalOverlay = document.getElementById('modalOverlay');
@@ -2081,6 +2082,9 @@
     modalOverlay.style.display = 'flex';
   }
 
+  // ============================================================
+  // SAVE MODAL COM ORDENAÇÃO CRESCENTE
+  // ============================================================
   async function saveModal() {
     if (!isMaster()) return;
     const cat = categorySelect.value;
@@ -2089,13 +2093,29 @@
         const measures = inputMeasuresRet.value.trim();
         if (!measures) { alert('Informe a medida.'); return; }
         const name = generateRetentorName(measures);
-        if (modalMode === 'add') retainers.push({ id: nextRetainerId++, name, measures });
-        else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.measures = measures; } }
+        if (modalMode === 'add') {
+          retainers.push({ id: nextRetainerId++, name, measures });
+          // ORDENAÇÃO CRESCENTE POR ID
+          retainers.sort((a, b) => a.id - b.id);
+        } else {
+          const item = getItemById(editingItemId, cat);
+          if (item) { item.name = name; item.measures = measures; }
+          // ORDENAÇÃO CRESCENTE POR ID
+          retainers.sort((a, b) => a.id - b.id);
+        }
       } else if (cat === 'rolamento') {
         const name = inputNameRol.value.trim(), measures = inputMeasuresRol.value.trim();
         if (!name || !measures) { alert('Preencha todos os campos.'); return; }
-        if (modalMode === 'add') bearings.push({ id: nextBearingId++, name, measures });
-        else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.measures = measures; } }
+        if (modalMode === 'add') {
+          bearings.push({ id: nextBearingId++, name, measures });
+          // ORDENAÇÃO CRESCENTE POR ID
+          bearings.sort((a, b) => a.id - b.id);
+        } else {
+          const item = getItemById(editingItemId, cat);
+          if (item) { item.name = name; item.measures = measures; }
+          // ORDENAÇÃO CRESCENTE POR ID
+          bearings.sort((a, b) => a.id - b.id);
+        }
       } else {
         const name = inputRedutorName.value.trim();
         const manufacturer = inputFabricante.value.trim();
@@ -2103,8 +2123,16 @@
         const blist = inputRolamentosAssoc.value.split(',').map(s=>s.trim()).filter(Boolean);
         const rlist = inputRetentoresAssoc.value.split(',').map(s=>s.trim()).filter(Boolean);
         if (!name || !manufacturer || !location) { alert('Preencha todos os campos.'); return; }
-        if (modalMode === 'add') reducers.push({ id: nextReducerId++, name, manufacturer, location, bearings: blist, retainers: rlist });
-        else { const item = getItemById(editingItemId, cat); if (item) { item.name = name; item.manufacturer = manufacturer; item.location = location; item.bearings = blist; item.retainers = rlist; } }
+        if (modalMode === 'add') {
+          reducers.push({ id: nextReducerId++, name, manufacturer, location, bearings: blist, retainers: rlist });
+          // ORDENAÇÃO CRESCENTE POR ID
+          reducers.sort((a, b) => a.id - b.id);
+        } else {
+          const item = getItemById(editingItemId, cat);
+          if (item) { item.name = name; item.manufacturer = manufacturer; item.location = location; item.bearings = blist; item.retainers = rlist; }
+          // ORDENAÇÃO CRESCENTE POR ID
+          reducers.sort((a, b) => a.id - b.id);
+        }
       }
       modalOverlay.style.display = 'none';
       renderAllLists();
@@ -2284,19 +2312,21 @@
   }
 
   // ============================================================
-  // INICIALIZAÇÃO
+  // INICIALIZAÇÃO (COM ORDENAÇÃO)
   // ============================================================
   async function initApp() {
     const data = await loadDataFromSheet();
     if (data) {
-      retainers = data.retainers || [];
-      bearings = data.bearings || [];
-      reducers = data.reducers || [];
+      // ORDENAÇÃO CRESCENTE POR ID
+      retainers = (data.retainers || []).sort((a, b) => a.id - b.id);
+      bearings = (data.bearings || []).sort((a, b) => a.id - b.id);
+      reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
       cart = data.cart || [];
       nextRetainerId = data.nextRetainerId || 1;
       nextBearingId = data.nextBearingId || 1;
       nextReducerId = data.nextReducerId || 1;
     } else {
+      // DADOS PADRÃO JÁ ESTÃO ORDENADOS
       retainers = defaultData.retainers;
       bearings = defaultData.bearings;
       reducers = defaultData.reducers;
