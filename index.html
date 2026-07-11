@@ -2080,6 +2080,7 @@
   const SHEET_ID = '1MEghTuBZnbkddvgNsJ2Mi2DwebHyMmGG-Xir4TGtQm0';
   const POLL_INTERVAL = 10000;
   const DEFAULT_TITLE = '🔩 Gerenciador';
+  const ESTOQUE_PADRAO = 10; // <-- ESTOQUE PADRÃO PARA NOVOS ITENS
 
   // ============================================================
   // ESTADO GLOBAL
@@ -2240,27 +2241,27 @@
   }
 
   // ============================================================
-  // DADOS PADRÃO
+  // DADOS PADRÃO (TODOS COM 10 UNIDADES)
   // ============================================================
   const defaultData = {
     retainers: [
-      { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm', estoque: 15, sem_estoque: false },
-      { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm', estoque: 8, sem_estoque: false },
-      { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm', estoque: 3, sem_estoque: false },
-      { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm', estoque: 0, sem_estoque: true },
-      { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm', estoque: 10, sem_estoque: false },
-      { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm', estoque: 2, sem_estoque: false },
-      { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm', estoque: 12, sem_estoque: false },
-      { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm', estoque: 6, sem_estoque: false },
-      { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm', estoque: 0, sem_estoque: true },
-      { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm', estoque: 4, sem_estoque: false }
+      { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false }
     ],
     bearings: [
-      { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm', estoque: 20, sem_estoque: false },
-      { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm', estoque: 1, sem_estoque: false },
-      { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm', estoque: 7, sem_estoque: false },
-      { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm', estoque: 0, sem_estoque: true },
-      { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm', estoque: 3, sem_estoque: false }
+      { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false },
+      { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm', estoque: ESTOQUE_PADRAO, sem_estoque: false }
     ],
     reducers: [
       { id:1, name:'Redutor Planetário A10', manufacturer:'SEW', location:'Esteira Transportadora', bearings:['Rolamento 6001','Rolamento 6203'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
@@ -2893,7 +2894,7 @@
       <hr style="margin: 16px 0; border-color: var(--border);">
       <div class="form-group">
         <label for="inputEstoque"><i class="fas fa-boxes"></i> Estoque</label>
-        <input type="number" id="inputEstoque" value="0" min="0" />
+        <input type="number" id="inputEstoque" value="${ESTOQUE_PADRAO}" min="0" />
       </div>
       <div class="modal-actions"><button class="btn-cancel" id="btnCancel"><i class="fas fa-times"></i> Cancelar</button><button class="btn-save" id="btnSave"><i class="fas fa-save"></i> Salvar</button></div></div>`;
 
@@ -2920,12 +2921,12 @@
       toggleModalFields(category);
       if (category === 'retentor' && item) { 
         inputMeasuresRet.value = item.measures || ''; 
-        inputEstoque.value = item.estoque || 0;
+        inputEstoque.value = item.estoque || ESTOQUE_PADRAO;
         updateNamePreview(); 
       } else if (category === 'rolamento' && item) { 
         inputNameRol.value = item.name || ''; 
         inputMeasuresRol.value = item.measures || '';
-        inputEstoque.value = item.estoque || 0;
+        inputEstoque.value = item.estoque || ESTOQUE_PADRAO;
       } else if (category === 'redutor' && item) {
         inputRedutorName.value = item.name || '';
         inputFabricante.value = item.manufacturer || '';
@@ -2937,7 +2938,7 @@
       categorySelect.value = 'retentor';
       categorySelect.disabled = false;
       toggleModalFields('retentor');
-      inputEstoque.value = 0;
+      inputEstoque.value = ESTOQUE_PADRAO;
     }
 
     if (btnCancel) btnCancel.addEventListener('click', () => modalOverlay.style.display = 'none');
