@@ -499,6 +499,35 @@
       box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
+    /* Botão Verificar Atualizações */
+    .btn-check-update {
+      background: var(--warning);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+    .btn-check-update:hover {
+      background: var(--warning-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+    }
+    .btn-check-update:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
     .app-body {
       display: flex;
       flex: 1;
@@ -933,6 +962,33 @@
       transform: scale(0.95);
     }
     .btn-add:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-add-warning {
+      padding: 10px 22px;
+      background: linear-gradient(135deg, var(--warning), var(--warning-hover));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.25);
+    }
+    .btn-add-warning:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+    }
+    .btn-add-warning:active {
+      transform: scale(0.95);
+    }
+    .btn-add-warning:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
@@ -1503,6 +1559,96 @@
     }
 
     /* ============================================================
+       NOTIFICAÇÃO DE ATUALIZAÇÃO
+       ============================================================ */
+    .update-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      box-shadow: var(--shadow-lg);
+      border: 2px solid var(--primary);
+      max-width: 400px;
+      width: 90%;
+      display: none;
+      align-items: center;
+      gap: 14px;
+      animation: slideUp 0.5s ease;
+    }
+    .update-notification.show {
+      display: flex;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .update-notification .icon {
+      font-size: 2rem;
+      color: var(--warning);
+    }
+    .update-notification .text {
+      flex: 1;
+    }
+    .update-notification .text h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .update-notification .text p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .update-notification .btn-update {
+      padding: 8px 18px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .update-notification .btn-update:hover {
+      background: var(--primary-hover);
+      transform: scale(1.05);
+    }
+    .update-notification .btn-close-update {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 0 4px;
+    }
+    .update-notification .btn-close-update:hover {
+      color: var(--danger);
+    }
+    @media (max-width: 480px) {
+      .update-notification {
+        bottom: 10px;
+        right: 10px;
+        padding: 12px 16px;
+        flex-wrap: wrap;
+      }
+      .update-notification .text h4 {
+        font-size: 0.85rem;
+      }
+      .update-notification .text p {
+        font-size: 0.7rem;
+      }
+      .update-notification .btn-update {
+        font-size: 0.7rem;
+        padding: 6px 14px;
+      }
+    }
+
+    /* ============================================================
        RESPONSIVIDADE
        ============================================================ */
     @media (max-width: 1024px) {
@@ -1555,7 +1701,8 @@
       .top-bar .left .app-title {
         display: none;
       }
-      .top-bar .right .btn-sync {
+      .top-bar .right .btn-sync,
+      .top-bar .right .btn-check-update {
         font-size: 0.7rem;
         padding: 4px 12px;
       }
@@ -1639,288 +1786,6 @@
     }
   </style>
 </head>
-  <!-- ============================================================
-     SISTEMA DE ATUALIZAÇÃO AUTOMÁTICA DO PWA
-     ============================================================ -->
-<style>
-  /* NOTIFICAÇÃO DE ATUALIZAÇÃO */
-  .update-notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9999;
-    background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    border-radius: var(--radius);
-    padding: 16px 24px;
-    box-shadow: var(--shadow-lg);
-    border: 2px solid var(--primary);
-    max-width: 400px;
-    width: 90%;
-    display: none;
-    align-items: center;
-    gap: 14px;
-    animation: slideUp 0.5s ease;
-  }
-  .update-notification.show {
-    display: flex;
-  }
-  @keyframes slideUp {
-    from { transform: translateY(100px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  .update-notification .icon {
-    font-size: 2rem;
-    color: var(--warning);
-  }
-  .update-notification .text {
-    flex: 1;
-  }
-  .update-notification .text h4 {
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin-bottom: 2px;
-  }
-  .update-notification .text p {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-  }
-  .update-notification .btn-update {
-    padding: 8px 18px;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.8rem;
-    transition: all var(--transition);
-    white-space: nowrap;
-  }
-  .update-notification .btn-update:hover {
-    background: var(--primary-hover);
-    transform: scale(1.05);
-  }
-  .update-notification .btn-close-update {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: var(--text-light);
-    padding: 0 4px;
-  }
-  .update-notification .btn-close-update:hover {
-    color: var(--danger);
-  }
-  @media (max-width: 480px) {
-    .update-notification {
-      bottom: 10px;
-      right: 10px;
-      padding: 12px 16px;
-      flex-wrap: wrap;
-    }
-    .update-notification .text h4 {
-      font-size: 0.85rem;
-    }
-    .update-notification .text p {
-      font-size: 0.7rem;
-    }
-    .update-notification .btn-update {
-      font-size: 0.7rem;
-      padding: 6px 14px;
-    }
-  }
-</style>
-
-<!-- NOTIFICAÇÃO DE ATUALIZAÇÃO -->
-<div class="update-notification" id="updateNotification">
-  <div class="icon"><i class="fas fa-sync-alt fa-spin"></i></div>
-  <div class="text">
-    <h4>🔄 Nova versão disponível!</h4>
-    <p>Clique em "Atualizar" para carregar a nova versão.</p>
-  </div>
-  <button class="btn-update" id="btnUpdateNow"><i class="fas fa-download"></i> Atualizar</button>
-  <button class="btn-close-update" id="btnCloseUpdate">&times;</button>
-</div>
-
-<script>
-// ============================================================
-// SISTEMA DE ATUALIZAÇÃO AUTOMÁTICA
-// ============================================================
-(function() {
-  'use strict';
-
-  // ============================================================
-  // CONFIGURAÇÃO
-  // ============================================================
-  const UPDATE_CHECK_INTERVAL = 30000; // 30 segundos
-  let pendingUpdate = false;
-  let newWorker = null;
-
-  // ============================================================
-  // ELEMENTOS
-  // ============================================================
-  const notification = document.getElementById('updateNotification');
-  const btnUpdate = document.getElementById('btnUpdateNow');
-  const btnClose = document.getElementById('btnCloseUpdate');
-
-  // ============================================================
-  // FUNÇÃO PARA MOSTRAR NOTIFICAÇÃO
-  // ============================================================
-  function showUpdateNotification() {
-    if (!notification) return;
-    notification.classList.add('show');
-    setTimeout(() => {
-      // Auto-esconde após 30 segundos
-      if (notification.classList.contains('show')) {
-        notification.classList.remove('show');
-      }
-    }, 30000);
-  }
-
-  // ============================================================
-  // FUNÇÃO PARA ESCONDER NOTIFICAÇÃO
-  // ============================================================
-  function hideUpdateNotification() {
-    if (notification) {
-      notification.classList.remove('show');
-    }
-  }
-
-  // ============================================================
-  // FECHAR NOTIFICAÇÃO
-  // ============================================================
-  if (btnClose) {
-    btnClose.addEventListener('click', hideUpdateNotification);
-  }
-
-  // ============================================================
-  // REGISTRAR SERVICE WORKER COM VERIFICAÇÃO
-  // ============================================================
-  function registerServiceWorker() {
-    if (!('serviceWorker' in navigator)) {
-      console.log('❌ Service Worker não suportado');
-      return;
-    }
-
-    navigator.serviceWorker.register('/CONTROLE_CATALOGO/sw.js')
-      .then(function(registration) {
-        console.log('✅ Service Worker registrado com sucesso!');
-        
-        // ============================================================
-        // VERIFICA ATUALIZAÇÕES A CADA 30 SEGUNDOS
-        // ============================================================
-        setInterval(function() {
-          registration.update();
-        }, UPDATE_CHECK_INTERVAL);
-
-        // ============================================================
-        // DETECTA NOVA VERSÃO INSTALADA
-        // ============================================================
-        registration.addEventListener('updatefound', function() {
-          newWorker = registration.installing;
-          
-          newWorker.addEventListener('statechange', function() {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // Nova versão disponível!
-              console.log('🔄 Nova versão do PWA detectada!');
-              pendingUpdate = true;
-              showUpdateNotification();
-            }
-          });
-        });
-
-        // ============================================================
-        // VERIFICA SE JÁ HÁ UMA NOVA VERSÃO ESPERANDO
-        // ============================================================
-        if (registration.waiting) {
-          newWorker = registration.waiting;
-          pendingUpdate = true;
-          showUpdateNotification();
-        }
-
-        // ============================================================
-        // VERIFICA VERSÃO ATUAL
-        // ============================================================
-        if (navigator.serviceWorker.controller) {
-          navigator.serviceWorker.controller.postMessage({ type: 'getVersion' });
-        }
-
-      })
-      .catch(function(error) {
-        console.log('❌ Erro ao registrar Service Worker:', error);
-      });
-  }
-
-  // ============================================================
-  // BOTÃO ATUALIZAR AGORA
-  // ============================================================
-  if (btnUpdate) {
-    btnUpdate.addEventListener('click', function() {
-      if (pendingUpdate && newWorker) {
-        // Força a ativação do novo worker
-        newWorker.postMessage('skipWaiting');
-        newWorker = null;
-        pendingUpdate = false;
-        hideUpdateNotification();
-        
-        // Recarrega a página
-        setTimeout(function() {
-          window.location.reload(true);
-        }, 500);
-      } else {
-        // Se não houver atualização pendente, verifica manualmente
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            registrations.forEach(function(registration) {
-              registration.update();
-            });
-          });
-        }
-        alert('🔄 Verificando atualizações...');
-        setTimeout(function() {
-          window.location.reload(true);
-        }, 2000);
-      }
-    });
-  }
-
-  // ============================================================
-  // DETECTA QUANDO O NOVO WORKER ASSUME O CONTROLE
-  // ============================================================
-  navigator.serviceWorker.addEventListener('controllerchange', function() {
-    console.log('🔄 Novo Service Worker assumiu o controle!');
-    window.location.reload(true);
-  });
-
-  // ============================================================
-  // INICIALIZA
-  // ============================================================
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', registerServiceWorker);
-  } else {
-    registerServiceWorker();
-  }
-
-  // ============================================================
-  // EXPÕE FUNÇÃO PARA ATUALIZAÇÃO MANUAL
-  // ============================================================
-  window.forceUpdateApp = function() {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        registrations.forEach(function(registration) {
-          registration.update();
-        });
-      });
-    }
-    alert('🔄 Verificando atualizações...');
-    setTimeout(function() {
-      window.location.reload(true);
-    }, 2000);
-  };
-
-})();
-</script>
 <body>
 
 <!-- ===== LOGIN ===== -->
@@ -1967,6 +1832,7 @@
         <span id="statusText">Verificando...</span>
       </div>
       <span id="syncStatus"><i class="fas fa-sync-alt"></i> Sincronizado</span>
+      <button class="btn-check-update" id="btnCheckUpdate" title="Verificar atualizações do app"><i class="fas fa-sync-alt"></i> Verificar</button>
       <button class="btn-sync" id="btnManualSync" title="Sincronizar com a planilha agora"><i class="fas fa-cloud-upload-alt"></i> Sync</button>
       <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
       <button class="btn-logout" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Sair</button>
@@ -1986,7 +1852,7 @@
         <a data-page="carrinho"><i class="fas fa-shopping-cart"></i> Carrinho</a>
         <a data-page="admin" id="sidebarAdmin"><i class="fas fa-users-cog"></i> Administração</a>
       </div>
-      <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.5 • Auto-sync ativo</div>
+      <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.6 • Auto-sync ativo</div>
     </div>
 
     <!-- Conteúdo -->
@@ -2038,6 +1904,7 @@
           <div class="search-box">
             <input type="text" id="searchEstoque" placeholder="Pesquisar item..." />
             <button class="btn-add" id="btnAtualizarTodosEstoque" style="background: var(--success);"><i class="fas fa-save"></i> Salvar Todos</button>
+            <button class="btn-add-warning" id="btnAdicionar5Todos"><i class="fas fa-plus-circle"></i> +5 para Todos</button>
           </div>
         </div>
 
@@ -2176,6 +2043,17 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- ===== NOTIFICAÇÃO DE ATUALIZAÇÃO ===== -->
+<div class="update-notification" id="updateNotification">
+  <div class="icon"><i class="fas fa-sync-alt fa-spin"></i></div>
+  <div class="text">
+    <h4>🔄 Nova versão disponível!</h4>
+    <p>Clique em "Atualizar" para carregar a nova versão.</p>
+  </div>
+  <button class="btn-update" id="btnUpdateNow"><i class="fas fa-download"></i> Atualizar</button>
+  <button class="btn-close-update" id="btnCloseUpdate">&times;</button>
 </div>
 
 <!-- ===== MODAIS ===== -->
@@ -2680,6 +2558,48 @@
   }
 
   // ============================================================
+  // FUNÇÃO +5 PARA TODOS
+  // ============================================================
+  async function adicionar5ParaTodos() {
+    if (!currentUser) { alert('Faça login primeiro.'); return; }
+    if (!isMaster()) { alert('Apenas o mestre pode executar esta ação.'); return; }
+    
+    if (!confirm('Adicionar +5 unidades a TODOS os retentores e rolamentos?')) return;
+    
+    const btn = document.getElementById('btnAdicionar5Todos');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processando...';
+    
+    try {
+      // Adiciona 5 a cada item
+      retainers.forEach(item => {
+        item.estoque = (item.estoque || 0) + 5;
+        if (item.sem_estoque) item.sem_estoque = false;
+      });
+      
+      bearings.forEach(item => {
+        item.estoque = (item.estoque || 0) + 5;
+        if (item.sem_estoque) item.sem_estoque = false;
+      });
+      
+      // Salva no Google Sheets
+      await saveData();
+      
+      // Atualiza visualização
+      renderTabelaEstoque();
+      renderAllLists();
+      updateDashboard();
+      
+      alert('✅ +5 unidades adicionadas a todos os retentores e rolamentos!');
+    } catch (e) {
+      alert('❌ Erro: ' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-plus-circle"></i> +5 para Todos';
+    }
+  }
+
+  // ============================================================
   // RENDERIZAÇÃO - LISTAS
   // ============================================================
   function renderList(containerId, list, type, searchInputId) {
@@ -2955,7 +2875,7 @@
   let inputMeasuresRet, inputNameRol, inputMeasuresRol;
   let inputRedutorName, inputFabricante, inputLocal;
   let inputRolamentosAssoc, inputRetentoresAssoc, namePreviewText, btnSave, btnCancel;
-  let inputEstoque, inputEstoqueMinimo;
+  let inputEstoque;
 
   function createModal(title, category, item) {
     modalOverlay.innerHTML = `<div class="modal"><h3><i class="fas fa-pen"></i> ${title}</h3>
@@ -2971,11 +2891,9 @@
       <div class="form-group"><label for="inputRolamentosAssoc"><i class="fas fa-cog"></i> Rolamentos</label><textarea id="inputRolamentosAssoc" placeholder="Separe por vírgula"></textarea></div>
       <div class="form-group"><label for="inputRetentoresAssoc"><i class="fas fa-oil-can"></i> Retentores</label><textarea id="inputRetentoresAssoc" placeholder="Separe por vírgula"></textarea></div></div>
       <hr style="margin: 16px 0; border-color: var(--border);">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="inputEstoque"><i class="fas fa-boxes"></i> Estoque</label>
-          <input type="number" id="inputEstoque" value="0" min="0" />
-        </div>
+      <div class="form-group">
+        <label for="inputEstoque"><i class="fas fa-boxes"></i> Estoque</label>
+        <input type="number" id="inputEstoque" value="0" min="0" />
       </div>
       <div class="modal-actions"><button class="btn-cancel" id="btnCancel"><i class="fas fa-times"></i> Cancelar</button><button class="btn-save" id="btnSave"><i class="fas fa-save"></i> Salvar</button></div></div>`;
 
@@ -3329,29 +3247,127 @@
   }
 
   // ============================================================
+  // SISTEMA DE ATUALIZAÇÃO DO PWA
+  // ============================================================
+  let pendingUpdate = false;
+  let newWorker = null;
+  const updateNotification = document.getElementById('updateNotification');
+  const btnUpdateNow = document.getElementById('btnUpdateNow');
+  const btnCloseUpdate = document.getElementById('btnCloseUpdate');
+  const btnCheckUpdate = document.getElementById('btnCheckUpdate');
+
+  function showUpdateNotification() {
+    if (!updateNotification) return;
+    updateNotification.classList.add('show');
+    setTimeout(() => {
+      if (updateNotification.classList.contains('show')) {
+        updateNotification.classList.remove('show');
+      }
+    }, 30000);
+  }
+
+  function hideUpdateNotification() {
+    if (updateNotification) {
+      updateNotification.classList.remove('show');
+    }
+  }
+
+  if (btnCloseUpdate) {
+    btnCloseUpdate.addEventListener('click', hideUpdateNotification);
+  }
+
+  if (btnUpdateNow) {
+    btnUpdateNow.addEventListener('click', function() {
+      if (pendingUpdate && newWorker) {
+        newWorker.postMessage('skipWaiting');
+        newWorker = null;
+        pendingUpdate = false;
+        hideUpdateNotification();
+        setTimeout(function() {
+          window.location.reload(true);
+        }, 500);
+      }
+    });
+  }
+
+  // ============================================================
+  // BOTÃO VERIFICAR ATUALIZAÇÕES
+  // ============================================================
+  if (btnCheckUpdate) {
+    btnCheckUpdate.addEventListener('click', function() {
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Buscando...';
+      
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          const promises = registrations.map(function(registration) {
+            return registration.update();
+          });
+          return Promise.all(promises);
+        }).then(function() {
+          btnCheckUpdate.innerHTML = '<i class="fas fa-check"></i> OK!';
+          setTimeout(() => {
+            btnCheckUpdate.disabled = false;
+            btnCheckUpdate.innerHTML = '<i class="fas fa-sync-alt"></i> Verificar';
+          }, 2000);
+          
+          if (pendingUpdate) {
+            showUpdateNotification();
+          } else {
+            alert('✅ App está atualizado!');
+          }
+        });
+      }
+    });
+  }
+
+  // ============================================================
   // SERVICE WORKER
   // ============================================================
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/CONTROLE_CATALOGO/sw.js')
-        .then(function(registration) {
-          console.log('✅ Service Worker registrado com sucesso!');
-          registration.addEventListener('updatefound', function() {
-            const newWorker = registration.installing;
-            newWorker.addEventListener('statechange', function() {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                if (confirm('🔄 Nova versão disponível! Atualizar agora?')) {
-                  newWorker.postMessage('skipWaiting');
-                  window.location.reload();
-                }
-              }
-            });
+  function registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) {
+      console.log('❌ Service Worker não suportado');
+      return;
+    }
+
+    navigator.serviceWorker.register('/CONTROLE_CATALOGO/sw.js')
+      .then(function(registration) {
+        console.log('✅ Service Worker registrado com sucesso!');
+        
+        setInterval(function() {
+          registration.update();
+        }, 30000);
+
+        registration.addEventListener('updatefound', function() {
+          newWorker = registration.installing;
+          
+          newWorker.addEventListener('statechange', function() {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('🔄 Nova versão do PWA detectada!');
+              pendingUpdate = true;
+              showUpdateNotification();
+            }
           });
-        })
-        .catch(function(error) {
-          console.log('❌ Erro:', error);
         });
-    });
+
+        if (registration.waiting) {
+          newWorker = registration.waiting;
+          pendingUpdate = true;
+          showUpdateNotification();
+        }
+      })
+      .catch(function(error) {
+        console.log('❌ Erro ao registrar Service Worker:', error);
+      });
+  }
+
+  // ============================================================
+  // INICIALIZAÇÃO DO SERVICE WORKER
+  // ============================================================
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', registerServiceWorker);
+  } else {
+    registerServiceWorker();
   }
 
   // ============================================================
@@ -3380,6 +3396,14 @@
           this.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Sync';
         });
       });
+    }
+
+    // ============================================================
+    // BOTÃO +5 PARA TODOS
+    // ============================================================
+    const btnAdicionar5 = document.getElementById('btnAdicionar5Todos');
+    if (btnAdicionar5) {
+      btnAdicionar5.addEventListener('click', adicionar5ParaTodos);
     }
 
     const themeToggle = document.getElementById('themeToggle');
