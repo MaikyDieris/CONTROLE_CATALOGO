@@ -7,6 +7,7 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
 ];
 
+// INSTALAÇÃO
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -18,6 +19,7 @@ self.addEventListener('install', event => {
   );
 });
 
+// ATIVAÇÃO
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -33,23 +35,47 @@ self.addEventListener('activate', event => {
   );
 });
 
+// INTERCEPTAÇÃO - CORRIGIDO (IGNORA EXTENSÕES)
 self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = request.url;
+
+  // ============================================================
+  // IGNORA REQUISIÇÕES DE EXTENSÕES E OUTROS ESQUEMAS
+  // ============================================================
+  if (url.startsWith('chrome-extension://') || 
+      url.startsWith('moz-extension://') ||
+      url.startsWith('chrome://') ||
+      url.startsWith('about:') ||
+      url.startsWith('data:') ||
+      url.startsWith('blob:')) {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
+    caches.match(request)
       .then(response => {
         if (response) {
           return response;
         }
-        const fetchRequest = event.request.clone();
-        return fetch(fetchRequest).then(response => {
+        return fetch(request).then(response => {
+          // Verifica se é uma resposta válida
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
+          
+          // CLONA E ARMAZENA EM CACHE
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
             .then(cache => {
-              if (!event.request.url.includes('script.google.com')) {
-                cache.put(event.request, responseToCache);
+              // NÃO CACHEIA REQUISIÇÕES DA API
+              if (!url.includes('script.google.com') && 
+                  !url.includes('googleapis.com') &&
+                  !url.startsWith('chrome-extension://')) {
+                cache.put(request, responseToCache).catch(err => {
+                  // Ignora erros de cache de extensões
+                  console.debug('Cache ignorado:', url);
+                });
               }
             });
           return response;
@@ -58,6 +84,7 @@ self.addEventListener('fetch', event => {
   );
 });
 
+// MENSAGEM PARA ATUALIZAÇÃO
 self.addEventListener('message', event => {
   if (event.data === 'skipWaiting') {
     self.skipWaiting();
