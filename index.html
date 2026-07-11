@@ -1392,6 +1392,15 @@
         padding: 24px 16px;
       }
     }
+    .item-card .btn-purchase-list {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(245, 158, 11, .22);
+    }
+    .item-card .btn-purchase-list:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      transform: translateY(-1px);
+    }
 
     /* ============================================================
        INTERFACE 2026 — MODERNA, PROFISSIONAL E RESPONSIVA
@@ -1811,7 +1820,7 @@
         <button id="closeCartSidebar"><i class="fas fa-times"></i></button>
       </div>
       <div class="cart-items" id="cartItemsSidebar">
-        <div class="cart-empty"><i class="fas fa-box-open"></i> Seu carrinho está vazio</div>
+        <div class="cart-empty"><i class="fas fa-clipboard-list"></i> Sua lista de compras está vazia</div>
       </div>
       <div class="cart-footer">
         <div class="cart-total" id="cartTotalSidebar">Total: 0</div>
@@ -2163,7 +2172,7 @@
           <div class="card-info"><i class="fas fa-industry"></i> ${escapeHtml(item.manufacturer)}</div>
           <div class="card-info"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(item.location)}</div>
           <div class="card-actions">
-            <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="redutor"><i class="fas fa-cart-plus"></i> Carrinho</button>
+            <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="redutor"><i class="fas fa-clipboard-list"></i> Adicionar</button>
             ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="redutor"><i class="fas fa-edit"></i> Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="redutor"><i class="fas fa-trash-alt"></i> Remover</button>` : ''}
           </div>
         </div>`;
@@ -2219,7 +2228,7 @@
     const renderCartItems = (containerId) => {
       const container = document.getElementById(containerId);
       if (!container) return;
-      if (!cart.length) { container.innerHTML = '<div class="cart-empty"><i class="fas fa-box-open"></i> Seu carrinho está vazio</div>'; return; }
+      if (!cart.length) { container.innerHTML = '<div class="cart-empty"><i class="fas fa-clipboard-list"></i> Sua lista de compras está vazia</div>'; return; }
       container.innerHTML = cart.map(ci => {
         const item = getItemById(ci.itemId, ci.category);
         if (!item) return '';
@@ -2384,8 +2393,8 @@
 
   function sendWhatsApp() {
     cleanCart();
-    if (!cart.length) { alert('Carrinho vazio.'); return; }
-    let msg = '🛒 *Carrinho de Itens*\n\n';
+    if (!cart.length) { alert('Lista de compras vazia.'); return; }
+    let msg = '📋 *Lista de Compras*\n\n';
     cart.forEach((ci, idx) => {
       const item = getItemById(ci.itemId, ci.category);
       if (!item) return;
