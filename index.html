@@ -1529,6 +1529,25 @@
     .estoque-badge.critico { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
     body.dark .estoque-badge.baixo { background: #431407; color: #fdba74; border-color: #7c2d12; }
     body.dark .estoque-badge.critico { background: #4c0519; color: #fda4af; border-color: #881337; }
+    .inventory-options { align-items: stretch; }
+    .inventory-options > .form-group { flex: 1; }
+    .stock-toggle-group { display: flex; align-items: flex-end; }
+    .stock-toggle {
+      width: 100%; min-height: 48px; display: flex; align-items: center; gap: 12px;
+      padding: 10px 13px; border: 1px solid var(--border); border-radius: 12px;
+      background: var(--input-bg); cursor: pointer; transition: border .2s, background .2s, box-shadow .2s;
+    }
+    .stock-toggle:hover { border-color: var(--danger); }
+    .stock-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+    .stock-toggle-ui {
+      width: 34px; height: 34px; flex: 0 0 34px; display: grid; place-items: center;
+      border-radius: 10px; color: var(--text-secondary); background: var(--bg); transition: all .2s;
+    }
+    .stock-toggle strong, .stock-toggle small { display: block; }
+    .stock-toggle small { margin-top: 2px; color: var(--text-secondary); font-size: .7rem; font-weight: 400; }
+    .stock-toggle:has(input:checked) { border-color: var(--danger); background: var(--btn-remove-bg); box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
+    .stock-toggle input:checked + .stock-toggle-ui { color: #fff; background: var(--danger); }
+    #inputEstoque:disabled { opacity: .5; cursor: not-allowed; }
     .cart-item, .config-block, #page-dashboard > div[style*="background"] {
       border: 1px solid var(--card-border); background: var(--card-bg); box-shadow: var(--shadow-sm); border-radius: 16px;
     }
@@ -1656,7 +1675,7 @@
         <a data-page="retentores"><i class="fas fa-oil-can"></i> Retentores</a>
         <a data-page="rolamentos"><i class="fas fa-cog"></i> Rolamentos</a>
         <a data-page="redutores"><i class="fas fa-gear"></i> Redutores</a>
-        <a data-page="carrinho"><i class="fas fa-shopping-cart"></i> Carrinho</a>
+        <a data-page="carrinho"><i class="fas fa-clipboard-list"></i> Lista de Compras</a>
         <a data-page="admin" id="sidebarAdmin"><i class="fas fa-users-cog"></i> Administração</a>
       </div>
       <div class="sidebar-footer"><i class="fas fa-circle" style="color: var(--status-online); font-size: 0.5rem;"></i> v2.3 • Auto-sync ativo</div>
@@ -1749,7 +1768,7 @@
       <!-- CARRINHO (página) -->
       <div class="page" id="page-carrinho">
         <div class="page-header">
-          <h2><i class="fas fa-shopping-cart"></i> Carrinho <span class="cart-badge" id="cartBadgePage">0</span></h2>
+          <h2><i class="fas fa-clipboard-list"></i> Lista de Compras <span class="cart-badge" id="cartBadgePage">0</span></h2>
           <button class="btn-add" id="btnWhatsAppPage" disabled><i class="fab fa-whatsapp"></i> Enviar via WhatsApp</button>
         </div>
         <div id="cartItemsPage"></div>
@@ -1788,7 +1807,7 @@
     <!-- Carrinho sidebar -->
     <div class="cart-sidebar" id="cartSidebar">
       <div class="cart-header">
-        <h3><i class="fas fa-shopping-cart"></i> Carrinho <span class="cart-badge" id="cartBadge">0</span></h3>
+        <h3><i class="fas fa-clipboard-list"></i> Lista de Compras <span class="cart-badge" id="cartBadge">0</span></h3>
         <button id="closeCartSidebar"><i class="fas fa-times"></i></button>
       </div>
       <div class="cart-items" id="cartItemsSidebar">
@@ -1848,6 +1867,15 @@
   function sortByMeasure(a, b) {
     const number = value => Number(String(value || '').replace(',', '.').match(/\d+(?:\.\d+)?/)?.[0] || 0);
     return number(a.measures) - number(b.measures) || String(a.name || '').localeCompare(String(b.name || ''), 'pt-BR');
+  }
+
+  function normalizeInventoryItems(items) {
+    return (items || []).map(item => ({
+      ...item,
+      sem_estoque: item.sem_estoque === true,
+      // Registros de versões anteriores não possuíam este campo e devem permanecer cadastrados.
+      estoque_cadastrado: item.estoque_cadastrado !== false
+    }));
   }
 
   // ============================================================
@@ -1978,8 +2006,8 @@
     try {
       const data = await loadDataFromSheet();
       if (data) {
-        retainers = (data.retainers || []).sort(sortByMeasure);
-        bearings = (data.bearings || []).sort(sortByMeasure);
+        retainers = normalizeInventoryItems(data.retainers).sort(sortByMeasure);
+        bearings = normalizeInventoryItems(data.bearings).sort(sortByMeasure);
         reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
         cart = data.cart || [];
         nextRetainerId = data.nextRetainerId || 1;
@@ -2009,23 +2037,23 @@
   // ============================================================
   const defaultData = {
     retainers: [
-      { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm', estoque: 15, estoque_minimo: 5 },
-      { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm', estoque: 8, estoque_minimo: 5 },
-      { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm', estoque: 3, estoque_minimo: 5 },
-      { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm', estoque: 0, estoque_minimo: 5 },
-      { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm', estoque: 10, estoque_minimo: 5 },
-      { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm', estoque: 2, estoque_minimo: 5 },
-      { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm', estoque: 12, estoque_minimo: 5 },
-      { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm', estoque: 6, estoque_minimo: 5 },
-      { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm', estoque: 0, estoque_minimo: 5 },
-      { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm', estoque: 4, estoque_minimo: 5 }
+      { id:1, name:'Retentor 10x20x7', measures:'10 x 20 x 7 mm', estoque: 15, sem_estoque: false },
+      { id:2, name:'Retentor 12x22x7', measures:'12 x 22 x 7 mm', estoque: 8, sem_estoque: false },
+      { id:3, name:'Retentor 14x24x7', measures:'14 x 24 x 7 mm', estoque: 3, sem_estoque: false },
+      { id:4, name:'Retentor 15x25x7', measures:'15 x 25 x 7 mm', estoque: 0, sem_estoque: false },
+      { id:5, name:'Retentor 16x26x7', measures:'16 x 26 x 7 mm', estoque: 10, sem_estoque: false },
+      { id:6, name:'Retentor 18x30x7', measures:'18 x 30 x 7 mm', estoque: 2, sem_estoque: false },
+      { id:7, name:'Retentor 20x35x7', measures:'20 x 35 x 7 mm', estoque: 12, sem_estoque: false },
+      { id:8, name:'Retentor 22x35x7', measures:'22 x 35 x 7 mm', estoque: 6, sem_estoque: false },
+      { id:9, name:'Retentor 25x40x7', measures:'25 x 40 x 7 mm', estoque: 0, sem_estoque: false },
+      { id:10, name:'Retentor 28x47x7', measures:'28 x 47 x 7 mm', estoque: 4, sem_estoque: false }
     ],
     bearings: [
-      { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm', estoque: 20, estoque_minimo: 5 },
-      { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm', estoque: 1, estoque_minimo: 5 },
-      { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm', estoque: 7, estoque_minimo: 5 },
-      { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm', estoque: 0, estoque_minimo: 5 },
-      { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm', estoque: 3, estoque_minimo: 5 }
+      { id:1, name:'Rolamento 6000', measures:'26 x 10 x 8 mm', estoque: 20, sem_estoque: false },
+      { id:2, name:'Rolamento 6001', measures:'28 x 12 x 8 mm', estoque: 1, sem_estoque: false },
+      { id:3, name:'Rolamento 6002', measures:'32 x 15 x 9 mm', estoque: 7, sem_estoque: false },
+      { id:4, name:'Rolamento 6003', measures:'35 x 17 x 10 mm', estoque: 0, sem_estoque: false },
+      { id:5, name:'Rolamento 6004', measures:'42 x 20 x 12 mm', estoque: 3, sem_estoque: false }
     ],
     reducers: [
       { id:1, name:'Redutor Planetário A10', manufacturer:'SEW', location:'Esteira Transportadora', bearings:['Rolamento 6001','Rolamento 6203'], retainers:['Retentor 20x35x7','Retentor 30x45x8'] },
@@ -2070,10 +2098,9 @@
   // FUNÇÕES DE ESTOQUE
   // ============================================================
   function getEstoqueStatus(item) {
-    const estoque = item.estoque || 0;
-    const minimo = item.estoque_minimo || 5;
-    if (estoque === 0) return { status: 'critico', label: 'Sem Estoque', cor: 'var(--danger)' };
-    if (estoque <= minimo) return { status: 'baixo', label: 'Não Cadastrado', cor: 'var(--warning)' };
+    if (item.tipo === 'redutor') return { status: 'ok', label: 'Cadastrado', cor: 'var(--primary)' };
+    if (item.sem_estoque === true) return { status: 'critico', label: 'Sem Estoque', cor: 'var(--danger)' };
+    if (item.estoque_cadastrado !== true) return { status: 'baixo', label: 'Não Cadastrado', cor: 'var(--warning)' };
     return { status: 'ok', label: '✅ Ok', cor: 'var(--success)' };
   }
 
@@ -2090,16 +2117,17 @@
     let retentores = 0, rolamentos = 0, redutores = 0;
 
     todosItens.forEach(item => {
-      const estoque = item.estoque || 0;
-      const minimo = item.estoque_minimo || 5;
+      const estoque = item.estoque === '' || item.estoque == null ? 0 : Number(item.estoque) || 0;
       total += estoque;
 
       if (item.tipo === 'retentor') retentores += estoque;
       else if (item.tipo === 'rolamento') rolamentos += estoque;
       else if (item.tipo === 'redutor') redutores += estoque;
 
-      if (estoque === 0) critico++;
-      else if (estoque <= minimo) baixo++;
+      if (item.tipo !== 'redutor') {
+        if (item.sem_estoque === true) critico++;
+        else if (item.estoque_cadastrado !== true) baixo++;
+      }
     });
 
     return { total, retentores, rolamentos, redutores, baixo, critico };
@@ -2141,14 +2169,17 @@
         </div>`;
       } else {
         const status = getEstoqueStatus(item);
+        const needsPurchase = item.sem_estoque === true || item.estoque_cadastrado !== true;
         return `<div class="item-card">
           <div class="card-name">${escapeHtml(item.name)} 
             <span class="estoque-badge ${status.status}">${status.label}</span>
           </div>
           <div class="card-info"><i class="fas fa-ruler"></i> ${escapeHtml(item.measures)}</div>
-          <div class="card-info"><i class="fas fa-boxes"></i> Estoque: ${item.estoque || 0} (Mín: ${item.estoque_minimo || 5})</div>
+          ${item.tipo !== 'redutor' ? `<div class="card-info"><i class="fas fa-boxes"></i> Estoque: ${item.sem_estoque ? 'Sem estoque' : (item.estoque_cadastrado !== true ? 'Não cadastrado' : (item.estoque === '' || item.estoque == null ? 0 : item.estoque))}</div>` : ''}
           <div class="card-actions">
-            <button class="btn btn-cart" data-action="add" data-id="${item.id}" data-category="${type}"><i class="fas fa-cart-plus"></i> Carrinho</button>
+            <button class="btn ${needsPurchase ? 'btn-purchase-list' : 'btn-cart'}" data-action="add" data-id="${item.id}" data-category="${type}">
+              <i class="fas ${needsPurchase ? 'fa-clipboard-list' : 'fa-cart-plus'}"></i> ${needsPurchase ? 'Adicionar à lista' : 'Adicionar'}
+            </button>
             ${master ? `<button class="btn btn-edit" data-action="edit" data-id="${item.id}" data-category="${type}"><i class="fas fa-edit"></i> Editar</button><button class="btn btn-remove" data-action="remove" data-id="${item.id}" data-category="${type}"><i class="fas fa-trash-alt"></i> Remover</button>` : ''}
           </div>
         </div>`;
@@ -2268,20 +2299,13 @@
           const itens = [
             ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
             ...bearings.map(b => ({ ...b, tipo: 'rolamento' }))
-          ].filter(item => {
-            const estoque = item.estoque || 0;
-            const minimo = item.estoque_minimo || 5;
-            return estoque <= minimo && estoque > 0;
-          });
+          ].filter(item => item.sem_estoque !== true && item.estoque_cadastrado !== true);
           mostrarItensFiltrados(itens, 'Não Cadastrado');
         } else if (filtro === 'critico') {
           const itens = [
             ...retainers.map(r => ({ ...r, tipo: 'retentor' })),
             ...bearings.map(b => ({ ...b, tipo: 'rolamento' }))
-          ].filter(item => {
-            const estoque = item.estoque || 0;
-            return estoque === 0;
-          });
+          ].filter(item => item.sem_estoque === true);
           mostrarItensFiltrados(itens, 'Sem Estoque');
         }
       });
@@ -2298,16 +2322,23 @@
     container.innerHTML = `<h3 style="grid-column:1/-1;margin-bottom:10px;">${titulo} (${itens.length} itens)</h3>` + 
       itens.map(item => {
         const status = getEstoqueStatus(item);
+        const needsPurchase = item.tipo !== 'redutor' && (item.sem_estoque === true || item.estoque_cadastrado !== true);
         return `<div class="item-card" style="border-left: 4px solid ${status.cor};">
           <div class="card-name">${escapeHtml(item.name)} 
             <span class="estoque-badge ${status.status}">${status.label}</span>
           </div>
           ${item.measures ? `<div class="card-info"><i class="fas fa-ruler"></i> ${escapeHtml(item.measures)}</div>` : ''}
-          <div class="card-info"><i class="fas fa-boxes"></i> Estoque: ${item.estoque || 0} (Mín: ${item.estoque_minimo || 5})</div>
+          ${item.tipo !== 'redutor' ? `<div class="card-info"><i class="fas fa-boxes"></i> Estoque: ${item.sem_estoque ? 'Sem estoque' : (item.estoque_cadastrado !== true ? 'Não cadastrado' : (item.estoque === '' || item.estoque == null ? 0 : item.estoque))}</div>` : ''}
           ${item.manufacturer ? `<div class="card-info"><i class="fas fa-industry"></i> ${escapeHtml(item.manufacturer)}</div>` : ''}
           <div class="card-info"><i class="fas fa-tag"></i> ${escapeHtml(item.tipo)}</div>
+          ${needsPurchase ? `<div class="card-actions"><button class="btn btn-purchase-list" data-purchase-id="${item.id}" data-purchase-category="${item.tipo}"><i class="fas fa-clipboard-list"></i> Adicionar à lista</button></div>` : ''}
         </div>`;
       }).join('');
+    container.querySelectorAll('[data-purchase-id]').forEach(button => {
+      button.addEventListener('click', function() {
+        addToCart(parseInt(this.dataset.purchaseId, 10), this.dataset.purchaseCategory);
+      });
+    });
   }
 
   // ============================================================
@@ -2363,7 +2394,7 @@
         msg += `   Fabricante: ${item.manufacturer}\n   Local: ${item.location}\n   Rolamentos: ${(item.bearings||[]).join(', ')}\n   Retentores: ${(item.retainers||[]).join(', ')}\n`;
       } else {
         msg += `   Medidas: ${item.measures}\n`;
-        msg += `   Estoque: ${item.estoque || 0}\n`;
+        msg += `   Estoque: ${item.sem_estoque ? 'Sem estoque' : (item.estoque_cadastrado !== true ? 'Não cadastrado' : (item.estoque === '' || item.estoque == null ? 0 : item.estoque))}\n`;
       }
       msg += `   Quantidade: ${ci.quantity}\n`;
       if (idx < cart.length - 1) msg += '\n';
@@ -2381,7 +2412,7 @@
   let inputMeasuresRet, inputNameRol, inputMeasuresRol;
   let inputRedutorName, inputFabricante, inputLocal;
   let inputRolamentosAssoc, inputRetentoresAssoc, namePreviewText, btnSave, btnCancel;
-  let inputEstoque, inputEstoqueMinimo;
+  let inputEstoque, inputSemEstoque, inventoryFields;
 
   function createModal(title, category, item) {
     modalOverlay.innerHTML = `<div class="modal"><h3><i class="fas fa-pen"></i> ${title}</h3>
@@ -2396,17 +2427,20 @@
       <div class="form-group"><label for="inputLocal"><i class="fas fa-map-marker-alt"></i> Local</label><input type="text" id="inputLocal"></div>
       <div class="form-group"><label for="inputRolamentosAssoc"><i class="fas fa-cog"></i> Rolamentos</label><textarea id="inputRolamentosAssoc" placeholder="Separe por vírgula"></textarea></div>
       <div class="form-group"><label for="inputRetentoresAssoc"><i class="fas fa-oil-can"></i> Retentores</label><textarea id="inputRetentoresAssoc" placeholder="Separe por vírgula"></textarea></div></div>
-      <hr style="margin: 16px 0; border-color: var(--border);">
-      <div class="form-row">
+      <div id="inventoryFields"><hr style="margin: 16px 0; border-color: var(--border);">
+      <div class="form-row inventory-options">
         <div class="form-group">
-          <label for="inputEstoque"><i class="fas fa-boxes"></i> Estoque</label>
-          <input type="number" id="inputEstoque" value="0" min="0" />
+          <label for="inputEstoque"><i class="fas fa-boxes"></i> Quantidade em estoque</label>
+          <input type="number" id="inputEstoque" min="0" placeholder="Deixe vazio se não cadastrado" />
         </div>
-        <div class="form-group">
-          <label for="inputEstoqueMinimo"><i class="fas fa-exclamation-triangle"></i> Estoque Mínimo</label>
-          <input type="number" id="inputEstoqueMinimo" value="5" min="0" />
+        <div class="form-group stock-toggle-group">
+          <label class="stock-toggle" for="inputSemEstoque">
+            <input type="checkbox" id="inputSemEstoque" />
+            <span class="stock-toggle-ui"><i class="fas fa-box-open"></i></span>
+            <span><strong>Sem estoque</strong><small>Marque para informar indisponibilidade</small></span>
+          </label>
         </div>
-      </div>
+      </div></div>
       <div class="modal-actions"><button class="btn-cancel" id="btnCancel"><i class="fas fa-times"></i> Cancelar</button><button class="btn-save" id="btnSave"><i class="fas fa-save"></i> Salvar</button></div></div>`;
 
     categorySelect = document.getElementById('categorySelect');
@@ -2421,8 +2455,9 @@
     inputLocal = document.getElementById('inputLocal');
     inputRolamentosAssoc = document.getElementById('inputRolamentosAssoc');
     inputRetentoresAssoc = document.getElementById('inputRetentoresAssoc');
+    inventoryFields = document.getElementById('inventoryFields');
     inputEstoque = document.getElementById('inputEstoque');
-    inputEstoqueMinimo = document.getElementById('inputEstoqueMinimo');
+    inputSemEstoque = document.getElementById('inputSemEstoque');
     namePreviewText = document.getElementById('namePreviewText');
     btnSave = document.getElementById('btnSave');
     btnCancel = document.getElementById('btnCancel');
@@ -2433,14 +2468,14 @@
       toggleModalFields(category);
       if (category === 'retentor' && item) { 
         inputMeasuresRet.value = item.measures || ''; 
-        inputEstoque.value = item.estoque || 0;
-        inputEstoqueMinimo.value = item.estoque_minimo || 5;
+        inputEstoque.value = item.estoque === '' || item.estoque == null ? (item.estoque_cadastrado === true ? 0 : '') : item.estoque;
+        inputSemEstoque.checked = item.sem_estoque === true;
         updateNamePreview(); 
       } else if (category === 'rolamento' && item) { 
         inputNameRol.value = item.name || ''; 
         inputMeasuresRol.value = item.measures || '';
-        inputEstoque.value = item.estoque || 0;
-        inputEstoqueMinimo.value = item.estoque_minimo || 5;
+        inputEstoque.value = item.estoque === '' || item.estoque == null ? (item.estoque_cadastrado === true ? 0 : '') : item.estoque;
+        inputSemEstoque.checked = item.sem_estoque === true;
       } else if (category === 'redutor' && item) {
         inputRedutorName.value = item.name || '';
         inputFabricante.value = item.manufacturer || '';
@@ -2452,8 +2487,8 @@
       categorySelect.value = 'retentor';
       categorySelect.disabled = false;
       toggleModalFields('retentor');
-      inputEstoque.value = 0;
-      inputEstoqueMinimo.value = 5;
+      inputEstoque.value = '';
+      inputSemEstoque.checked = false;
     }
 
     if (btnCancel) btnCancel.addEventListener('click', () => modalOverlay.style.display = 'none');
@@ -2465,7 +2500,15 @@
       });
     }
     if (inputMeasuresRet) inputMeasuresRet.addEventListener('input', updateNamePreview);
-    [inputMeasuresRet, inputNameRol, inputMeasuresRol, inputRedutorName, inputFabricante, inputLocal, inputEstoque, inputEstoqueMinimo].forEach(inp => {
+    if (inputSemEstoque) {
+      const updateStockControl = () => {
+        inputEstoque.disabled = inputSemEstoque.checked;
+        if (inputSemEstoque.checked) inputEstoque.value = '';
+      };
+      inputSemEstoque.addEventListener('change', updateStockControl);
+      updateStockControl();
+    }
+    [inputMeasuresRet, inputNameRol, inputMeasuresRol, inputRedutorName, inputFabricante, inputLocal, inputEstoque].forEach(inp => {
       if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); if (btnSave) btnSave.click(); } });
     });
   }
@@ -2474,6 +2517,7 @@
     if (retentorFields) retentorFields.style.display = cat === 'retentor' ? 'block' : 'none';
     if (rolamentoFields) rolamentoFields.style.display = cat === 'rolamento' ? 'block' : 'none';
     if (redutorFields) redutorFields.style.display = cat === 'redutor' ? 'block' : 'none';
+    if (inventoryFields) inventoryFields.style.display = cat === 'redutor' ? 'none' : 'block';
   }
 
   function updateNamePreview() {
@@ -2501,30 +2545,33 @@
     if (!isMaster()) return;
     const cat = categorySelect.value;
     try {
-      const estoque = Math.max(0, parseInt(inputEstoque.value, 10) || 0);
-      const estoqueMinimo = Math.max(0, parseInt(inputEstoqueMinimo.value, 10) || 0);
+      const semEstoque = inputSemEstoque ? inputSemEstoque.checked : false;
+      const estoqueCadastrado = semEstoque || (!!inputEstoque && inputEstoque.value.trim() !== '');
+      const estoque = semEstoque || !inputEstoque || inputEstoque.value.trim() === ''
+        ? ''
+        : Math.max(0, parseInt(inputEstoque.value, 10) || 0);
 
       if (cat === 'retentor') {
         const measures = inputMeasuresRet.value.trim();
         if (!measures) { alert('Informe a medida.'); return; }
         const name = generateRetentorName(measures);
         if (modalMode === 'add') {
-          retainers.push({ id: nextRetainerId++, name, measures, estoque, estoque_minimo: estoqueMinimo });
+          retainers.push({ id: nextRetainerId++, name, measures, estoque, sem_estoque: semEstoque, estoque_cadastrado: estoqueCadastrado });
           retainers.sort((a, b) => a.id - b.id);
         } else {
           const item = getItemById(editingItemId, cat);
-          if (item) { item.name = name; item.measures = measures; item.estoque = estoque; item.estoque_minimo = estoqueMinimo; }
+          if (item) { item.name = name; item.measures = measures; item.estoque = estoque; item.sem_estoque = semEstoque; item.estoque_cadastrado = estoqueCadastrado; delete item.estoque_minimo; }
           retainers.sort((a, b) => a.id - b.id);
         }
       } else if (cat === 'rolamento') {
         const name = inputNameRol.value.trim(), measures = inputMeasuresRol.value.trim();
         if (!name || !measures) { alert('Preencha todos os campos.'); return; }
         if (modalMode === 'add') {
-          bearings.push({ id: nextBearingId++, name, measures, estoque, estoque_minimo: estoqueMinimo });
+          bearings.push({ id: nextBearingId++, name, measures, estoque, sem_estoque: semEstoque, estoque_cadastrado: estoqueCadastrado });
           bearings.sort((a, b) => a.id - b.id);
         } else {
           const item = getItemById(editingItemId, cat);
-          if (item) { item.name = name; item.measures = measures; item.estoque = estoque; item.estoque_minimo = estoqueMinimo; }
+          if (item) { item.name = name; item.measures = measures; item.estoque = estoque; item.sem_estoque = semEstoque; item.estoque_cadastrado = estoqueCadastrado; delete item.estoque_minimo; }
           bearings.sort((a, b) => a.id - b.id);
         }
       } else {
@@ -2729,16 +2776,16 @@
   async function initApp() {
     const data = await loadDataFromSheet();
     if (data) {
-      retainers = (data.retainers || []).sort(sortByMeasure);
-      bearings = (data.bearings || []).sort(sortByMeasure);
+      retainers = normalizeInventoryItems(data.retainers).sort(sortByMeasure);
+      bearings = normalizeInventoryItems(data.bearings).sort(sortByMeasure);
       reducers = (data.reducers || []).sort((a, b) => a.id - b.id);
       cart = data.cart || [];
       nextRetainerId = data.nextRetainerId || 1;
       nextBearingId = data.nextBearingId || 1;
       nextReducerId = data.nextReducerId || 1;
     } else {
-      retainers = defaultData.retainers;
-      bearings = defaultData.bearings;
+      retainers = normalizeInventoryItems(defaultData.retainers);
+      bearings = normalizeInventoryItems(defaultData.bearings);
       reducers = defaultData.reducers;
       cart = defaultData.cart || [];
       nextRetainerId = defaultData.nextRetainerId;
