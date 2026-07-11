@@ -1,4 +1,16 @@
-const CACHE_NAME = 'gerenciador-v1';
+// ============================================================
+// SERVICE WORKER - COM ATUALIZAÇÃO AUTOMÁTICA
+// ============================================================
+
+// ============================================================
+// VERSÃO - MUDE ESTE NÚMERO SEMPRE QUE ALTERAR O SITE
+// ============================================================
+const APP_VERSION = '2.6.0'; // <-- MUDE ISSO SEMPRE QUE ATUALIZAR
+const CACHE_NAME = `gerenciador-${APP_VERSION}`;
+
+// ============================================================
+// ARQUIVOS PARA CACHE
+// ============================================================
 const urlsToCache = [
   '/CONTROLE_CATALOGO/',
   '/CONTROLE_CATALOGO/index.html',
@@ -7,26 +19,32 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
 ];
 
+// ============================================================
 // INSTALAÇÃO
+// ============================================================
 self.addEventListener('install', event => {
+  console.log('🔄 Instalando nova versão:', APP_VERSION);
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Cache aberto');
+        console.log('📦 Cache aberto para versão', APP_VERSION);
         return cache.addAll(urlsToCache);
       })
       .then(() => self.skipWaiting())
   );
 });
 
-// ATIVAÇÃO
+// ============================================================
+// ATIVAÇÃO - LIMPA CACHES ANTIGOS
+// ============================================================
 self.addEventListener('activate', event => {
+  console.log('✅ Ativando versão:', APP_VERSION);
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Removendo cache antigo:', cacheName);
+            console.log('🗑️ Removendo cache antigo:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -35,22 +53,21 @@ self.addEventListener('activate', event => {
   );
 });
 
-// INTERCEPTAÇÃO - CORRIGIDO (IGNORA EXTENSÕES)
+// ============================================================
+// INTERCEPTAÇÃO - COM CACHE E FORÇA DE ATUALIZAÇÃO
+// ============================================================
 self.addEventListener('fetch', event => {
   const request = event.request;
   const url = request.url;
 
-  // ============================================================
-  // IGNORA TODAS AS EXTENSÕES E REQUISIÇÕES NÃO SUPORTADAS
-  // ============================================================
+  // IGNORA EXTENSÕES E API
   if (url.startsWith('chrome-extension://') || 
       url.startsWith('moz-extension://') ||
       url.startsWith('chrome://') ||
       url.startsWith('about:') ||
       url.startsWith('data:') ||
       url.startsWith('blob:') ||
-      url.includes('quillbot') ||
-      url.includes('chrome-extension')) {
+      url.includes('script.google.com')) {
     return;
   }
 
@@ -61,24 +78,15 @@ self.addEventListener('fetch', event => {
           return response;
         }
         return fetch(request).then(response => {
-          // Verifica se é uma resposta válida
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
-          
-          // CLONA E ARMAZENA EM CACHE
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
             .then(cache => {
-              // NÃO CACHEIA REQUISIÇÕES DA API E EXTENSÕES
-              if (!url.includes('script.google.com') && 
-                  !url.includes('googleapis.com') &&
-                  !url.includes('chrome-extension') &&
-                  !url.includes('quillbot')) {
-                cache.put(request, responseToCache).catch(err => {
-                  // Ignora silenciosamente erros de cache
-                  console.debug('Cache ignorado para:', url);
-                });
+              if (!url.includes('googleapis.com') &&
+                  !url.includes('chrome-extension')) {
+                cache.put(request, responseToCache).catch(() => {});
               }
             });
           return response;
@@ -87,9 +95,27 @@ self.addEventListener('fetch', event => {
   );
 });
 
+// ============================================================
 // MENSAGEM PARA ATUALIZAÇÃO
+// ============================================================
 self.addEventListener('message', event => {
   if (event.data === 'skipWaiting') {
     self.skipWaiting();
+  }
+  if (event.data === 'getVersion') {
+    event.ports[0].postMessage(APP_VERSION);
+  }
+});
+
+// ============================================================
+// VERIFICAÇÃO DE ATUALIZAÇÃO PERIÓDICA
+// ============================================================
+self.addEventListener('periodicSync', function(event) {
+  if (event.tag === 'update-check') {
+    event.waitUntil(
+      caches.open(CACHE_NAME).then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+    );
   }
 });
