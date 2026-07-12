@@ -1,121 +1,92 @@
-// ============================================================
-// SERVICE WORKER - COM ATUALIZAÇÃO AUTOMÁTICA
-// ============================================================
+// Gerenciador Industrial — Service Worker
+const APP_VERSION = '4.0.0';
+const CACHE_PREFIX = 'gerenciador-industrial-';
+const CACHE_NAME = `${CACHE_PREFIX}${APP_VERSION}`;
+const APP_ROOT = '/CONTROLE_CATALOGO/';
 
-// ============================================================
-// VERSÃO - MUDE ESTE NÚMERO SEMPRE QUE ALTERAR O SITE
-// ============================================================
-const APP_VERSION = '2.6.0'; // <-- MUDE ISSO SEMPRE QUE ATUALIZAR
-const CACHE_NAME = `gerenciador-${APP_VERSION}`;
-
-// ============================================================
-// ARQUIVOS PARA CACHE
-// ============================================================
-const urlsToCache = [
-  '/CONTROLE_CATALOGO/',
-  '/CONTROLE_CATALOGO/index.html',
-  '/CONTROLE_CATALOGO/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
+const APP_SHELL = [
+  APP_ROOT,
+  `${APP_ROOT}index.html`,
+  `${APP_ROOT}manifest.json`,
+  `${APP_ROOT}icons/icon-192.png`,
+  `${APP_ROOT}icons/icon-512.png`
 ];
 
-// ============================================================
-// INSTALAÇÃO
-// ============================================================
 self.addEventListener('install', event => {
-  console.log('🔄 Instalando nova versão:', APP_VERSION);
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('📦 Cache aberto para versão', APP_VERSION);
-        return cache.addAll(urlsToCache);
-      })
+      .then(cache => cache.addAll(APP_SHELL))
       .then(() => self.skipWaiting())
   );
 });
 
-// ============================================================
-// ATIVAÇÃO - LIMPA CACHES ANTIGOS
-// ============================================================
 self.addEventListener('activate', event => {
-  console.log('✅ Ativando versão:', APP_VERSION);
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('🗑️ Removendo cache antigo:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys()
+      .then(names => Promise.all(
+        names
+          .filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE_NAME)
+          .map(name => caches.delete(name))
+      ))
+      .then(() => self.clients.claim())
   );
 });
 
-// ============================================================
-// INTERCEPTAÇÃO - COM CACHE E FORÇA DE ATUALIZAÇÃO
-// ============================================================
+function isIgnoredRequest(request) {
+  const url = new URL(request.url);
+  return request.method !== 'GET' ||
+    url.protocol === 'chrome-extension:' ||
+    url.protocol === 'moz-extension:' ||
+    url.protocol === 'data:' ||
+    url.protocol === 'blob:' ||
+    url.hostname === 'script.google.com' ||
+    url.hostname.endsWith('.googleusercontent.com');
+}
+
+// Navegação usa a rede primeiro. Assim, uma implantação nova aparece
+// imediatamente; o cache é usado apenas quando o dispositivo está offline.
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response && response.ok) await cache.put(request, response.clone());
+    return response;
+  } catch (_) {
+    return (await cache.match(request)) ||
+      (await cache.match(`${APP_ROOT}index.html`)) ||
+      Response.error();
+  }
+}
+
+// Recursos estáticos abrem rapidamente pelo cache e são atualizados em segundo plano.
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+  const network = fetch(request).then(response => {
+    if (response && response.ok) cache.put(request, response.clone()).catch(() => {});
+    return response;
+  }).catch(() => cached);
+  return cached || network;
+}
+
 self.addEventListener('fetch', event => {
   const request = event.request;
-  const url = request.url;
-
-  // IGNORA EXTENSÕES E API
-  if (url.startsWith('chrome-extension://') || 
-      url.startsWith('moz-extension://') ||
-      url.startsWith('chrome://') ||
-      url.startsWith('about:') ||
-      url.startsWith('data:') ||
-      url.startsWith('blob:') ||
-      url.includes('script.google.com')) {
+  if (isIgnoredRequest(request)) return;
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
     return;
   }
-
-  event.respondWith(
-    caches.match(request)
-      .then(response => {
-        if (response) {
-          return response;
-        }
-        return fetch(request).then(response => {
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              if (!url.includes('googleapis.com') &&
-                  !url.includes('chrome-extension')) {
-                cache.put(request, responseToCache).catch(() => {});
-              }
-            });
-          return response;
-        });
-      })
-  );
+  event.respondWith(staleWhileRevalidate(request));
 });
 
-// ============================================================
-// MENSAGEM PARA ATUALIZAÇÃO
-// ============================================================
 self.addEventListener('message', event => {
-  if (event.data === 'skipWaiting') {
+  if (event.data === 'skipWaiting' || event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  if (event.data === 'getVersion') {
-    event.ports[0].postMessage(APP_VERSION);
+  if (event.data === 'getVersion' || event.data?.type === 'GET_VERSION') {
+    const reply = { type: 'APP_VERSION', version: APP_VERSION };
+    if (event.ports && event.ports[0]) event.ports[0].postMessage(reply);
+    else if (event.source) event.source.postMessage(reply);
   }
 });
 
-// ============================================================
-// VERIFICAÇÃO DE ATUALIZAÇÃO PERIÓDICA
-// ============================================================
-self.addEventListener('periodicSync', function(event) {
-  if (event.tag === 'update-check') {
-    event.waitUntil(
-      caches.open(CACHE_NAME).then(cache => {
-        return cache.addAll(urlsToCache);
-      })
-    );
-  }
-});
